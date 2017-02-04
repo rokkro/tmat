@@ -13,8 +13,8 @@ auth.set_access_token(atoken, asecret)
 api = tweepy.API(auth)
 
 class Listener(StreamListener):
-    def __init__(self,count,lim): #constructor
-        self.count = count
+    def __init__(self,lim): #constructor
+        self.count = 0
         self.lim = lim
 
     def on_data(self, data):
@@ -37,11 +37,13 @@ class Listener(StreamListener):
         if status == 401:
             print("Authentication failed. Check your keys or verify your system clock is accurate.")
         return False #quits streaming if error
+
+
 def stream():
-    count = 0
     search = input("Enter a search term or hashtag:")
     lim = input("Enter number of tweets to retrieve (integers only). Leave blank if unlimited: ")
-    twitter_stream = Stream(auth, Listener(count,lim))
+    l = Listener(lim)
+    twitter_stream = Stream(auth,l)
     twitter_stream.filter(track=[search], async=True)
 
 if __name__ == '__main__':
