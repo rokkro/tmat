@@ -13,22 +13,22 @@ auth.set_access_token(atoken, asecret)
 api = tweepy.API(auth)
 
 class Listener(StreamListener):
-    def __init__(self,count,lim):
+    def __init__(self,count,lim): #constructor
         self.count = count
         self.lim = lim
 
     def on_data(self, data):
         if str(self.count) == self.lim:
-            return False
+            return False #stop streaming if hits tweet limit
         try:
-            with open('live.json', 'a') as f:
+            with open('live.json', 'a') as f: #currently appends to file, may change later
                 f.write(data)
                 self.count += 1
                 print("Tweets retrieved: " + str(self.count))
                 return True
         except Exception as e:
             print("Possible .json write error. Error: " + str(e))
-        return True
+            return False #stops streaming on write error
 
     def on_error(self, status):
         print("Error code:",status)
