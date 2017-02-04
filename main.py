@@ -24,10 +24,10 @@ class Listener(StreamListener):
             with open('live.json', 'a') as f:
                 f.write(data)
                 self.count += 1
-                print("tweets retrieved " + str(self.count) + "\r")
+                print("Tweets retrieved: " + str(self.count))
                 return True
-        except BaseException as e:
-            print("on_data: " + str(e))
+        except Exception as e:
+            print("Possible .json write error. Error: " + str(e))
         return True
 
     def on_error(self, status):
@@ -40,9 +40,9 @@ class Listener(StreamListener):
 def stream():
     count = 0
     search = input("Enter a search term or hashtag:")
-    lim =input("Enter number of tweets to retrieve (integers only). Leave blank if unlimited: ")
+    lim = input("Enter number of tweets to retrieve (integers only). Leave blank if unlimited: ")
     twitter_stream = Stream(auth, Listener(count,lim))
     twitter_stream.filter(track=[search], async=True)
 
 if __name__ == '__main__':
-     stream()
+    stream()
