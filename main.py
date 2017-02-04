@@ -44,5 +44,5 @@ def stream():
     twitter_stream = Stream(auth, Listener(count,lim))
     twitter_stream.filter(track=[search], async=True)
 
-if __name__ == '__main__': #execute this module if
+if __name__ == '__main__':
      stream()
