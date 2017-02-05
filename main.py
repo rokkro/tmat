@@ -37,7 +37,8 @@ class Listener(StreamListener):
         if "created_at" not in jdata or "retweeted_status" in jdata or\
                         "quoted_status" in jdata or jdata["in_reply_to_user_id"] != None:
             return False
-        return True
+        else:
+            return True
 
     def on_error(self, status):
         print("Error code:",status)
