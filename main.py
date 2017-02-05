@@ -76,4 +76,7 @@ def stream():
     twitter_stream.filter(track=[search], async=False)
 
 if __name__ == '__main__':
-    stream()
+    try:
+        stream()
+    except KeyboardInterrupt:
+        pass
