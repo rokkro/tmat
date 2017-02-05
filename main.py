@@ -17,28 +17,39 @@ class Listener(StreamListener):
     def __init__(self,lim): #constructor
         self.count = 0
         self.lim = lim
+        self.kill = False #set to true to stop streaming
 
     def on_data(self, data):
-        if str(self.count) == self.lim:
-            return False #stop streaming if hits tweet limit
+        if self.count == self.lim or self.kill:
+            return False #stop streaming if hit limit or is ordered to from outside
         if self.json_filter(data):
             try:
                 with open('live.json', 'a') as f: #currently appends to file, may change later
                     f.write(data + "\n")
                     self.count += 1
-                    print("Tweets retrieved: " + str(self.count))
+                    if self.lim != None:
+                        print("\rProgress: [{0:50s}] {1:.1f}% , Tweets: ".format('#' * int((self.count / int(self.lim)) * 50),(self.count / int(self.lim)) * 100),self.count, end="", flush=True)
+                    else:
+                        print("\rTweets:",self.count,end="",flush=True)
                     return True
             except Exception as e:
                 print("Possible .json write error. Error: " + str(e))
                 return False #stops streaming on write error
 
+    def kill(self): #needs this to work I guess
+        self.kill=True
+
     def json_filter(self,data): #not a superclass method. Removes certain tweets
-        jdata = json.loads(data)
-        if "created_at" not in jdata or "retweeted_status" in jdata or\
-                        "quoted_status" in jdata or jdata["in_reply_to_user_id"] != None:
+        try:
+            jdata = json.loads(data)
+            if "created_at" not in jdata or "retweeted_status" in jdata or\
+                            "quoted_status" in jdata or jdata["in_reply_to_user_id"] != None:
+                return False
+            else:
+                return True #does NOT affect tweet streaming. Whether or not tweet saved
+        except Exception as e:
+            print("Error in json_filter: " + str(e))
             return False
-        else:
-            return True #does NOT affect tweet streaming. Whether or not tweet saved
 
     def on_error(self, status):
         print("Error code:",status)
@@ -51,10 +62,15 @@ class Listener(StreamListener):
 
 def stream():
     search = input("Enter a search term or hashtag:")
-    lim = input("Enter number of tweets to retrieve (integers only). Leave blank if unlimited: ")
+    lim = input("Enter number of tweets to retrieve (integer only). Leave blank if unlimited: ")
+    try:
+        lim = int(lim)
+    except ValueError:
+        print("No tweet limit set.")
+        lim = None
     l = Listener(lim)
     twitter_stream = Stream(auth,l)
-    twitter_stream.filter(track=[search], async=True)
+    twitter_stream.filter(track=[search], async=False)
 
 if __name__ == '__main__':
     stream()
