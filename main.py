@@ -1,7 +1,8 @@
-import tweepy
+import tweepy, json
 from tweepy import Stream
 from tweepy import OAuthHandler
 from tweepy.streaming import StreamListener
+
 
 ckey = ""
 csecret = ""
@@ -20,15 +21,23 @@ class Listener(StreamListener):
     def on_data(self, data):
         if str(self.count) == self.lim:
             return False #stop streaming if hits tweet limit
-        try:
-            with open('live.json', 'a') as f: #currently appends to file, may change later
-                f.write(data + "\n")
-                self.count += 1
-                print("Tweets retrieved: " + str(self.count))
-                return True
-        except Exception as e:
-            print("Possible .json write error. Error: " + str(e))
-            return False #stops streaming on write error
+        if self.json_filter(data):
+            try:
+                with open('live.json', 'a') as f: #currently appends to file, may change later
+                    f.write(data + "\n")
+                    self.count += 1
+                    print("Tweets retrieved: " + str(self.count))
+                    return True
+            except Exception as e:
+                print("Possible .json write error. Error: " + str(e))
+                return False #stops streaming on write error
+
+    def json_filter(self,data): #not a superclass method. Removes certain tweets
+        jdata = json.loads(data)
+        if "created_at" not in jdata or "retweeted_status" in jdata or\
+                        "quoted_status" in jdata or jdata["in_reply_to_user_id"] != None:
+            return False
+        return True
 
     def on_error(self, status):
         print("Error code:",status)
