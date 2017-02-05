@@ -22,7 +22,7 @@ class Listener(StreamListener):
             return False #stop streaming if hits tweet limit
         try:
             with open('live.json', 'a') as f: #currently appends to file, may change later
-                f.write(data)
+                f.write(data + "\n")
                 self.count += 1
                 print("Tweets retrieved: " + str(self.count))
                 return True
