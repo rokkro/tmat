@@ -38,7 +38,7 @@ class Listener(StreamListener):
                         "quoted_status" in jdata or jdata["in_reply_to_user_id"] != None:
             return False
         else:
-            return True
+            return True #does NOT affect tweet streaming. Whether or not tweet saved
 
     def on_error(self, status):
         print("Error code:",status)
