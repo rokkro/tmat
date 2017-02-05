@@ -52,11 +52,12 @@ class Listener(StreamListener):
             return False
 
     def on_error(self, status):
-        print("Error code:",status)
+        print("Error code:",status,end=". ")
         if status == 406:
             print("Invalid tweet search request.")
         if status == 401:
             print("Authentication failed. Check your keys or verify your system clock is accurate.")
+        print("Streaming stopped.")
         return False #quits streaming if error
 
 
@@ -65,6 +66,8 @@ def stream():
     lim = input("Enter number of tweets to retrieve (integer only). Leave blank if unlimited: ")
     try:
         lim = int(lim)
+        if lim < 0:
+            raise ValueError
     except ValueError:
         print("No tweet limit set.")
         lim = None
