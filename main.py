@@ -33,7 +33,7 @@ class Listener(StreamListener):
                         print("\rTweets:",self.count,end="",flush=True)
                     return True
             except Exception as e:
-                print("Possible .json write error. Error: " + str(e))
+                print("Error in on_data: " + str(e) + "\nStreaming stopped.")
                 return False #stops streaming on write error
 
     def kill(self): #needs this to work I guess
