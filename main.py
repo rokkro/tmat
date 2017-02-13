@@ -1,8 +1,9 @@
-import tweepy, json
+import tweepy, json, string
 from tweepy import Stream
 from tweepy import OAuthHandler
 from tweepy.streaming import StreamListener
-
+from pymongo import MongoClient
+from http.client import IncompleteRead
 
 ckey = ""
 csecret = ""
@@ -12,44 +13,59 @@ asecret = ""
 auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
 api = tweepy.API(auth)
+client = MongoClient() #mogno
+db = client.test_database #db
+tweets = db.tweets #collection
 
 class Listener(StreamListener):
     def __init__(self,lim): #constructor
         self.count = 0
         self.lim = lim
-        self.kill = False #set to true to stop streaming
 
     def on_data(self, data):
-        if self.count == self.lim or self.kill:
-            return False #stop streaming if hit limit or is ordered to from outside
-        if self.json_filter(data):
+        if self.count == self.lim:
+            quit()
+        dataj = json.loads(data)
+        if self.json_filter(dataj):
             try:
-                with open('live.json', 'a') as f: #currently appends to file, may change later
-                    f.write(data + "\n")
+                if not self.duplicate_find(dataj): #if no duplicates found, add tweet to db
                     self.count += 1
-                    if self.lim != None:
-                        print("\rProgress: [{0:50s}] {1:.1f}% , Tweets: ".format('#' * int((self.count / int(self.lim)) * 50),(self.count / int(self.lim)) * 100),self.count, end="", flush=True)
-                    else:
-                        print("\rTweets:",self.count,end="",flush=True)
-                    return True
+                    tweets.insert_one(dataj)
+                if self.lim != None:
+                    print("\rTweets:", self.count, "[{0:50s}] {1:.1f}% ".format('#' * int((self.count / int(self.lim)) * 50),(self.count / int(self.lim)) * 100), end="", flush=True)
+                else:
+                    print("\rTweets:",self.count,end="",flush=True)
+                return True
+
             except Exception as e:
-                print("Error in on_data: " + str(e) + "\nStreaming stopped.")
-                return False #stops streaming on write error
+                print("\nError in on_data: " + str(e) + "\nStreaming stopped.")
+                quit()
 
-    def kill(self): #needs this to work I guess
-        self.kill=True
-
-    def json_filter(self,data): #not a superclass method. Removes certain tweets
+    def duplicate_find(self, dataj):
         try:
-            jdata = json.loads(data)
-            if "created_at" not in jdata or "retweeted_status" in jdata or\
-                            "quoted_status" in jdata or jdata["in_reply_to_user_id"] != None:
+            cursor = db.tweets.find({'user.screen_name': dataj['user']['screen_name']})
+            for c in cursor:  # searching for exact same tweets from same user, removing spaces and punct. Spaces take a lot of effort to remove
+                cursorText = " ".join(c['text'].translate(c['text'].maketrans('','',string.punctuation)).replace(" ","").split())
+                datajText = " ".join(dataj['text'].translate(dataj['text'].maketrans('','',string.punctuation)).replace(" ","").split())
+                if cursorText == datajText:
+                    print(" STEXT: " + c['text'] + " DTEXT: " + datajText)
+                    print("\nDuplicate tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
+                    return True
+            return False #if no duplicates found
+        except Exception as e:
+            print("Error in duplicate_find:",e,". Attempting to continue...")
+            return True
+
+    def json_filter(self,dataj): #not a superclass method. Removes certain tweets
+        try:
+            if "created_at" not in dataj or "retweeted_status" in dataj or\
+                            "quoted_status" in dataj or dataj["in_reply_to_user_id"] != None:
                 return False
             else:
                 return True #does NOT affect tweet streaming. Whether or not tweet saved
         except Exception as e:
             print("Error in json_filter: " + str(e))
-            return False
+            quit()
 
     def on_error(self, status):
         print("Error code:",status,end=". ")
@@ -57,12 +73,14 @@ class Listener(StreamListener):
             print("Invalid tweet search request.")
         if status == 401:
             print("Authentication failed. Check your keys or verify your system clock is accurate.")
+        if status == 420:
+            print("Rate limit reached. Wait a bit before streaming again.")
         print("Streaming stopped.")
-        return False #quits streaming if error
+        quit()
 
 
 def stream():
-    search = input("Enter a search term or hashtag:")
+    search = " ".join(input("Enter a search term or hashtag:").split())
     lim = input("Enter number of tweets to retrieve (integer only). Leave blank if unlimited: ")
     try:
         lim = int(lim)
@@ -71,9 +89,14 @@ def stream():
     except ValueError:
         print("No tweet limit set.")
         lim = None
-    l = Listener(lim)
-    twitter_stream = Stream(auth,l)
-    twitter_stream.filter(track=[search], async=False)
+    while True:
+        try:
+            l = Listener(lim)
+            twitter_stream = Stream(auth,l)
+            twitter_stream.filter(track=[search], async=False)
+        except IncompleteRead: #exception occurs when tweets fall behind
+            print("Error: Incomplete Read occurred. Skipping to newer tweets.")
+            continue
 
 if __name__ == '__main__':
     try:
