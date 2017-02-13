@@ -48,7 +48,7 @@ class Listener(StreamListener):
                 cursorText = " ".join(c['text'].translate(c['text'].maketrans('','',string.punctuation)).replace(" ","").split())
                 datajText = " ".join(dataj['text'].translate(dataj['text'].maketrans('','',string.punctuation)).replace(" ","").split())
                 if cursorText == datajText:
-                    print(" STEXT: " + c['text'] + " DTEXT: " + datajText)
+                    #print(" STEXT: " + c['text'] + " DTEXT: " + datajText)
                     print("\nDuplicate tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
                     return True
             return False #if no duplicates found
