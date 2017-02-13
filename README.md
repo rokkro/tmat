@@ -1,4 +1,4 @@
-note to self: remove twitter keys from the file you fool!
+note to self: remove twitter keys from the file
 
 1. twitter streaming [x]
 2. jam into db [x]
