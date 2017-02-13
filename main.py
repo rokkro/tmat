@@ -38,7 +38,7 @@ class Listener(StreamListener):
                 return True
 
             except Exception as e:
-                print("\nError in on_data: " + str(e) + "\nStreaming stopped.")
+                print("\nError in on_data: ",e,"\nStreaming stopped.")
                 quit()
 
     def duplicate_find(self, dataj):
@@ -64,7 +64,7 @@ class Listener(StreamListener):
             else:
                 return True #does NOT affect tweet streaming. Whether or not tweet saved
         except Exception as e:
-            print("Error in json_filter: " + str(e))
+            print("Error in json_filter: ",e)
             quit()
 
     def on_error(self, status):
