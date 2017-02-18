@@ -1,5 +1,6 @@
 To use: insert correct Twitter keys into the `config.ini` file, then run `twitter.py`.
-Requires Python 3.x, tested on 3.5,3.6
+
+Requires Python 3.x, tested on 3.5/3.6.
 
 1. twitter streaming [x]
 2. jam into db [WIP] - queue system found to be unnecessary, on occasion a few tweets will be skipped to catch up
