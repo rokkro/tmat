@@ -3,7 +3,7 @@ To use: insert correct Twitter keys into the `config.ini` file, then run `twitte
 Requires Python 3.x, tested on 3.5/3.6.
 
 1. twitter streaming [x]
-2. jam into db [WIP] - queue system found to be unnecessary, on occasion a few tweets will be skipped to catch up
+2. Put in a DB (MongoDB) [semi-WIP] - queue system found to be unnecessary, on occasion a few tweets will be skipped to catch up
 3. check duplicates [WIP]
 4. sentiment analaysis [WIP]
 5. associate characteristics using neural networks to tweets + users
