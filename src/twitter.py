@@ -1,4 +1,4 @@
-import tweepy, json, string, configparser
+import tweepy, json, string, configparser, datetime
 from tweepy import Stream
 from tweepy import OAuthHandler
 from tweepy.streaming import StreamListener
@@ -21,7 +21,6 @@ auth.set_access_token(atoken, asecret)
 api = tweepy.API(auth)
 client = MongoClient() #mogno
 db = client.test_database #db
-tweets = db.tweets #collection
 
 class Listener(StreamListener):
     def __init__(self,lim): #constructor
@@ -36,20 +35,19 @@ class Listener(StreamListener):
             try:
                 if not self.duplicate_find(dataj): #if no duplicates found, add tweet to db
                     self.count += 1
-                    tweets.insert_one(dataj)
+                    tweetcoll.insert_one(dataj)
                 if self.lim != None:
                     print("\rTweets:", self.count, "[{0:50s}] {1:.1f}% ".format('#' * int((self.count / int(self.lim)) * 50),(self.count / int(self.lim)) * 100), end="", flush=True)
                 else:
                     print("\rTweets:",self.count,end="",flush=True)
                 return True
-
             except Exception as e:
                 print("\nError in on_data: ",e,"\nStreaming stopped.")
                 quit()
 
     def duplicate_find(self, dataj):
         try:
-            cursor = db.tweets.find({'user.screen_name': dataj['user']['screen_name']})
+            cursor = tweetcoll.find({'user.screen_name': dataj['user']['screen_name']})
             for c in cursor:  # searching for exact same tweets from same user, removing spaces and punct. Spaces take a lot of effort to remove
                 cursorText = " ".join(c['text'].translate(c['text'].maketrans('','',string.punctuation)).replace(" ","").split())
                 datajText = " ".join(dataj['text'].translate(dataj['text'].maketrans('','',string.punctuation)).replace(" ","").split())
@@ -60,7 +58,6 @@ class Listener(StreamListener):
             return False #if no duplicates found
         except Exception as e:
             print("Error in duplicate_find. This might be an issue with your MongoDB service - see:",e)
-            #eturn True
             quit()
 
     def json_filter(self,dataj): #not a superclass method. Removes certain tweets
@@ -99,24 +96,27 @@ def limit():
     return lim
 
 def stream(lim=None):
+    global tweetcoll
     while True:
-        search = " ".join(input("Enter a search term or hashtag:").split())
-        if search == '':
+        search = " ".join(input("Enter a search term or hashtag:").split()) #search w/out spaces
+        if search == '': #cant be blank
             print("Invalid Input.")
             continue
         break
+    tweetcoll = db[search + " - "+ str(datetime.datetime.now())]  # collection
     while True:
         try:
-            print("Searching for tweets...")
-            l = Listener(lim)
-            twitter_stream = Stream(auth,l)
+            print("Waiting for new tweets...")
+            listener = Listener(lim)
+            twitter_stream = Stream(auth,listener)
             twitter_stream.filter(track=[search], async=False)
-        except IncompleteRead: #exception occurs when tweets fall behind
+        except IncompleteRead: #exception occurs when tweets fall behind. haven't seen if this catches it yet
             print("Error: Incomplete Read occurred. Skipping to newer tweets.")
-            continue
 
 if __name__ == '__main__':
     try:
-        stream(limit()) #remove limit() for unlimited scraping if running here
+        stream(limit()) #remove limit() for unlimited if running this
+    except BaseException as e:
+        print(e)
     except KeyboardInterrupt:
         pass
