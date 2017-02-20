@@ -85,19 +85,29 @@ class Listener(StreamListener):
         print("Streaming stopped.")
         quit()
 
+def limit():
+    while True:
+        lim = input("Enter number of tweets to retrieve (integer only): ")
+        try:
+            lim=int(lim)
+            if lim<0:
+                continue
+            break
+        except ValueError:
+            print("Invalid Input.")
+            continue
+    return lim
 
-def stream():
-    search = " ".join(input("Enter a search term or hashtag:").split())
-    lim = input("Enter number of tweets to retrieve (integer only). Leave blank if unlimited: ")
-    try:
-        lim = int(lim)
-        if lim < 0:
-            raise ValueError
-    except ValueError:
-        print("No tweet limit set.")
-        lim = None
+def stream(lim=None):
+    while True:
+        search = " ".join(input("Enter a search term or hashtag:").split())
+        if search == '':
+            print("Invalid Input.")
+            continue
+        break
     while True:
         try:
+            print("Searching for tweets...")
             l = Listener(lim)
             twitter_stream = Stream(auth,l)
             twitter_stream.filter(track=[search], async=False)
@@ -107,6 +117,6 @@ def stream():
 
 if __name__ == '__main__':
     try:
-        stream()
+        stream(limit())
     except KeyboardInterrupt:
         pass
