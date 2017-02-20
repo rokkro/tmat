@@ -117,6 +117,6 @@ def stream(lim=None):
 
 if __name__ == '__main__':
     try:
-        stream(limit())
+        stream(limit()) #remove limit() for unlimited scraping if running here
     except KeyboardInterrupt:
         pass
