@@ -1,5 +1,3 @@
-from pymongo.errors import ConnectionFailure
-
 try:
     import tweepy, json, string, configparser, datetime
     from tweepy import Stream
@@ -7,6 +5,7 @@ try:
     from tweepy.streaming import StreamListener
     from http.client import IncompleteRead
     from pymongo import MongoClient
+    from pymongo.errors import ConnectionFailure
 
     config = configparser.ConfigParser()
     config.read('config.ini')
