@@ -82,34 +82,40 @@ class Listener(StreamListener):
         print("Streaming stopped.")
         quit()
 
-def limit():
-    while True:
-        lim = input("Enter number of tweets to retrieve (integer only): ")
-        try:
-            if lim == '':
-                lim = None
+class Setup():
+    def __init__(self):
+        self.temp = False
+
+    def limit(self):
+        while True:
+            self.lim = input("Enter number of tweets to retrieve (integer). Leave blank for unlimited: ")
+            try:
+                if self.lim == '':
+                    self.lim = None
+                    break
+                self.lim=int(self.lim)
+                if self.lim<0:
+                    continue
                 break
-            lim=int(lim)
-            if lim<0:
+            except ValueError:
+                print("Invalid Input.")
+                continue
+        return self.lim
+
+
+    def search(self):
+        while True:
+            self.term= " ".join(input("Enter a search term or hashtag:").split()) #search w/out spaces
+            if self.term == '': #cant be blank
+                print("Invalid Input.")
                 continue
             break
-        except ValueError:
-            print("Invalid Input.")
-            continue
-    return lim
+        self.coll_name = self.term + " - " + str(datetime.datetime.now())
+        return self.term
 
-def term():
-    while True:
-        search = " ".join(input("Enter a search term or hashtag:").split()) #search w/out spaces
-        if search == '': #cant be blank
-            print("Invalid Input.")
-            continue
-        break
-    return search
-
-def stream(search,lim=None):
+def stream(search, lim, coll): #search, limit, collection name
     global tweetcoll
-    tweetcoll = db[search + " - "+ str(datetime.datetime.now())]  # collection
+    tweetcoll = db[s.coll_name]  # collection
     while True:
         try:
             print("Waiting for new tweets...")
@@ -121,7 +127,8 @@ def stream(search,lim=None):
 
 if __name__ == '__main__':
     try:
-        stream(term(),limit()) 
+        s = Setup()
+        stream(s.search(),s.limit(),s.coll_name) #remove limit() for unlimited if running this
     except BaseException as e:
         print(e)
     except KeyboardInterrupt:
