@@ -1,25 +1,30 @@
-import tweepy, json, string, configparser, datetime
-from tweepy import Stream
-from tweepy import OAuthHandler
-from tweepy.streaming import StreamListener
-from http.client import IncompleteRead
-from pymongo import MongoClient
+from pymongo.errors import ConnectionFailure
 
 try:
+    import tweepy, json, string, configparser, datetime
+    from tweepy import Stream
+    from tweepy import OAuthHandler
+    from tweepy.streaming import StreamListener
+    from http.client import IncompleteRead
+    from pymongo import MongoClient
+
     config = configparser.ConfigParser()
     config.read('config.ini')
     ckey = config['TWITTER']['consumer-key']
     csecret = config['TWITTER']['consumer-secret']
     atoken = config['TWITTER']['access-token']
     asecret = config['TWITTER']['access-secret']
-except KeyError:
-    print("Put your keys in config.ini.")
+except KeyError as e:
+    print("Error: verify you put your keys in config.ini:",e)
+    quit()
+except ImportError as e:
+    print("Error: module missing/not installed:", e)
     quit()
 
 auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
 api = tweepy.API(auth)
-client = MongoClient() #mogno
+client ='' #mogno
 
 class Listener(StreamListener):
     def __init__(self,lim,tweetcoll): #constructor
@@ -44,21 +49,20 @@ class Listener(StreamListener):
             except Exception as e:
                 print("\nError in on_data: ",e,"\nStreaming stopped.")
                 quit()
+            except ConnectionFailure as e:
+                print("Error: MongoDB connection refused, verify MongoDB is running:", e)
+                quit()
 
     def duplicate_find(self, dataj):
-        try:
-            cursor = self.tweetcoll.find({'user.screen_name': dataj['user']['screen_name']})
-            for c in cursor:  # searching for exact same tweets from same user, removing spaces and punct. Spaces take a lot of effort to remove
-                cursorText = " ".join(c['text'].translate(c['text'].maketrans('','',string.punctuation)).replace(" ","").split())
-                datajText = " ".join(dataj['text'].translate(dataj['text'].maketrans('','',string.punctuation)).replace(" ","").split())
-                if cursorText == datajText:
-                    #print(" STEXT: " + c['text'] + " DTEXT: " + datajText)
-                    print("\nDuplicate tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
-                    return True
-            return False #if no duplicates found
-        except Exception as e:
-            print("Error in duplicate_find. This might be an issue with your MongoDB service - see:",e)
-            quit()
+        cursor = self.tweetcoll.find({'user.screen_name': dataj['user']['screen_name']})
+        for c in cursor:  # searching for exact same tweets from same user, removing spaces and punct. Spaces take a lot of effort to remove
+            cursorText = " ".join(c['text'].translate(c['text'].maketrans('','',string.punctuation)).replace(" ","").split())
+            datajText = " ".join(dataj['text'].translate(dataj['text'].maketrans('','',string.punctuation)).replace(" ","").split())
+            if cursorText == datajText:
+                #print(" STEXT: " + c['text'] + " DTEXT: " + datajText)
+                print("\nDuplicate tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
+                return True
+        return False #if no duplicates found
 
     def json_filter(self,dataj): #not a superclass method. Removes certain tweets
         try:
@@ -88,9 +92,23 @@ class Setup():
         self.img = False
         self.db_name = 'twitter'
 
+    def mongo_connect(self):
+        global client
+        print("Connecting to MongoDB...")
+        try:
+            client = MongoClient()
+            self.name_list = client.database_names()
+            print("Connection Succeeded!")
+        except ConnectionFailure as e:
+            print("*** Error: MongoDB not connected:",e,"***\nTweet streaming will not work without a database!")
+            #quit()
+        except Exception as e:
+            print("*** Error:",e,"***")
+            #quit()
+
     def limit(self):
         while True:
-            self.lim = input("Enter number of tweets to retrieve (integer). Leave blank for unlimited: ")
+            self.lim = input("*Enter number of tweets to retrieve (integer). Leave blank for unlimited: ")
             try:
                 if self.lim == '':
                     self.lim = None
@@ -107,7 +125,7 @@ class Setup():
 
     def search(self):
         while True:
-            self.term= " ".join(input("Enter a search term or hashtag:").split()) #search w/out spaces
+            self.term= " ".join(input("*Enter a search term or hashtag:").split()) #search w/out spaces
             if self.term == '': #cant be blank
                 print("Invalid Input.")
                 continue
@@ -130,6 +148,7 @@ def stream(search, lim, coll_name, db_name): #search, limit, collection name
 if __name__ == '__main__':
     try:
         s = Setup()
+        s.mongo_connect()
         stream(s.search(),s.limit(),s.coll_name,s.db_name) #remove limit() for unlimited if running this
     except BaseException as e:
         print(e)
