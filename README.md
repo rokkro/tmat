@@ -1,4 +1,4 @@
-To use: insert correct Twitter keys into the `config.ini` file, then run `twitter.py`.
+To use: insert correct Twitter keys into the `config.ini` file, then run `twitter.py`. `main.py` is a WIP main menu.
 
 Requires Python 3.x, tested on 3.5/3.6.
 
