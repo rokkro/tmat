@@ -86,6 +86,9 @@ def limit():
     while True:
         lim = input("Enter number of tweets to retrieve (integer only): ")
         try:
+            if lim == '':
+                lim = None
+                break
             lim=int(lim)
             if lim<0:
                 continue
