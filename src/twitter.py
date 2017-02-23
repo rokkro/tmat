@@ -121,7 +121,7 @@ def stream(search,lim=None):
 
 if __name__ == '__main__':
     try:
-        stream(term(),limit()) #remove limit() for unlimited if running this
+        stream(term(),limit()) 
     except BaseException as e:
         print(e)
     except KeyboardInterrupt:
