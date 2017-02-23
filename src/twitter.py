@@ -13,7 +13,7 @@ try:
     atoken = config['TWITTER']['access-token']
     asecret = config['TWITTER']['access-secret']
 except KeyError:
-    print("Make sure you put your keys in config.ini.")
+    print("Put your keys in config.ini.")
     quit()
 
 auth = OAuthHandler(ckey, csecret)
@@ -95,14 +95,17 @@ def limit():
             continue
     return lim
 
-def stream(lim=None):
-    global tweetcoll
+def term():
     while True:
         search = " ".join(input("Enter a search term or hashtag:").split()) #search w/out spaces
         if search == '': #cant be blank
             print("Invalid Input.")
             continue
         break
+    return search
+
+def stream(search,lim=None):
+    global tweetcoll
     tweetcoll = db[search + " - "+ str(datetime.datetime.now())]  # collection
     while True:
         try:
@@ -115,7 +118,7 @@ def stream(lim=None):
 
 if __name__ == '__main__':
     try:
-        stream(limit()) #remove limit() for unlimited if running this
+        stream(term(),limit()) #remove limit() for unlimited if running this
     except BaseException as e:
         print(e)
     except KeyboardInterrupt:
