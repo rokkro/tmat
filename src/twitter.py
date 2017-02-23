@@ -20,7 +20,6 @@ auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
 api = tweepy.API(auth)
 client = MongoClient() #mogno
-db = client.test_database #db
 
 class Listener(StreamListener):
     def __init__(self,lim,tweetcoll): #constructor
@@ -86,6 +85,8 @@ class Listener(StreamListener):
 class Setup():
     def __init__(self):
         self.temp = False
+        self.img = False
+        self.db_name = 'twitter'
 
     def limit(self):
         while True:
@@ -114,8 +115,9 @@ class Setup():
         self.coll_name = self.term + " - " + str(datetime.datetime.now())
         return self.term
 
-def stream(search, lim, coll): #search, limit, collection name
-    tweetcoll = db[s.coll_name]  # collection
+def stream(search, lim, coll_name, db_name): #search, limit, collection name
+    db = client[db_name]  # db
+    tweetcoll = db[coll_name]  # collection
     while True:
         try:
             print("Waiting for new tweets...")
@@ -128,7 +130,7 @@ def stream(search, lim, coll): #search, limit, collection name
 if __name__ == '__main__':
     try:
         s = Setup()
-        stream(s.search(),s.limit(),s.coll_name) #remove limit() for unlimited if running this
+        stream(s.search(),s.limit(),s.coll_name,s.db_name) #remove limit() for unlimited if running this
     except BaseException as e:
         print(e)
     except KeyboardInterrupt:
