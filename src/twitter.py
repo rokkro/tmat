@@ -23,9 +23,10 @@ client = MongoClient() #mogno
 db = client.test_database #db
 
 class Listener(StreamListener):
-    def __init__(self,lim): #constructor
+    def __init__(self,lim,tweetcoll): #constructor
         self.count = 0
         self.lim = lim
+        self.tweetcoll = tweetcoll
 
     def on_data(self, data):
         if self.count == self.lim:
@@ -35,7 +36,7 @@ class Listener(StreamListener):
             try:
                 if not self.duplicate_find(dataj): #if no duplicates found, add tweet to db
                     self.count += 1
-                    tweetcoll.insert_one(dataj)
+                    self.tweetcoll.insert_one(dataj)
                 if self.lim != None:
                     print("\rTweets:", self.count, "[{0:50s}] {1:.1f}% ".format('#' * int((self.count / int(self.lim)) * 50),(self.count / int(self.lim)) * 100), end="", flush=True)
                 else:
@@ -47,7 +48,7 @@ class Listener(StreamListener):
 
     def duplicate_find(self, dataj):
         try:
-            cursor = tweetcoll.find({'user.screen_name': dataj['user']['screen_name']})
+            cursor = self.tweetcoll.find({'user.screen_name': dataj['user']['screen_name']})
             for c in cursor:  # searching for exact same tweets from same user, removing spaces and punct. Spaces take a lot of effort to remove
                 cursorText = " ".join(c['text'].translate(c['text'].maketrans('','',string.punctuation)).replace(" ","").split())
                 datajText = " ".join(dataj['text'].translate(dataj['text'].maketrans('','',string.punctuation)).replace(" ","").split())
@@ -114,12 +115,11 @@ class Setup():
         return self.term
 
 def stream(search, lim, coll): #search, limit, collection name
-    global tweetcoll
     tweetcoll = db[s.coll_name]  # collection
     while True:
         try:
             print("Waiting for new tweets...")
-            listener = Listener(lim)
+            listener = Listener(lim,tweetcoll)
             twitter_stream = Stream(auth,listener)
             twitter_stream.filter(track=[search], async=False)
         except IncompleteRead: #exception occurs when tweets fall behind. haven't seen if this catches it yet
