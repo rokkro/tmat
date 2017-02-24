@@ -151,7 +151,10 @@ if __name__ == '__main__':
     try:
         s = Setup()
         s.mongo_connect()
-        stream(s.search(),s.limit(),s.coll_name,s.db_name) #remove limit() for unlimited if running this
+        search = s.search()
+        lim = s.limit() #assigned to variables to make that print statement look nice
+        print("Collection: " + s.coll_name + ", Database: " + s.db_name)
+        stream(search,lim,s.coll_name,s.db_name) #remove limit() for unlimited if running this
     except BaseException as e:
         print(e)
     except KeyboardInterrupt:
