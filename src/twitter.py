@@ -23,7 +23,7 @@ except ImportError as e:
 auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
 api = tweepy.API(auth)
-client ='' #mogno
+client = None
 
 class Listener(StreamListener):
     def __init__(self,lim,tweetcoll): #constructor
@@ -54,9 +54,9 @@ class Listener(StreamListener):
 
     def duplicate_find(self, dataj):
         cursor = self.tweetcoll.find({'user.screen_name': dataj['user']['screen_name']})
-        for c in cursor:  # searching for exact same tweets from same user, removing spaces and punct. Spaces take a lot of effort to remove
-            cursorText = " ".join(c['text'].translate(c['text'].maketrans('','',string.punctuation)).replace(" ","").split())
-            datajText = " ".join(dataj['text'].translate(dataj['text'].maketrans('','',string.punctuation)).replace(" ","").split())
+        for c in cursor:  # searching for exact same tweets from same user, removing spaces and punct.
+            cursorText = c['text'].translate(c['text'].maketrans('','',string.punctuation)).replace(" ","")
+            datajText = dataj['text'].translate(dataj['text'].maketrans('','',string.punctuation)).replace(" ","")
             if cursorText == datajText:
                 #print(" STEXT: " + c['text'] + " DTEXT: " + datajText)
                 print("\nDuplicate tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
@@ -90,20 +90,22 @@ class Setup():
         self.temp = False
         self.img = False
         self.db_name = 'twitter'
+        self.connected = False
+        self.dt = " " + str(datetime.datetime.now())
 
     def mongo_connect(self):
         global client
         print("Connecting to MongoDB...")
         try:
             client = MongoClient()
-            self.name_list = client.database_names()
+            self.dbname_list = client.database_names()
+            self.collname_list = client.collection_names()
             print("Connection Succeeded!")
+            self.connected = True
         except ConnectionFailure as e:
             print("*** Error: MongoDB not connected:",e,"***\nTweet streaming will not work without a database!")
-            #quit()
         except Exception as e:
             print("*** Error:",e,"***")
-            #quit()
 
     def limit(self):
         while True:
@@ -121,18 +123,18 @@ class Setup():
                 continue
         return self.lim
 
-
     def search(self):
         while True:
-            self.term= " ".join(input("*Enter a search term or hashtag:").split()) #search w/out spaces
+            self.term = input("*Enter a search term or hashtag:").strip()
             if self.term == '': #cant be blank
                 print("Invalid Input.")
                 continue
             break
-        self.coll_name = self.term + " - " + str(datetime.datetime.now())
+        self.coll_name = self.term + " -" + self.dt
         return self.term
 
 def stream(search, lim, coll_name, db_name): #search, limit, collection name
+    print(db_name)
     db = client[db_name]  # db
     tweetcoll = db[coll_name]  # collection
     while True:
