@@ -99,13 +99,15 @@ class Setup():
         try:
             client = MongoClient()
             self.dbname_list = client.database_names()
-            self.collname_list = client.collection_names()
             print("Connection Succeeded!")
             self.connected = True
         except ConnectionFailure as e:
-            print("*** Error: MongoDB not connected:",e,"***\nTweet streaming will not work without a database!")
+            print("*** Error: MongoDB not connected:",e,"***")
         except Exception as e:
             print("*** Error:",e,"***")
+
+    def get_collections(self):
+        return client[self.db_name].collection_names()
 
     def limit(self):
         while True:
@@ -134,7 +136,6 @@ class Setup():
         return self.term
 
 def stream(search, lim, coll_name, db_name): #search, limit, collection name
-    print(db_name)
     db = client[db_name]  # db
     tweetcoll = db[coll_name]  # collection
     while True:
