@@ -105,9 +105,12 @@ class Setup():
             print("*** Error: MongoDB not connected:",e,"***")
         except Exception as e:
             print("*** Error:",e,"***")
+            
     def mongo_close(self):
         if self.connected:
             client.close()
+            self.connected = False
+            
     def get_collections(self):
         return client[self.db_name].collection_names()
 
