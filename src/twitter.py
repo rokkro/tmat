@@ -91,7 +91,7 @@ class Setup():
         self.img = False
         self.db_name = 'twitter'
         self.connected = False
-        self.dt = " " + str(datetime.datetime.now())
+        self.dt = str(datetime.datetime.now())
 
     def mongo_connect(self):
         global client
@@ -105,7 +105,9 @@ class Setup():
             print("*** Error: MongoDB not connected:",e,"***")
         except Exception as e:
             print("*** Error:",e,"***")
-
+    def mongo_close(self):
+        if self.connected:
+            client.close()
     def get_collections(self):
         return client[self.db_name].collection_names()
 
@@ -132,7 +134,7 @@ class Setup():
                 print("Invalid Input.")
                 continue
             break
-        self.coll_name = self.term + " -" + self.dt
+        self.coll_name = self.term + " - " + self.dt
         return self.term
 
 def stream(search, lim, coll_name, db_name): #search, limit, collection name
@@ -158,4 +160,5 @@ if __name__ == '__main__':
     except BaseException as e:
         print(e)
     except KeyboardInterrupt:
+        s.mongo_close()
         pass
