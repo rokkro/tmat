@@ -53,6 +53,7 @@ def mode():
         elif i == 3:
             print(3)
         elif i == 4:
+            '''
             mongo(s)
             if s.connected:
                 while True:
@@ -64,6 +65,7 @@ def mode():
                     print("COLLECTIONS")
                     for j in range(0,len(s.get_collections())):
                         print('[' + str(j) + '] - ' + s.get_collections()[j])
+             '''
         elif i == 5:
             print(5)
         elif i == 6:
