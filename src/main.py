@@ -12,7 +12,10 @@ class color:
     UNDERLINE = '\033[4m'
     END = '\033[0m'
 # http://stackoverflow.com/a/17303428 for pretty font coloring
-
+def mongo(s):
+    print(color.YELLOW)
+    s.mongo_connect() #CONNECTS TO MONGODB
+    print(color.END)
 def inputNum(msg, inpt_msg, lim, blank=False): #for typecasting to an int without a bazillion try..except's
     def reprint():
         print("\n" + msg)
@@ -36,33 +39,41 @@ def inputNum(msg, inpt_msg, lim, blank=False): #for typecasting to an int withou
     return None
 
 def mode():
+    s = twitter.Setup()
     while True:
         i = inputNum("[1] - Scrape tweets.\n"
               "[2] - Perform Sentiment Analysis.\n"
               "[3] - Data Presentation.\n"
-              "[4] - List Tweet Collections in DB.\n"
-              "[5] - Purge temporary data\n","*Enter option number, 'p' to re-print, or 'q' to quit.\n>>>",5)
+              "[4] - List Databases and Collections.\n"
+              "[5] - Purge temporary data\n","*Enter option number or: 'p' - re-print, 'q' - quit.\n>>>",5)
         if i == 1:
-            scrapeMode()
+            scrapeMode(s)
         elif i == 2:
             print(2)
         elif i == 3:
             print(3)
         elif i == 4:
-            print(4)
+            mongo(s)
+            if s.connected:
+                while True:
+                    print("DATABASES:")
+                    for j in range(0,len(s.dbname_list)):
+                        print('[' + str(j) + '] - ' + s.dbname_list[j] )
+                    inp = int(input("Enter DB number:"))
+                    s.db_name = s.dbname_list[inp]
+                    print("COLLECTIONS")
+                    for j in range(0,len(s.get_collections())):
+                        print('[' + str(j) + '] - ' + s.get_collections()[j])
         elif i == 5:
             print(5)
         elif i == 6:
             print(6)
 
-def scrapeMode():
-    s = twitter.Setup()
-    print(color.YELLOW)
-    s.mongo_connect() #CONNECTS TO MONGODB
-    print(color.END)
+def scrapeMode(s):
+    mongo(s)
     search = s.search()
     limit = s.limit()
-    
+
     while True:
         i = inputNum("[1] - Search = '" + search + "'\n[2] - Limit = " + str(limit) + "\n[3] - Temporary Collection = "+
             str(s.temp) + "\n[4] - Image Filtering and Analysis = " + str(s.img) + "\n[5] - Database Name = '" +
@@ -85,7 +96,7 @@ def scrapeMode():
                 s.temp = False
         elif i == 4: #IMAGE ANALYSIS
             s.img = True
-            
+
         elif i == 5: #DATABASE NAME
             inpt = input("Enter a new name for the database, currently '" + s.db_name + "'. Leave blank to cancel. "
                         "Spaces will be removed.\n>>>").replace(" ","")
@@ -124,9 +135,7 @@ def scrapeMode():
                 print("**",color.END)
 
         elif i == 7: #CONNECTION TO MONGODB
-            print(color.YELLOW)
-            s.mongo_connect()
-            print(color.END)
+            mongo(s)
 
 if __name__ == "__main__":
     try:
