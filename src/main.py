@@ -58,7 +58,7 @@ def mode():
 def scrapeMode():
     s = twitter.Setup()
     print(color.YELLOW)
-    #s.mongo_connect() #CONNECTS TO MONGODB
+    s.mongo_connect() #CONNECTS TO MONGODB
     print(color.END)
     search = s.search()
     limit = s.limit()
