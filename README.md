@@ -2,6 +2,8 @@ To use: insert correct Twitter keys into the `config.ini` file, then run `twitte
 
 Requires Python 3.x, tested on 3.5/3.6.
 
+--currently working on a CLI menu interface for simplicity--
+
 1. twitter streaming [x]  - queue system found to be unnecessary, on occasion a few tweets will be skipped to catch up
 2. Put in a DB (MongoDB) [semi-WIP]
 3. check duplicates [WIP]
