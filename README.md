@@ -13,3 +13,5 @@ Requires Python 3.x, tested on 3.5/3.6.
 7. create nice UI (HTML?, Qt/QML?, Excel?) to present data or something like that
 8. other stuff im compeltely forgetting
 9. Make this readme look better
+
+incomplete read error not fixed, trying to find a fix that wont require a lot of set up
