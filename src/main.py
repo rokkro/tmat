@@ -77,7 +77,7 @@ def scrapeMode(s):
     limit = s.limit()
 
     while True:
-        i = inputNum("[1] - Search = '" + search + "'\n[2] - Limit = " + str(limit) + "\n[3] - Temporary Collection = "+
+        i = inputNum("[1] - Search = '" + str(search).strip('\'[]\'') + "'\n[2] - Limit = " + str(limit) + "\n[3] - Temporary Collection = "+
             str(s.temp) + "\n[4] - Image Filtering and Analysis = " + str(s.img) + "\n[5] - Database Name = '" +
             s.db_name + "'\n[6] - Collection Name = '" + s.coll_name + "'\n[7] - MongoDB connected = " + color.YELLOW +
             str(s.connected) + color.END,"*Enter an option to change or press 'Enter' to begin if MongoDB is connected."
