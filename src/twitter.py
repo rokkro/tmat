@@ -1,3 +1,5 @@
+from http.client import IncompleteRead
+
 try:
     import tweepy, json, string, configparser, datetime
     from tweepy import Stream
@@ -5,6 +7,7 @@ try:
     from tweepy.streaming import StreamListener
     from pymongo import MongoClient
     from pymongo.errors import ConnectionFailure
+    import http
 
     config = configparser.ConfigParser()
     config.read('config.ini')
@@ -148,20 +151,26 @@ class Setup():
         return self.term
 
 
-def stream(search, lim, coll_name, db_name):  # search, limit, collection name
+def stream(search, lim, coll_name, db_name, temp=False):  # search, limit, collection name
     db = client[db_name]  # db
     tweetcoll = db[coll_name]  # collection
-    listener = Listener(lim, tweetcoll)
+    tweetcoll.insert_one({
+        "temp" : temp
+    })
     while True:
         try:
+            listener = Listener(lim, tweetcoll)
             print("Waiting for new tweets...")
             twitter_stream = Stream(auth, listener)
             twitter_stream.filter(track=search)
         except KeyboardInterrupt:
+            print("\n")
             break
-        except: #trying to catch incomplete read but failing horribly
+        except IncompleteRead:
+            print("Incomplete Read - Skipping to newer tweets.")
+        except Exception as e:
+            print("Error: ",e,"\nAttempting to continue...\n")
             continue
-
 
 if __name__ == '__main__':
     try:
@@ -170,7 +179,7 @@ if __name__ == '__main__':
         search = s.search()
         lim = s.limit()  # assigned to variables to make that print statement look nice
         print("Collection: " + s.coll_name + ", Database: " + s.db_name)
-        stream(search, lim, s.coll_name, s.db_name)  # remove limit() for unlimited if running this
+        stream(search, lim, s.coll_name, s.db_name, s.temp)  # remove limit() for unlimited if running this
     except BaseException as e:
         print(e)
     except KeyboardInterrupt:
