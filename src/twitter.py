@@ -121,16 +121,16 @@ class Setup():
         while True:
             self.lim = input("*Enter number of tweets to retrieve (integer). Leave blank for unlimited: ")
             try:
-                if self.lim == '':
-                    self.lim = None
+                if self.lim == '': #if no input
+                    self.lim = None #set limit to None/unlimited
                     break
-                self.lim = int(self.lim)
-                if self.lim < 0:
+                self.lim = int(self.lim) #typecast to int, filtering out invalid characters
+                if self.lim < 0: #no negative nums
                     continue
-                break
             except ValueError:
                 print("Invalid Input.")
                 continue
+            break
         return self.lim
 
     def search(self):
@@ -138,18 +138,18 @@ class Setup():
         tmp = [] #stores user input to filter out invalid responses
         while True:
             i = input("*Enter search term(s), separate multiple terms with '||' :").strip()
-            if i == '':
+            if i == '': #no input
                 print("You must enter at least one search term.")
                 continue
-            tmp = i.split('||')
+            tmp = i.split('||') #split into list by ||
             for i in range(len(tmp)):
-                tmp[i] = tmp[i].strip()
-                if tmp[i] == '':
+                tmp[i] = tmp[i].strip()  #remove outside spacing from all entries
+                if tmp[i] == '': #if blank after spaces removed, dont append to search term list
                     continue
                 self.term.append(tmp[i])
-            if len(self.term) == 0:
+            if len(self.term) == 0: #if nothing appended to search term list, restart.
                 continue
-            self.coll_name = self.term[0] + " - " + self.dt
+            self.coll_name = self.term[0] + " - " + self.dt #set initial collection name
             break
         return self.term
 
