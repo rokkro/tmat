@@ -5,7 +5,6 @@ class color:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
     END = '\033[0m'
-# http://stackoverflow.com/a/17303428 for pretty font
 
 def color_msg(function): #simple message coloring
     print(color.YELLOW)
