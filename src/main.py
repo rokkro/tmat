@@ -18,146 +18,128 @@ def color_msg(function): #simple message coloring
     function()
     print(color.END)
 
-class msg():
-    def __init__(self,msg,inptmsg,lim,blank=False):
-        self.msg = msg
-        self.inptmsg = inptmsg
-        self.lim = lim
-        self.blank = blank
-
-    def get_input(self):
-        while True:
-            i = input(color.BOLD + self.inptmsg + color.END)
-            if i == 'p':
-                self.print_opt()
-            elif i == 'q':
-                quit()
-            elif i == '' and self.blank:
-                break
-            try:
-                i = int(i)
-            except ValueError:
-                continue
-            if i > self.lim or i < 1:
-                continue
-            else:
-                return i
-        return None
-
-    def print_opt(self):
-        print(self.msg)
+def get_input(msg,inpt_msg,lim,blank=False):
+    while True:
+        print("\n" + len(inpt_msg) * '-')
+        print(msg)
+        print(len(inpt_msg) * '-')
+        i = input(color.BOLD + inpt_msg + color.END)
+        if i == 'q':
+            quit()
+        elif i == '' and blank:
+            break
+        try:
+            i = int(i)
+        except ValueError:
+            continue
+        if i > lim or i < 1:
+            continue
+        else:
+            return i
+    return None
 
 def mode():
-    m = msg("[1] - Scrape tweets.\n"
+    menu = {
+        1: scrapeMode,
+        2: exit,
+        3: exit,
+        4: exit,
+        5: exit,
+    }
+    while True:
+        i = get_input("[1] - Scrape tweets.\n"
               "[2] - Perform Sentiment Analysis.\n"
               "[3] - Data Presentation.\n"
               "[4] - List Databases and Collections.\n"
-              "[5] - Purge temporary data\n","*Enter option number or: [p] - re-print, [q] - quit.\n>>>",5)
-    m.print_opt()
-    s = twitter.Setup()
-    while True:
-        i = m.get_input()
-        if i == 1:
-            scrapeMode(s)
-        elif i == 2:
-            print(2)
-        elif i == 3:
-            print(3)
-        elif i == 4:
-            '''
-            mongo(s)
-            if s.connected:
-                while True:
-                    print("DATABASES:")
-                    for j in range(0,len(s.dbname_list)):
-                        print('[' + str(j) + '] - ' + s.dbname_list[j] )
-                    inp = int(input("Enter DB number:"))
-                    s.db_name = s.dbname_list[inp]
-                    print("COLLECTIONS")
-                    for j in range(0,len(s.get_collections())):
-                        print('[' + str(j) + '] - ' + s.get_collections()[j])
-             '''
-        elif i == 5:
-            print(5)
-        elif i == 6:
-            print(6)
+              "[5] - Purge temporary data","*Enter option number or [q] - quit.\n>>>",5)
+        menu[i]()
 
-def scrapeMode(s):
+def scrapeMode():
+    s = twitter.Setup()
     color_msg(s.mongo_connect)
     search = s.search()
     limit = s.limit()
-    m = msg("[1] - Search = '" + str(search).strip('\'[]\'') + "'\n[2] - Limit = " + str(limit) + "\n[3] - Temporary Collection = "+
+    while True:
+        i = get_input("[1] - Search = '" + str(s.term).strip('\'[]\'') + "'\n[2] - Limit = " + str(s.lim) + "\n[3] - Temporary Collection = "+
             str(s.temp) + "\n[4] - Image Filtering and Analysis = " + str(s.img) + "\n[5] - Database Name = '" +
             s.db_name + "'\n[6] - Collection Name = '" + s.coll_name + "'\n[7] - MongoDB connected = " + color.YELLOW +
-            str(s.connected) + color.END,"*Enter option number or: [Enter] - begin if MongoDB is connected, [p] - reprint, [q] - quit."
+            str(s.connected) + color.END,"*Enter option number or: [Enter] - begin if MongoDB is connected, [q] - quit."
             "\n>>>", 7, True)
-    m.print_opt()
-    while True:
-        i = m.get_input()
         if i == None and s.connected:
             twitter.stream(search, limit, s.coll_name, s.db_name)
             break
-        elif i == 1: #SEARCH
-            search = s.search()
-        elif i == 2: #SET LIMIT
-            limit = s.limit()
-        elif i == 3: #TEMP OR PERMANENT
-            
+
+        def tmp_mod():
             @color_msg
             def tmp_chng():
                 if s.temp == False:
-                    print("**Collection marked as Temporary.**")
+                    print("**Collection will be marked as Temporary.**")
                     s.temp = True
                 else:
-                    print("**Collection marked as Permanent.**")
+                    print("**Collection will be marked as Permanent.**")
                     s.temp = False
-                    
-        elif i == 4: #IMAGE ANALYSIS
-            s.img = True
 
-        elif i == 5: #DATABASE NAME
-            inpt = input("Enter a new name for the database, currently '" + s.db_name + "'. Leave blank to cancel. "
-                        "Spaces will be removed.\n>>>").replace(" ","")
-            if inpt == '' or inpt == s.db_name:
-                continue
-
-            @color_msg
-            def db_chng():
-                print("**Database changed from '" + s.db_name + "' to '" + inpt + "'.", end='')
-                s.db_name = inpt
-                if s.connected:
-                    if inpt in s.dbname_list:
-                        print("'" + inpt + "' already exists. New tweets will be added to existing.**")
-                    else:
-                        print("New database '" + inpt + "' will be created.**")
-                else:
-                    print("**")
-
-        elif i == 6: #COLLECTION NAME
-            inpt = input("Enter a new name for this collection, currently '" + s.coll_name +
-                "'. Leave blank to cancel.\nPut [dt] in name to insert date + time.\n>>>").strip()
-            if inpt == '' or inpt == s.coll_name: #If blank or collection name is same
-                continue
-            coll_old = s.coll_name #temp variable for print statement below
-
-            if '[dt]' in inpt: #inserting and replacing [dt] with date/time
-                s.coll_name = inpt.replace('[dt]',s.dt).strip()
+        def img(): #IMAGE ANALYSIS
+            if s.img:
+                s.img = False
             else:
-                s.coll_name = inpt
+                s.img = True
 
-            @color_msg
-            def coll_chng():
-                print( "**Collection changed from '" + coll_old + "' to '" + s.coll_name + "'.", end=' ')
-                if s.connected:
-                    if s.coll_name in s.get_collections():
-                        print("'" + s.coll_name + "' already exists. Tweets will be added to existing.**")
-                    else:
-                        print("New collection will be created.**")
+        def db_mod():
+            while True:
+                inpt = input("Enter a new name for the database, currently '" + s.db_name + "'. Leave blank to cancel. "
+                            "Spaces will be removed.\n>>>").replace(" ","")
+                if inpt == '' or inpt == s.db_name:
+                    break
+                @color_msg
+                def db_chng():
+                    print("Database changed from '" + s.db_name + "' to '" + inpt + "'.")
+                    s.db_name = inpt
+                    if s.connected:
+                        if inpt in s.dbname_list:
+                            print("'" + inpt + "' already exists. New tweets will be added to existing.",end='')
+                        else:
+                            print("New database '" + inpt + "' will be created.",end='')
+                break
+
+        def coll_mod(): #COLLECTION NAME
+            while True:
+                inpt = input("Enter a new name for this collection, currently '" + s.coll_name +
+                    "'. Leave blank to cancel.\nPut [dt] in name to insert date + time.\n>>>").strip()
+                if inpt == '' or inpt == s.coll_name: #If blank or collection name is same
+                    break
+                coll_old = s.coll_name #temp variable for print statement below
+
+                if '[dt]' in inpt: #inserting and replacing [dt] with date/time
+                    s.coll_name = inpt.replace('[dt]',s.dt).strip()
                 else:
-                    print("**")
+                    s.coll_name = inpt
+                @color_msg
+                def coll_chng():
+                    print( "Collection changed from '" + coll_old + "' to '" + s.coll_name + "'.")
+                    if s.connected:
+                        if s.coll_name in s.get_collections():
+                            print("'" + s.coll_name + "' already exists. New tweets will be added to existing.",end='')
+                        else:
+                            print("New collection will be created.",end='')
+                break
 
-        elif i == 7: #CONNECTION TO MONGODB
-            color_msg(s.mongo_connect)
+        def mongo():
+            color_msg(s.mongo_connect) #cant pass params through dict, kinda a workaround
+
+        menu = {
+            1: s.search,
+            2: s.limit,
+            3: tmp_mod,
+            4: img,
+            5: db_mod,
+            6: coll_mod,
+            7: mongo
+        }
+        try:
+            menu[i]()
+        except TypeError: #ignores error from calling mongo var above.
+            pass
 
 if __name__ == "__main__":
     try:
