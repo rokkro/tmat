@@ -1,5 +1,3 @@
-from http.client import IncompleteRead
-
 try:
     import tweepy, json, string, configparser, datetime
     from tweepy import Stream
@@ -7,7 +5,7 @@ try:
     from tweepy.streaming import StreamListener
     from pymongo import MongoClient
     from pymongo.errors import ConnectionFailure
-    import http
+    from http.client import IncompleteRead
 
     config = configparser.ConfigParser()
     config.read('config.ini')
@@ -139,14 +137,14 @@ class Setup():
     def search(self):
         self.term = []
         while True:
-            i = input("*Enter search term(s), enter blank when done:").strip()
+            i = input("*Enter search term(s), separate multiple terms with '||' :").strip()
             if i == '':
-                if len(self.term) == 0:
-                    print("You must have at least one search term.")
-                    continue
-                else:
-                    break
-            self.term.append(i)
+                print("You must enter at least one search term.")
+                continue
+            break
+        self.term = i.split('||')
+        for i in range(len(self.term)):
+            self.term[i] = self.term[i].strip()
         self.coll_name = self.term[0] + " - " + self.dt
         return self.term
 
