@@ -25,7 +25,6 @@ auth.set_access_token(atoken, asecret)
 api = tweepy.API(auth)
 client = None
 
-
 class Listener(StreamListener):
     def __init__(self, lim, tweetcoll):  # constructor
         self.count = 0
@@ -104,7 +103,7 @@ class Setup():
             client.close()
             self.connected = False
         else:
-            print("Connecting to MongoDB...")
+            print("Attempting connection to MongoDB...")
             try:
                 client = MongoClient()
                 self.dbname_list = client.database_names()
@@ -135,24 +134,30 @@ class Setup():
         return self.lim
 
     def search(self):
-        self.term = []
+        self.term = [] #contains actual search terms
+        tmp = [] #stores user input to filter out invalid responses
         while True:
             i = input("*Enter search term(s), separate multiple terms with '||' :").strip()
             if i == '':
                 print("You must enter at least one search term.")
                 continue
+            tmp = i.split('||')
+            for i in range(len(tmp)):
+                tmp[i] = tmp[i].strip()
+                if tmp[i] == '':
+                    continue
+                self.term.append(tmp[i])
+            if len(self.term) == 0:
+                continue
+            self.coll_name = self.term[0] + " - " + self.dt
             break
-        self.term = i.split('||')
-        for i in range(len(self.term)):
-            self.term[i] = self.term[i].strip()
-        self.coll_name = self.term[0] + " - " + self.dt
         return self.term
 
 
 def stream(search, lim, coll_name, db_name, temp=False):  # search, limit, collection name
     db = client[db_name]  # db
     tweetcoll = db[coll_name]  # collection
-    tweetcoll.insert_one({
+    tweetcoll.insert_one({ #insert document marking collection as temp/not temp
         "temp" : temp
     })
     while True:
@@ -177,8 +182,11 @@ if __name__ == '__main__':
         search = s.search()
         lim = s.limit()  # assigned to variables to make that print statement look nice
         print("Collection: " + s.coll_name + ", Database: " + s.db_name)
-        stream(search, lim, s.coll_name, s.db_name, s.temp)  # remove limit() for unlimited if running this
+        if s.connected:
+            stream(search, lim, s.coll_name, s.db_name, s.temp)  # remove limit() for unlimited if running this
+        else:
+            print("MongoDB not connected/running. Cannot stream.")
     except BaseException as e:
-        print(e)
+        print("Error:",e)
     except KeyboardInterrupt:
         pass
