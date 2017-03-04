@@ -56,7 +56,7 @@ def mode():
 
 def scrapeMode():
     s = twitter.Setup()
-    color_msg(s.mongo_connect)
+    color_msg(s.mongo_handler)
     search = s.search()
     limit = s.limit()
     while True:
@@ -125,7 +125,7 @@ def scrapeMode():
                 break
 
         def mongo():
-            color_msg(s.mongo_connect) #cant pass params through dict, kinda a workaround
+            color_msg(s.mongo_handler)
 
         menu = {
             1: s.search,
@@ -136,13 +136,25 @@ def scrapeMode():
             6: coll_mod,
             7: mongo
         }
-        try:
-            menu[i]()
-        except TypeError: #ignores error from calling mongo var above.
-            pass
+        menu[i]()
 
 if __name__ == "__main__":
     try:
         mode()
     except KeyboardInterrupt:
         pass
+
+    '''
+            #4:
+                #mongo(s)
+                if s.connected:
+                    while True:
+                        print("DATABASES:")
+                        for j in range(0,len(s.dbname_list)):
+                            print('[' + str(j) + '] - ' + s.dbname_list[j] )
+                        inp = int(input("Enter DB number:"))
+                        s.db_name = s.dbname_list[inp]
+                        print("COLLECTIONS")
+                        for j in range(0,len(s.get_collections())):
+                            print('[' + str(j) + '] - ' + s.get_collections()[j])
+    '''
