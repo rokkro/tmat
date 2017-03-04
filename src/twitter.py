@@ -173,7 +173,7 @@ def stream(search, lim, coll_name, db_name, temp=False):  # search, limit, colle
 if __name__ == '__main__':
     try:
         s = Setup()
-        s.mongo_connect()
+        s.mongo_handler()
         search = s.search()
         lim = s.limit()  # assigned to variables to make that print statement look nice
         print("Collection: " + s.coll_name + ", Database: " + s.db_name)
@@ -181,5 +181,4 @@ if __name__ == '__main__':
     except BaseException as e:
         print(e)
     except KeyboardInterrupt:
-        s.mongo_close()
         pass
