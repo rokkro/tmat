@@ -97,23 +97,23 @@ class Setup():
         self.connected = False
         self.dt = str(datetime.datetime.now())
 
-    def mongo_connect(self):
+    def mongo_handler(self):
         global client
-        print("Connecting to MongoDB...")
-        try:
-            client = MongoClient()
-            self.dbname_list = client.database_names()
-            print("Connection Succeeded!")
-            self.connected = True
-        except ConnectionFailure as e:
-            print("*** Error: MongoDB not connected:", e, "***")
-        except Exception as e:
-            print("*** Error:", e, "***")
-
-    def mongo_close(self):
         if self.connected:
+            print("Disconnected from MongoDB.")
             client.close()
             self.connected = False
+        else:
+            print("Connecting to MongoDB...")
+            try:
+                client = MongoClient()
+                self.dbname_list = client.database_names()
+                print("Connection Succeeded!")
+                self.connected = True
+            except ConnectionFailure as e:
+                print("Error: MongoDB not connected:", e)
+            except Exception as e:
+                print("Error:", e)
 
     def get_collections(self):
         return client[self.db_name].collection_names()
