@@ -143,18 +143,3 @@ if __name__ == "__main__":
         mode()
     except KeyboardInterrupt:
         pass
-
-    '''
-            #4:
-                #mongo(s)
-                if s.connected:
-                    while True:
-                        print("DATABASES:")
-                        for j in range(0,len(s.dbname_list)):
-                            print('[' + str(j) + '] - ' + s.dbname_list[j] )
-                        inp = int(input("Enter DB number:"))
-                        s.db_name = s.dbname_list[inp]
-                        print("COLLECTIONS")
-                        for j in range(0,len(s.get_collections())):
-                            print('[' + str(j) + '] - ' + s.get_collections()[j])
-    '''
