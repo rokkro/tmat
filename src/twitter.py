@@ -119,7 +119,7 @@ class Setup():
 
     def limit(self):
         while True:
-            self.lim = input("*Enter number of tweets to retrieve (integer). Leave blank for unlimited: ")
+            self.lim = input("*Enter number of tweets to retrieve. Leave blank for unlimited: ")
             try:
                 if self.lim == '': #if no input
                     self.lim = None #set limit to None/unlimited
