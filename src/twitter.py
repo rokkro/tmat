@@ -177,7 +177,7 @@ def stream(search, lim, coll_name, db_name, temp, similarity):  # search, limit,
             print("\n")
             break
         except IncompleteRead:
-            print("Incomplete Read - Skipping to newer tweets.")
+            print("Incomplete Read - Skipping to newer tweets.\n")
         except Exception as e:
             print("Error: ",e,"\nAttempting to continue...\n")
             continue
