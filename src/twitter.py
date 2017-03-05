@@ -6,6 +6,7 @@ try:
     from pymongo import MongoClient
     from pymongo.errors import ConnectionFailure
     from http.client import IncompleteRead
+    from difflib import SequenceMatcher
 
     config = configparser.ConfigParser()
     config.read('config.ini')
@@ -26,10 +27,11 @@ api = tweepy.API(auth)
 client = None
 
 class Listener(StreamListener):
-    def __init__(self, lim, tweetcoll):  # constructor
+    def __init__(self, lim, tweetcoll,similarity):  # constructor
         self.count = 0
         self.lim = lim
         self.tweetcoll = tweetcoll
+        self.similarity = similarity
 
     def on_data(self, data):
         if self.count == self.lim:
@@ -60,8 +62,13 @@ class Listener(StreamListener):
             cursorText = c['text'].translate(c['text'].maketrans('', '', string.punctuation)).replace(" ", "")
             datajText = dataj['text'].translate(dataj['text'].maketrans('', '', string.punctuation)).replace(" ", "")
             if cursorText == datajText:
-                # print(" STEXT: " + c['text'] + " DTEXT: " + datajText)
+                # print(" FIRST: " + c['text'] + " SECOND: " + dataj['text'])
                 print("\nDuplicate tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
+                return True
+            elif SequenceMatcher(None,cursorText,datajText).ratio() > self.similarity:
+                print("\n" + str(SequenceMatcher(None,cursorText,datajText).ratio() * 100) + "% similar existing"
+                    " tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
+                #print(" FIRST: " + c['text'] + " SECOND: " + dataj['text'])
                 return True
         return False  # if no duplicates found
 
@@ -87,7 +94,6 @@ class Listener(StreamListener):
         print("Streaming stopped.")
         quit()
 
-
 class Setup():
     def __init__(self):
         self.temp = False
@@ -95,6 +101,7 @@ class Setup():
         self.db_name = 'twitter'
         self.connected = False
         self.dt = str(datetime.datetime.now())
+        self.similarity = .55
 
     def mongo_handler(self):
         global client
@@ -154,7 +161,7 @@ class Setup():
         return self.term
 
 
-def stream(search, lim, coll_name, db_name, temp=False):  # search, limit, collection name
+def stream(search, lim, coll_name, db_name, temp, similarity):  # search, limit, collection name
     db = client[db_name]  # db
     tweetcoll = db[coll_name]  # collection
     tweetcoll.insert_one({ #insert document marking collection as temp/not temp
@@ -162,7 +169,7 @@ def stream(search, lim, coll_name, db_name, temp=False):  # search, limit, colle
     })
     while True:
         try:
-            listener = Listener(lim, tweetcoll)
+            listener = Listener(lim, tweetcoll,similarity)
             print("Waiting for new tweets...")
             twitter_stream = Stream(auth, listener)
             twitter_stream.filter(track=search)
@@ -183,7 +190,7 @@ if __name__ == '__main__':
         lim = s.limit()  # assigned to variables to make that print statement look nice
         print("Collection: " + s.coll_name + ", Database: " + s.db_name)
         if s.connected:
-            stream(search, lim, s.coll_name, s.db_name, s.temp)  # remove limit() for unlimited if running this
+            stream(search, lim, s.coll_name, s.db_name, s.temp,s.similarity)  # remove limit() for unlimited if running this
         else:
             print("MongoDB not connected/running. Cannot stream.")
     except BaseException as e:
