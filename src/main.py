@@ -13,6 +13,8 @@ def get_input(msg,inpt_msg,lim,blank=False):
         i = input(color.BOLD + inpt_msg + color.END)
         if i == 'q':
             quit()
+        elif i == 'r' and blank: 
+            return 'r'
         elif i == '' and blank:
             return None
         try:
@@ -53,10 +55,13 @@ def scrape_menu(): #menu for setting up tweet scraping
             "\n[3] - Temporary Collection = "+str(s.temp) + "\n[4] - Image Filtering and Analysis = " + str(s.img) +
             "\n[5] - Database Name = '" +s.db_name + "'\n[6] - Collection Name = '" + s.coll_name +
             "'\n[7] - MongoDB connected = " + color.YELLOW +str(s.connected) + color.END,
-            "*Enter option number or: [Enter] - begin if MongoDB is connected, [q] - quit.""\n>>>", 7, True)
+            "*Enter option number or: [Enter] - begin if MongoDB is connected, [r] - return.""\n>>>", 7, True)
         if selection == None and s.connected:
             twitter.stream(search, limit, s.coll_name, s.db_name)
             break
+
+        elif selection == 'r':
+            return
 
         elif selection == 1:
             s.search()
