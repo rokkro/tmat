@@ -62,7 +62,7 @@ class Listener(StreamListener):
             cursorText = c['text'].translate(c['text'].maketrans('', '', string.punctuation)).replace(" ", "")
             datajText = dataj['text'].translate(dataj['text'].maketrans('', '', string.punctuation)).replace(" ", "")
             if cursorText == datajText:
-                # print(" FIRST: " + c['text'] + " SECOND: " + dataj['text'])
+                #print(" FIRST: " + c['text'] + " SECOND: " + dataj['text'])
                 #print("\nDuplicate tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
                 return True
             elif SequenceMatcher(None,cursorText,datajText).ratio() > self.similarity:
@@ -190,7 +190,7 @@ if __name__ == '__main__':
         lim = s.limit()  # assigned to variables to make that print statement look nice
         print("Collection: " + s.coll_name + ", Database: " + s.db_name)
         if s.connected:
-            stream(search, lim, s.coll_name, s.db_name, s.temp,s.similarity)  # remove limit() for unlimited if running this
+            stream(search, lim, s.coll_name, s.db_name, s.temp,s.similarity) 
         else:
             print("MongoDB not connected/running. Cannot stream.")
     except BaseException as e:
