@@ -122,11 +122,10 @@ def scrape_menu(): #menu for setting up tweet scraping
                         print("New collection will be created.")
                 print(color.END,end='')
                 break
-                
         elif selection == 7:
             while True:
-                inpt = input("Enter a new similarity threshold - 0.0 to 1.0. Greater value = filter out greater similarity."
-                             " Leave blank to cancel.\n>>>")
+                inpt = input("Enter a new similarity threshold - 0.0 to 1.0. Higher value = filter out "
+                             "higher similarity. Leave blank to cancel.\n>>>")
                 if inpt == '' or inpt == s.similarity:
                     break
                 try:
