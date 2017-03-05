@@ -13,7 +13,7 @@ def get_input(msg,inpt_msg,lim,blank=False):
         i = input(color.BOLD + inpt_msg + color.END)
         if i == 'q':
             quit()
-        elif i == 'r' and blank: 
+        elif i == 'r' and blank:
             return 'r'
         elif i == '' and blank:
             return None
@@ -72,14 +72,14 @@ def scrape_menu(): #menu for setting up tweet scraping
         elif selection == 3:
             print(color.YELLOW,end='')
             if s.temp == False:
-                print("**Collection will be marked as Temporary.**")
+                print("**Collection will be marked as Temporary.**",end='')
                 s.temp = True
             else:
-                print("**Collection will be marked as Permanent.**")
+                print("**Collection will be marked as Permanent.**",end='')
                 s.temp = False
             print(color.END,end='')
 
-        elif selection == 4:
+        elif selection == 4: #not yet implemented
             if s.img:
                 s.img = False
             else:
@@ -91,7 +91,7 @@ def scrape_menu(): #menu for setting up tweet scraping
                     "'. Leave blank to cancel. ""Spaces will be removed.\n>>>").replace(" ","")
                 if inpt == '' or inpt == s.db_name:
                     break
-                print(color.YELLOW,"Database changed from '" + s.db_name + "' to '" + inpt + "'.")
+                print(color.YELLOW,"Database changed from '" + s.db_name + "' to '" + inpt + "'.",end='')
                 s.db_name = inpt
                 if s.connected:
                     if inpt in s.dbname_list:
@@ -111,7 +111,7 @@ def scrape_menu(): #menu for setting up tweet scraping
                     s.coll_name = inpt.replace('[dt]',s.dt).strip()
                 else:
                     s.coll_name = inpt
-                print(color.YELLOW,"Collection changed to '" + s.coll_name + "'.")
+                print(color.YELLOW,"Collection changed to '" + s.coll_name + "'.",end='')
                 if s.connected:
                     if s.coll_name in s.get_collections():
                         print("'" + s.coll_name + "' already exists. New tweets will be added to existing.",end='')
