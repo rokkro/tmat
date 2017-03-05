@@ -75,10 +75,10 @@ def scrape_menu(): #menu for setting up tweet scraping
         elif selection == 3:
             print(color.YELLOW,end='')
             if s.temp == False:
-                print("**Collection will be marked as Temporary.**")
+                print("Collection will be marked as Temporary.")
                 s.temp = True
             else:
-                print("**Collection will be marked as Permanent.**")
+                print("Collection will be marked as Permanent.")
                 s.temp = False
             print(color.END,end='')
 
@@ -90,8 +90,8 @@ def scrape_menu(): #menu for setting up tweet scraping
 
         elif selection == 5:
             while True:
-                inpt = input("Enter a new name for the database, currently '" + s.db_name +
-                    "'. Leave blank to cancel. ""Spaces will be removed.\n>>>").replace(" ","")
+                inpt = input(color.BOLD + "Enter a new name for the database, currently '" + s.db_name +
+                    "'. Leave blank to cancel. ""Spaces will be removed.\n>>>" + color.END).replace(" ","")
                 if inpt == '' or inpt == s.db_name:
                     break
                 print(color.YELLOW + "Database changed from '" + s.db_name + "' to '" + inpt + "'.")
@@ -106,8 +106,8 @@ def scrape_menu(): #menu for setting up tweet scraping
 
         elif selection == 6:
             while True:
-                inpt = input("Enter a new name for this collection, currently '" + s.coll_name +
-                    "'. Leave blank to cancel.\nPut [dt] in name to insert date + time.\n>>>").strip()
+                inpt = input(color.BOLD + "Enter a new name for this collection, currently '" + s.coll_name +
+                    "'. Leave blank to cancel.\nPut [dt] in name to insert date + time.\n>>>" + color.END).strip()
                 if inpt == '' or inpt == s.coll_name: #If blank or collection name is same
                     break
                 if '[dt]' in inpt: #inserting and replacing [dt] with date/time
@@ -122,10 +122,11 @@ def scrape_menu(): #menu for setting up tweet scraping
                         print("New collection will be created.")
                 print(color.END,end='')
                 break
+                
         elif selection == 7:
             while True:
-                inpt = input("Enter a new similarity threshold - 0.0 to 1.0. Higher value = filter out "
-                             "higher similarity. Leave blank to cancel.\n>>>")
+                inpt = input(color.BOLD + "Enter a new similarity threshold - 0.0 to 1.0. Higher value = filter out "
+                             "higher similarity. Leave blank to cancel.\n>>>"+ color.END)
                 if inpt == '' or inpt == s.similarity:
                     break
                 try:
