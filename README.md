@@ -1,4 +1,4 @@
-To use: insert correct Twitter keys into the `config.ini` file (no quotation marks around keys necessary), then run `main.py`, which is a (WIP) menu interface.
+To use: insert correct Twitter keys into the `config.ini` file (no quotation marks around keys necessary), then run `main.py`, which is a (WIP) menu interface. Make sure all files are in the same directory.
 
 Requires Python 3.x, tested on 3.5/3.6.
 
