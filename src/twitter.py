@@ -1,10 +1,9 @@
 try:
+    import mongo
     import tweepy, json, string, configparser, datetime
     from tweepy import Stream
     from tweepy import OAuthHandler
     from tweepy.streaming import StreamListener
-    from pymongo import MongoClient
-    from pymongo.errors import ConnectionFailure
     from http.client import IncompleteRead
     from difflib import SequenceMatcher
 
@@ -24,7 +23,6 @@ except ImportError as e:
 auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
 api = tweepy.API(auth)
-client = None
 
 class Listener(StreamListener):
     def __init__(self, lim, tweetcoll,similarity):  # constructor
@@ -51,9 +49,6 @@ class Listener(StreamListener):
                 return True
             except Exception as e:
                 print("\nError in on_data: ", e, "\nStreaming stopped.")
-                quit()
-            except ConnectionFailure as e:
-                print("Error: MongoDB connection refused, verify MongoDB is running:", e)
                 quit()
 
     def duplicate_find(self, dataj):
@@ -94,35 +89,20 @@ class Listener(StreamListener):
         print("Streaming stopped.")
         quit()
 
+
 class Setup():
     def __init__(self):
         self.temp = False
         self.img = False
         self.db_name = 'twitter'
-        self.connected = False
         self.dt = str(datetime.datetime.now())
         self.similarity = .55
 
-    def mongo_handler(self):
-        global client
-        if self.connected:
-            print("Disconnected from MongoDB.")
-            client.close()
-            self.connected = False
-        else:
-            print("Attempting connection to MongoDB...")
-            try:
-                client = MongoClient()
-                self.dbname_list = client.database_names()
-                print("Connection Succeeded!")
-                self.connected = True
-            except ConnectionFailure as e:
-                print("Error: MongoDB not connected:", e)
-            except Exception as e:
-                print("Error:", e)
+    def get_dbnames(self):
+        return mongo.client.database_names()
 
     def get_collections(self):
-        return client[self.db_name].collection_names()
+        return mongo.client[self.db_name].collection_names()
 
     def limit(self):
         while True:
@@ -162,7 +142,7 @@ class Setup():
 
 
 def stream(search, lim, coll_name, db_name, temp, similarity):  # search, limit, collection name
-    db = client[db_name]  # db
+    db = mongo.client[db_name]  # db
     tweetcoll = db[coll_name]  # collection
     tweetcoll.insert_one({ #insert document marking collection as temp/not temp
         "temp" : temp
@@ -185,12 +165,12 @@ def stream(search, lim, coll_name, db_name, temp, similarity):  # search, limit,
 if __name__ == '__main__':
     try:
         s = Setup()
-        s.mongo_handler()
+        mongo.mongo_handler()
         search = s.search()
         lim = s.limit()  # assigned to variables to make that print statement look nice
         print("Collection: " + s.coll_name + ", Database: " + s.db_name)
-        if s.connected:
-            stream(search, lim, s.coll_name, s.db_name, s.temp,s.similarity) 
+        if mongo.connected:
+            stream(search, lim, s.coll_name, s.db_name, s.temp,s.similarity)
         else:
             print("MongoDB not connected/running. Cannot stream.")
     except BaseException as e:
