@@ -90,7 +90,7 @@ class Listener(StreamListener):
         quit()
 
 
-class Setup():
+class Setup(): #settings and setup for tweet scraping
     def __init__(self):
         self.temp = False
         self.img = False
@@ -142,12 +142,12 @@ class Setup():
 
 
 def stream(search, lim, coll_name, db_name, temp, similarity):  # search, limit, collection name
-    db = mongo.client[db_name]  # db
-    tweetcoll = db[coll_name]  # collection
+    db = mongo.client[db_name]  # initialize db
+    tweetcoll = db[coll_name]  # initialize collection
     tweetcoll.insert_one({ #insert document marking collection as temp/not temp
         "temp" : temp
     })
-    while True:
+    while True: #start streaming
         try:
             listener = Listener(lim, tweetcoll,similarity)
             print("Waiting for new tweets...")
