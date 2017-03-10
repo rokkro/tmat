@@ -97,6 +97,7 @@ class Setup(): #settings and setup for tweet scraping
         self.db_name = 'twitter'
         self.dt = str(datetime.datetime.now())
         self.similarity = .55
+        self.language = ['en']
 
     def get_dbnames(self):
         return mongo.client.database_names()
@@ -141,10 +142,10 @@ class Setup(): #settings and setup for tweet scraping
         return self.term
 
 
-def stream(search, lim, coll_name, db_name, temp, similarity):  # search, limit, collection name
+def stream(search, lim, coll_name, db_name, temp, similarity,lang):  # search, limit, collection name
     db = mongo.client[db_name]  # initialize db
     tweetcoll = db[coll_name]  # initialize collection
-    tweetcoll.insert_one({ #insert document marking collection as temp/not temp
+    tweetcoll.insert_one({ #This creates a coll even if no tweets found. I may want to change this. Marks as tmp or not
         "temp" : temp
     })
     while True: #start streaming
@@ -152,7 +153,7 @@ def stream(search, lim, coll_name, db_name, temp, similarity):  # search, limit,
             listener = Listener(lim, tweetcoll,similarity)
             print("Waiting for new tweets...")
             twitter_stream = Stream(auth, listener)
-            twitter_stream.filter(track=search)
+            twitter_stream.filter(track=search, languages=lang)
         except KeyboardInterrupt:
             print("\n")
             break
@@ -169,7 +170,7 @@ if __name__ == '__main__':
         search = s.search()
         print("Collection: " + s.coll_name + ", Database: " + s.db_name)
         if mongo.connected:
-            stream(search, s.limit(), s.coll_name, s.db_name, s.temp,s.similarity)
+            stream(search, s.limit(), s.coll_name, s.db_name, s.temp,s.similarity,s.language)
         else:
             print("MongoDB not connected/running. Cannot stream.")
     except BaseException as e:
