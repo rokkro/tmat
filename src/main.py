@@ -5,7 +5,7 @@ class color:
     BOLD = '\033[1m'
     END = '\033[0m'
 
-def get_input(msg, inpt_msg, lim, blank=False):
+def get_input(msg, inpt_msg, lim):
     while True:
         print(len(inpt_msg) * '-')
         print(msg)
@@ -13,10 +13,8 @@ def get_input(msg, inpt_msg, lim, blank=False):
         i = input(color.BOLD + inpt_msg + color.END)
         if i == 'q':
             quit()
-        elif i == 'r' and blank:
-            return 'r'
-        elif i == '' and blank:
-            return None
+        elif i == 'r' or '':
+            return i
         try:
             i = int(i)
         except ValueError:
@@ -27,39 +25,39 @@ def get_input(msg, inpt_msg, lim, blank=False):
             return i
 
 def main_menu():
+    print(color.YELLOW, end='')
+    mongo.mongo_handler()
+    print(color.END, end='')
     menu = {
         1: scrape_menu,
         2: exit,
         3: exit,
         4: exit,
         5: exit,
+        'r': exit
     }
     while True:
         i = get_input("[1] - Scrape tweets.\n"
-                      "[2] - Perform Sentiment Analysis.\n"
-                      "[3] - Data Presentation.\n"
-                      "[4] - List Databases and Collections.\n"
-                      "[5] - Purge temporary data", "*Enter option number or [q] - quit.\n>>>", 5)
+          "[2] - Perform Sentiment Analysis.\n"
+          "[3] - Data Presentation.\n"
+          "[4] - List Databases and Collections.\n"
+          "[5] - Purge temporary data", "*Enter option number or [q] - quit.\n>>>", 5)
         menu[i]()
 
 
 ########################
 def scrape_menu():  # menu for setting up tweet scraping
     s = twitter.Setup()
-    print(color.YELLOW, end='')
-    mongo.mongo_handler()
-    print(color.END, end='')
     search = s.search()
     limit = s.limit()
     while True:
         selection = get_input("[1] - Search = '" + str(s.term).strip('\'[]\'') + "'\n[2] - Limit = " + str(s.lim) +
-                              "\n[3] - Temporary Collection = " + str(
+            "\n[3] - Temporary Collection = " + str(
             s.temp) + "\n[4] - Image Filtering and Analysis = " + str(s.img) +
-                              "\n[5] - Database Name = '" + s.db_name + "'\n[6] - Collection Name = '" + s.coll_name +
-                              "'\n[7] - Tweet Similarity Threshold = " + str(s.similarity) +
-                              "\n[8] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
-                              "*Enter option number or: [Enter] - begin if MongoDB is connected, [r] - return.""\n>>>",
-                              8, True)
+            "\n[5] - Database Name = '" + s.db_name + "'\n[6] - Collection Name = '" + s.coll_name +
+            "'\n[7] - Tweet Similarity Threshold = " + str(s.similarity) +
+            "\n[8] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
+            "*Enter option number or: [Enter] - begin if MongoDB is connected, [r] - return.""\n>>>",8)
         if selection == None and mongo.connected:
             twitter.stream(search, limit, s.coll_name, s.db_name, s.temp, s.similarity)
             break
