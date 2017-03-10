@@ -167,10 +167,9 @@ if __name__ == '__main__':
         s = Setup()
         mongo.mongo_handler()
         search = s.search()
-        lim = s.limit()  # assigned to variables to make that print statement look nice
         print("Collection: " + s.coll_name + ", Database: " + s.db_name)
         if mongo.connected:
-            stream(search, lim, s.coll_name, s.db_name, s.temp,s.similarity)
+            stream(search, s.limit(), s.coll_name, s.db_name, s.temp,s.similarity)
         else:
             print("MongoDB not connected/running. Cannot stream.")
     except BaseException as e:
