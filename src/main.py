@@ -13,7 +13,7 @@ def get_input(msg, inpt_msg, lim):
         i = input(color.BOLD + inpt_msg + color.END)
         if i == 'q':
             quit()
-        elif i == 'r' or '':
+        elif i == 'r' or i == '':
             return i
         try:
             i = int(i)
@@ -34,7 +34,6 @@ def main_menu():
         3: exit,
         4: exit,
         5: exit,
-        'r': exit
     }
     while True:
         i = get_input("[1] - Scrape tweets.\n"
@@ -42,8 +41,10 @@ def main_menu():
           "[3] - Data Presentation.\n"
           "[4] - List Databases and Collections.\n"
           "[5] - Purge temporary data", "*Enter option number or [q] - quit.\n>>>", 5)
-        menu[i]()
-
+        try:
+            menu[i]()
+        except KeyError:
+            pass
 
 ########################
 def scrape_menu():  # menu for setting up tweet scraping
@@ -58,7 +59,7 @@ def scrape_menu():  # menu for setting up tweet scraping
             "'\n[7] - Tweet Similarity Threshold = " + str(s.similarity) +
             "\n[8] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
             "*Enter option number or: [Enter] - begin if MongoDB is connected, [r] - return.""\n>>>",8)
-        if selection == None and mongo.connected:
+        if selection == '' and mongo.connected:
             twitter.stream(search, limit, s.coll_name, s.db_name, s.temp, s.similarity)
             break
 
