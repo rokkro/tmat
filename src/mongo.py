@@ -14,7 +14,7 @@ def mongo_handler():
     else:
         print("Attempting connection to MongoDB...")
         try:
-            client = MongoClient(serverSelectionTimeoutMS=30)
+            client = MongoClient(serverSelectionTimeoutMS=30) #may want to change timeout if not localhost
             print("Connection Succeeded!")
             connected = True
         except (ConnectionFailure, KeyboardInterrupt) as e:
