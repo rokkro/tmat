@@ -57,10 +57,11 @@ def scrape_menu():  # menu for setting up tweet scraping
             s.temp) + "\n[4] - Image Filtering and Analysis = " + str(s.img) +
             "\n[5] - Database Name = '" + s.db_name + "'\n[6] - Collection Name = '" + s.coll_name +
             "'\n[7] - Tweet Similarity Threshold = " + str(s.similarity) +
-            "\n[8] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
+            "\n[8] - Languages = " + str(s.language).strip('[]') +
+            "\n[9] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
             "*Enter option number or: [Enter] - begin if MongoDB is connected, [r] - return.""\n>>>",8)
         if selection == '' and mongo.connected:
-            twitter.stream(search, limit, s.coll_name, s.db_name, s.temp, s.similarity)
+            twitter.stream(search, limit, s.coll_name, s.db_name, s.temp, s.similarity,s.language)
             break
 
         elif selection == 'r':
@@ -144,9 +145,25 @@ def scrape_menu():  # menu for setting up tweet scraping
                     continue
 
         elif selection == 8:
+            langs = ['en','ar','bn','cs','da','de','el','es','fa','fi','fil','fr','he','hi','hu','id','it',
+                     'ja','ko','msa','nl','no','pl','pt','ro','ru','sv','th','tr','uk','ur','vl','zh-cn','zh-tw']
+            inpt = input(color.BOLD + "Enter a comma separated list of language codes. "
+                "https://dev.twitter.com/web/overview/languages\n>>>").replace(" ",'').split(',')
+            if inpt == '':
+                break
+            tmp = []
+            for i in inpt:
+                if i in langs and i not in tmp:
+                    tmp.append(i)
+            if len(tmp) >=1:
+                print(color.YELLOW + "Accepted languages: " + str(tmp).strip("[]") + "." + color.END)
+                s.language = tmp
+
+        elif selection == 9:
             print(color.YELLOW, end='')
             mongo.mongo_handler()
             print(color.END, end='')
+
 ########################
 
 if __name__ == "__main__":
