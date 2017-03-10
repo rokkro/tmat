@@ -9,14 +9,15 @@ def mongo_handler():
     if connected:
         print("Disconnected from MongoDB.")
         client.close()
+        client = None
         connected = False
     else:
         print("Attempting connection to MongoDB...")
         try:
-            client = MongoClient()
+            client = MongoClient(serverSelectionTimeoutMS=30)
             print("Connection Succeeded!")
             connected = True
-        except ConnectionFailure as e:
+        except (ConnectionFailure, KeyboardInterrupt) as e:
             print("Error: MongoDB not connected:", e)
         except Exception as e:
             print("Error:", e)
