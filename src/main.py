@@ -105,7 +105,7 @@ def scrape_menu():  # menu for setting up tweet scraping
         elif selection == 5:
             while True:
                 inpt = input(color.BOLD + "Enter a new name for this collection, currently '" + s.coll_name +
-                    "'. Leave blank to cancel.\nPut [dt] in name to insert date + time.\n>>>" + color.END).strip()
+                    "'. Leave blank to cancel.\nPut '[dt]' in name to insert date + time.\n>>>" + color.END).strip()
                 if inpt == '' or inpt == s.coll_name:  # If blank or collection name is same
                     break
                 if '[dt]' in inpt:  # inserting and replacing [dt] with date/time
@@ -158,7 +158,6 @@ def scrape_menu():  # menu for setting up tweet scraping
             print(color.YELLOW, end='')
             mongo.mongo_handler()
             print(color.END, end='')
-
 ########################
 
 if __name__ == "__main__":
