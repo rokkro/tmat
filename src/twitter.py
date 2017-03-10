@@ -67,8 +67,8 @@ class Listener(StreamListener):
                 return True
         return False  # if no duplicates found
 
-    def json_filter(self, dataj):  # not a superclass method. Removes certain tweets
-        try:
+    def json_filter(self, dataj):  #removes certain tweets
+        try:    #'created_at' exists in some weird broken tweets
             if "created_at" not in dataj or "retweeted_status" in dataj or \
                             "quoted_status" in dataj or dataj["in_reply_to_user_id"] != None:
                 return False
