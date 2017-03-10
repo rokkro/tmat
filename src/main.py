@@ -34,13 +34,15 @@ def main_menu():
         3: exit,
         4: exit,
         5: exit,
+        6: exit,
     }
     while True:
         i = get_input("[1] - Scrape tweets.\n"
           "[2] - Perform Sentiment Analysis.\n"
-          "[3] - Data Presentation.\n"
-          "[4] - List Databases and Collections.\n"
-          "[5] - Purge temporary data", "*Enter option number or [q] - quit.\n>>>", 5)
+          "[3] - Perform Image Analysis.\n"
+          "[4] - Data Presentation.\n"
+          "[5] - List Databases and Collections.\n"
+          "[6] - Purge temporary data", "*Enter option number or [q] - quit.\n>>>", 5)
         try:
             menu[i]()
         except KeyError:
@@ -53,12 +55,11 @@ def scrape_menu():  # menu for setting up tweet scraping
     limit = s.limit()
     while True:
         selection = get_input("[1] - Search = '" + str(s.term).strip('\'[]\'') + "'\n[2] - Limit = " + str(s.lim) +
-            "\n[3] - Temporary Collection = " + str(
-            s.temp) + "\n[4] - Image Filtering and Analysis = " + str(s.img) +
-            "\n[5] - Database Name = '" + s.db_name + "'\n[6] - Collection Name = '" + s.coll_name +
-            "'\n[7] - Tweet Similarity Threshold = " + str(s.similarity) +
-            "\n[8] - Languages = " + str(s.language).strip('[]') +
-            "\n[9] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
+            "\n[3] - Temporary Collection = " + str(s.temp) +
+            "\n[4] - Database Name = '" + s.db_name + "'\n[5] - Collection Name = '" + s.coll_name +
+            "'\n[6] - Tweet Similarity Threshold = " + str(s.similarity) +
+            "\n[7] - Languages = " + str(s.language).strip('[]') +
+            "\n[8] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
             "*Enter option number or: [Enter] - begin if MongoDB is connected, [r] - return.""\n>>>",8)
         if selection == '' and mongo.connected:
             twitter.stream(search, limit, s.coll_name, s.db_name, s.temp, s.similarity,s.language)
@@ -85,13 +86,7 @@ def scrape_menu():  # menu for setting up tweet scraping
                 s.temp = False
             print(color.END, end='')
 
-        elif selection == 4:  # not yet implemented
-            if s.img:
-                s.img = False
-            else:
-                s.img = True
-
-        elif selection == 5:
+        elif selection == 4:
             while True:
                 inpt = input(color.BOLD + "Enter a new name for the database, currently '" + s.db_name +
                     "'. Leave blank to cancel. ""Spaces will be removed.\n>>>" + color.END).replace(" ", "")
@@ -107,7 +102,7 @@ def scrape_menu():  # menu for setting up tweet scraping
                 print(color.END, end='')
                 break
 
-        elif selection == 6:
+        elif selection == 5:
             while True:
                 inpt = input(color.BOLD + "Enter a new name for this collection, currently '" + s.coll_name +
                     "'. Leave blank to cancel.\nPut [dt] in name to insert date + time.\n>>>" + color.END).strip()
@@ -126,7 +121,7 @@ def scrape_menu():  # menu for setting up tweet scraping
                 print(color.END, end='')
                 break
 
-        elif selection == 7:
+        elif selection == 6:
             while True:
                 inpt = input(color.BOLD + "Enter a new similarity threshold - 0.0 to 1.0. Higher value = filter out "
                     "higher similarity. Leave blank to cancel.\n>>>" + color.END)
@@ -144,7 +139,7 @@ def scrape_menu():  # menu for setting up tweet scraping
                     print("Invalid Input.")
                     continue
 
-        elif selection == 8:
+        elif selection == 7:
             langs = ['en','ar','bn','cs','da','de','el','es','fa','fi','fil','fr','he','hi','hu','id','it',
                      'ja','ko','msa','nl','no','pl','pt','ro','ru','sv','th','tr','uk','ur','vl','zh-cn','zh-tw']
             inpt = input(color.BOLD + "Enter a comma separated list of language codes. "
@@ -159,7 +154,7 @@ def scrape_menu():  # menu for setting up tweet scraping
                 print(color.YELLOW + "Accepted languages: " + str(tmp).strip("[]") + "." + color.END)
                 s.language = tmp
 
-        elif selection == 9:
+        elif selection == 8:
             print(color.YELLOW, end='')
             mongo.mongo_handler()
             print(color.END, end='')
