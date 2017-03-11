@@ -96,11 +96,8 @@ class Setup(): #settings and setup for tweet scraping
         self.img = False
         self.db_name = 'twitter'
         self.dt = str(datetime.datetime.now())
-        self.similarity = .55
-        self.language = ['en']
-
-    def get_dbnames(self):
-        return mongo.client.database_names()
+        self.sim = .55
+        self.lang = ['en']
 
     def get_collections(self):
         return mongo.client[self.db_name].collection_names()
@@ -170,7 +167,7 @@ if __name__ == '__main__':
         search = s.search()
         print("Collection: " + s.coll_name + ", Database: " + s.db_name)
         if mongo.connected:
-            stream(search, s.limit(), s.coll_name, s.db_name, s.temp,s.similarity,s.language)
+            stream(search, s.limit(), s.coll_name, s.db_name, s.temp, s.sim, s.lang)
         else:
             print("MongoDB not connected/running. Cannot stream.")
     except BaseException as e:
