@@ -15,9 +15,13 @@ def mongo_handler():
         print("Attempting connection to MongoDB...")
         try:
             client = MongoClient(serverSelectionTimeoutMS=30) #may want to change timeout if not localhost
+            client.server_info() #forces connection verification
             print("Connection Succeeded!")
             connected = True
         except (ConnectionFailure, KeyboardInterrupt) as e:
             print("Error: MongoDB not connected:", e)
         except Exception as e:
             print("Error:", e)
+
+def get_dbnames():
+    return client.database_names()
