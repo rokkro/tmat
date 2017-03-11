@@ -57,26 +57,27 @@ def scrape_menu():  # menu for setting up tweet scraping
         selection = get_input("[1] - Search = '" + str(s.term).strip('\'[]\'') + "'\n[2] - Limit = " + str(s.lim) +
             "\n[3] - Temporary Collection = " + str(s.temp) +
             "\n[4] - Database Name = '" + s.db_name + "'\n[5] - Collection Name = '" + s.coll_name +
-            "'\n[6] - Tweet Similarity Threshold = " + str(s.similarity) +
-            "\n[7] - Languages = " + str(s.language).strip('[]') +
+            "'\n[6] - Tweet Similarity Threshold = " + str(s.sim) +
+            "\n[7] - Languages = " + str(s.lang).strip('[]') +
             "\n[8] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
-            "*Enter option number or: [Enter] - begin if MongoDB is connected, [r] - return.""\n>>>",8)
+            "*Enter option number or: [Enter] - begin if MongoDB is connected, [r] - return.""\n>>>", 8)
+
         if selection == '' and mongo.connected:
-            twitter.stream(search, limit, s.coll_name, s.db_name, s.temp, s.similarity,s.language)
+            twitter.stream(search, limit, s.coll_name, s.db_name, s.temp, s.sim, s.lang)
             break
 
         elif selection == 'r':
             return
 
-        elif selection == 1:
+        def search_sub():
             s.search()
             print(color.YELLOW + "Search changed to '" + str(s.term).strip('\'[]\'') + "'." + color.END)
 
-        elif selection == 2:
+        def lim_sub():
             s.limit()
             print(color.YELLOW + "Limit changed to " + str(s.lim) + "." + color.END)
 
-        elif selection == 3:
+        def tmp_sub():
             print(color.YELLOW, end='')
             if s.temp == False:
                 print("Collection will be marked as Temporary.")
@@ -86,7 +87,7 @@ def scrape_menu():  # menu for setting up tweet scraping
                 s.temp = False
             print(color.END, end='')
 
-        elif selection == 4:
+        def db_sub():
             while True:
                 inpt = input(color.BOLD + "Enter a new name for the database, currently '" + s.db_name +
                     "'. Leave blank to cancel. ""Spaces will be removed.\n>>>" + color.END).replace(" ", "")
@@ -95,14 +96,14 @@ def scrape_menu():  # menu for setting up tweet scraping
                 print(color.YELLOW + "Database changed from '" + s.db_name + "' to '" + inpt + "'.")
                 s.db_name = inpt
                 if mongo.connected:
-                    if inpt in s.get_dbnames():
+                    if inpt in mongo.get_dbnames():
                         print("'" + inpt + "' already exists. New tweets will be added to existing.")
                     else:
                         print("New database '" + inpt + "' will be created.")
                 print(color.END, end='')
                 break
 
-        elif selection == 5:
+        def coll_sub():
             while True:
                 inpt = input(color.BOLD + "Enter a new name for this collection, currently '" + s.coll_name +
                     "'. Leave blank to cancel.\nPut '[dt]' in name to insert date + time.\n>>>" + color.END).strip()
@@ -121,43 +122,55 @@ def scrape_menu():  # menu for setting up tweet scraping
                 print(color.END, end='')
                 break
 
-        elif selection == 6:
+        def sim_sub():
             while True:
                 inpt = input(color.BOLD + "Enter a new similarity threshold - 0.0 to 1.0. Higher value = filter out "
                     "higher similarity. Leave blank to cancel.\n>>>" + color.END)
-                if inpt == '' or inpt == s.similarity:
+                if inpt == '' or inpt == s.sim:
                     break
                 try:
                     inpt = float(inpt)
                     if inpt <= 1.0 and inpt >= 0:
-                        s.similarity = inpt
+                        s.sim = inpt
                     else:
                         raise ValueError
-                    print(color.YELLOW + "Similarity threshold set to " + str(s.similarity) + "." + color.END)
+                    print(color.YELLOW + "Similarity threshold set to " + str(s.sim) + "." + color.END)
                     break
                 except ValueError:
                     print("Invalid Input.")
                     continue
 
-        elif selection == 7:
+        def lang_sub():
             langs = ['en','ar','bn','cs','da','de','el','es','fa','fi','fil','fr','he','hi','hu','id','it',
                      'ja','ko','msa','nl','no','pl','pt','ro','ru','sv','th','tr','uk','ur','vl','zh-cn','zh-tw']
             inpt = input(color.BOLD + "Enter a comma separated list of language codes. "
                 "https://dev.twitter.com/web/overview/languages\n>>>").replace(" ",'').split(',')
             if inpt == '':
-                break
+                return
             tmp = []
             for i in inpt:
                 if i in langs and i not in tmp:
                     tmp.append(i)
             if len(tmp) >=1:
                 print(color.YELLOW + "Accepted languages: " + str(tmp).strip("[]") + "." + color.END)
-                s.language = tmp
+                s.lang = tmp
 
-        elif selection == 8:
+        def mongo_sub():
             print(color.YELLOW, end='')
             mongo.mongo_handler()
             print(color.END, end='')
+
+        menu = {
+            1: search_sub,
+            2: lim_sub,
+            3: tmp_sub,
+            4: db_sub,
+            5: coll_sub,
+            6: sim_sub,
+            7: lang_sub,
+            8: mongo_sub
+        }
+        menu[selection]()
 ########################
 
 if __name__ == "__main__":
