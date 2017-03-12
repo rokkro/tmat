@@ -90,7 +90,8 @@ def scrape_menu():  # menu for setting up tweet scraping
         def db_sub():
             while True:
                 inpt = input(color.BOLD + "Enter a new name for the database, currently '" + s.db_name +
-                    "'. Leave blank to cancel. ""Spaces will be removed.\n>>>" + color.END).replace(" ", "")
+                    "'. Leave blank to cancel. ""Spaces and special characters will be removed.\n>>>" + color.END)
+                inpt = ''.join(e for e in inpt if e.isalnum())
                 if inpt == '' or inpt == s.db_name:
                     break
                 print(color.YELLOW + "Database changed from '" + s.db_name + "' to '" + inpt + "'.")
@@ -106,7 +107,8 @@ def scrape_menu():  # menu for setting up tweet scraping
         def coll_sub():
             while True:
                 inpt = input(color.BOLD + "Enter a new name for this collection, currently '" + s.coll_name +
-                    "'. Leave blank to cancel.\nPut '[dt]' in name to insert date + time.\n>>>" + color.END).strip()
+                    "'. Leave blank to cancel.\nPut '[dt]' in name to insert date + time.\n>>>" +
+                             color.END).strip().replace("$","")
                 if inpt == '' or inpt == s.coll_name:  # If blank or collection name is same
                     break
                 if '[dt]' in inpt:  # inserting and replacing [dt] with date/time
@@ -115,7 +117,7 @@ def scrape_menu():  # menu for setting up tweet scraping
                     s.coll_name = inpt
                 print(color.YELLOW + "Collection changed to '" + s.coll_name + "'.")
                 if mongo.connected:
-                    if s.coll_name in s.get_collections():
+                    if s.coll_name in mongo.get_collections(s.db_name):
                         print("'" + s.coll_name + "' already exists. New tweets will be added to existing.")
                     else:
                         print("New collection will be created.")
