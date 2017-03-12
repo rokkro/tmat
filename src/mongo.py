@@ -25,3 +25,6 @@ def mongo_handler():
 
 def get_dbnames():
     return client.database_names()
+
+def get_collections(db_name):
+    return client[db_name].collection_names()
