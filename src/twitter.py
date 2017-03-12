@@ -98,9 +98,7 @@ class Setup(): #settings and setup for tweet scraping
         self.dt = str(datetime.datetime.now())
         self.sim = .55
         self.lang = ['en']
-
-    def get_collections(self):
-        return mongo.client[self.db_name].collection_names()
+        self.coll_name = None
 
     def limit(self):
         while True:
@@ -140,17 +138,22 @@ class Setup(): #settings and setup for tweet scraping
 
 
 def stream(search, lim, coll_name, db_name, temp, similarity,lang):  # search, limit, collection name
-    db = mongo.client[db_name]  # initialize db
-    tweetcoll = db[coll_name]  # initialize collection
-    tweetcoll.insert_one({ #This creates a coll even if no tweets found. I may want to change this. Marks as tmp or not
-        "temp" : temp
-    })
+    try:
+        print("Initializing DB and Collection...")
+        db = mongo.client[db_name]  # initialize db
+        tweetcoll = db[coll_name]  # initialize collection
+        tweetcoll.insert_one({ #This creates a coll even if no tweets found. I may want to change this. Marks as tmp or not
+            "temp" : temp
+        })
+    except Exception as e:
+        print("Error:",e)
+        return
     while True: #start streaming
         try:
             listener = Listener(lim, tweetcoll,similarity)
             print("Waiting for new tweets...")
             twitter_stream = Stream(auth, listener)
-            twitter_stream.filter(track=search, languages=lang)
+            twitter_stream.filter(track=search, languages=lang) #location search is not a filter, excluded for now.
         except KeyboardInterrupt:
             print("\n")
             break
