@@ -114,7 +114,6 @@ class Setup(): #settings and setup for tweet scraping
                 print("Invalid Input.")
                 continue
             break
-        return self.lim
 
     def search(self):
         self.term = [] #contains actual search terms
@@ -134,17 +133,16 @@ class Setup(): #settings and setup for tweet scraping
                 continue
             self.coll_name = self.term[0] + " - " + self.dt #set initial collection name
             break
-        return self.term
-
 
 def stream(search, lim, coll_name, db_name, temp, similarity,lang):  # search, limit, collection name
     try:
         print("Initializing DB and Collection...")
         db = mongo.client[db_name]  # initialize db
         tweetcoll = db[coll_name]  # initialize collection
-        tweetcoll.insert_one({ #This creates a coll even if no tweets found. I may want to change this. Marks as tmp or not
-            "temp" : temp
-        })
+        if temp:
+            tweetcoll.insert_one({ #This creates a coll even if no tweets found. I may want to change this. Marks as tmp or not
+                "temp" : temp
+            })
     except Exception as e:
         print("Error:",e)
         return
