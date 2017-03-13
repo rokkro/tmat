@@ -1,12 +1,13 @@
 #http://www.nltk.org/howto/sentiment.html
 import warnings
-warnings.filterwarnings("ignore") #kill an annoying warning, may have to remove this though...
+warnings.filterwarnings("ignore")
 import mongo
 from nltk.sentiment.util import *
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk.classify import NaiveBayesClassifier
 from nltk.corpus import subjectivity
 from nltk.sentiment import SentimentAnalyzer
+from nltk import tokenize
 
 def initialize():
     n_instances = 100
@@ -40,19 +41,23 @@ def analyze(coll):
         print("MongoDB must be connected to perform sentiment analysis!")
         return
     sentences = []
-    #paragraph = "test text"
-    cursor = coll.find({})
-    for i in cursor:
-        if "text" not in i:
-            continue
-        sentences.append(i["text"])
-    #lines_list = tokenize.sent_tokenize(paragraph)
-    #sentences.extend(lines_list)
     sid = SentimentIntensityAnalyzer()
-    for i in sentences:
-        print(i)
-        ss = sid.polarity_scores(i)
-        for k in sorted(ss):
-            print('{0}: {1}, '.format(k,ss[k]), end='')
-        print()
-
+    cursor = coll.find({}) #finds all documents in collection
+    for i in cursor: #loop through those
+        if "text" not in i: #if the current doc doesnt have 'text' field, move on
+            continue
+        sentences.extend(tokenize.sent_tokenize(i["text"])) #prepare tweet text
+        ss = sid.polarity_scores(sentences[0]) #get polarity of text
+        #print(i.get('_id'))
+        #print(sentences[0])
+        #print(ss)
+        coll.update_one({'_id':i.get('_id')},{ '$set' : {
+            "sentiment":{
+                "pos": ss['pos'],
+                "neg": ss['neg'],
+                "neu": ss['neu'],
+                "compound": ss['compound']
+            }
+        }})
+        sentences[:] = [] #empty list
+    print("Sentiment values have been attached to each tweet document in the collection.")
