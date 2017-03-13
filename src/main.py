@@ -198,7 +198,7 @@ def menu_scrape():  # menu for setting up tweet scraping
 
         def sub_lang():
             langs = ['en','ar','bn','cs','da','de','el','es','fa','fi','fil','fr','he','hi','hu','id','it',
-                     'ja','ko','msa','nl','no','pl','pt','ro','ru','sv','th','tr','uk','ur','vl','zh-cn','zh-tw']
+                     'ja','ko','msa','nl','no','pl','pt','ro','ru','sv','th','tr','uk','ur','vi','zh-cn','zh-tw']
             inpt = input(color.BOLD + "Enter a comma separated list of language codes. "
                 "https://dev.twitter.com/web/overview/languages\n>>>").replace(" ",'').split(',')
             if inpt == '':
