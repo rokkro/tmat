@@ -25,7 +25,7 @@ auth.set_access_token(atoken, asecret)
 api = tweepy.API(auth)
 
 class Listener(StreamListener):
-    def __init__(self, lim, tweetcoll,similarity):  # constructor
+    def __init__(self, lim, tweetcoll,similarity):
         self.count = 0
         self.lim = lim
         self.tweetcoll = tweetcoll
@@ -33,7 +33,7 @@ class Listener(StreamListener):
 
     def on_data(self, data):
         if self.count == self.lim:
-            quit()
+            raise KeyboardInterrupt #easy way to return to menus
         dataj = json.loads(data)
         if self.json_filter(dataj):
             try:
