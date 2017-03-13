@@ -27,41 +27,6 @@ def get_input(msg, inpt_msg, lim):
         else:
             return i
 
-def main_menu():
-    print(color.YELLOW, end='')
-    mongo.mongo_handler()
-    print(color.END, end='')
-    menu = {
-        1: scrape_menu,
-        2: senti_menu,
-        3: exit,
-        4: exit,
-        5: list_menu,
-        6: exit,
-        7: mongo.mongo_handler
-    }
-    while True:
-        i = get_input("[1] - Scrape tweets.\n"
-          "[2] - Perform Sentiment Analysis.\n"
-          "[3] - Perform Image Analysis.\n"
-          "[4] - Data Presentation.\n"
-          "[5] - List Databases and Collections.\n"
-          "[6] - Purge Temporary Data\n"
-          "[7] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
-                      "*Enter option number or [q] - quit.\n>>>", 7)
-        try:
-            menu[i]()
-        except KeyError:
-            pass
-
-def list_menu():
-    i = get_list()
-    if i == 'r' or i==None:
-        return
-    cursor = i.find({})
-    for j in cursor:
-        print(j)
-
 def get_list():
     if not mongo.connected:
         print("You must be connected to MongoDB!")
@@ -87,21 +52,58 @@ def get_list():
             continue
         return db[coll[inpt - 1]]
 
-def senti_menu():
+def menu_main():
+    print(color.YELLOW, end='')
+    mongo.mongo_handler()
+    print(color.END, end='')
+    menu = {
+        1: menu_scrape,
+        2: menu_sentiment,
+        3: exit,
+        4: exit,
+        5: menu_list,
+        6: exit,
+        7: mongo.mongo_handler
+    }
+    while True:
+        i = get_input("[1] - Scrape tweets.\n"
+          "[2] - Perform Sentiment Analysis.\n"
+          "[3] - Perform Image Analysis.\n"
+          "[4] - Data Presentation.\n"
+          "[5] - List Databases and Collections.\n"
+          "[6] - Purge Temporary Data\n"
+          "[7] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
+                      "*Enter option number or [q] - quit.\n>>>", 7)
+        try:
+            menu[i]()
+        except KeyError:
+            pass
+
+def menu_list():
+    i = get_list()
+    if i == 'r' or i==None:
+        return
+    cursor = i.find({})
+    for j in cursor:
+        print(j)
+
+def menu_sentiment():
     i = get_input("[1] - Run initial setup.\n[2] - Choose a collection to analyze.","Enter an option number or"
-        " [r] -return.\n>>>",2)
+                                                                   " [r] -return.\n>>>",2)
     if i=='r':
         return
-    def analysis_sub():
+
+    def sub_analysis():
         i = get_list()
         sentiment.analyze(i)
+
     menu = {
         1:sentiment.initialize,
-        2:analysis_sub,
+        2:sub_analysis,
     }
     menu[i]()
 ########################
-def scrape_menu():  # menu for setting up tweet scraping
+def menu_scrape():  # menu for setting up tweet scraping
     s = twitter.Setup()
     s.search()
     s.limit()
@@ -121,15 +123,15 @@ def scrape_menu():  # menu for setting up tweet scraping
         elif selection == 'r':
             return
 
-        def search_sub():
+        def sub_search():
             s.search()
             print(color.YELLOW + "Search changed to '" + str(s.term).strip('\'[]\'') + "'." + color.END)
 
-        def lim_sub():
+        def sub_lim():
             s.limit()
             print(color.YELLOW + "Limit changed to " + str(s.lim) + "." + color.END)
 
-        def tmp_sub():
+        def sub_tmp():
             print(color.YELLOW, end='')
             if s.temp == False:
                 print("Collection will be marked as Temporary.")
@@ -139,7 +141,7 @@ def scrape_menu():  # menu for setting up tweet scraping
                 s.temp = False
             print(color.END, end='')
 
-        def db_sub():
+        def sub_db():
             while True:
                 inpt = input(color.BOLD + "Enter a new name for the database, currently '" + s.db_name +
                     "'. Leave blank to cancel. ""Spaces and special characters will be removed.\n>>>" + color.END)
@@ -156,7 +158,7 @@ def scrape_menu():  # menu for setting up tweet scraping
                 print(color.END, end='')
                 break
 
-        def coll_sub():
+        def sub_coll():
             while True:
                 inpt = input(color.BOLD + "Enter a new name for this collection, currently '" + s.coll_name +
                     "'. Leave blank to cancel.\nPut '[dt]' in name to insert date + time.\n>>>" +
@@ -176,7 +178,7 @@ def scrape_menu():  # menu for setting up tweet scraping
                 print(color.END, end='')
                 break
 
-        def sim_sub():
+        def sub_simil():
             while True:
                 inpt = input(color.BOLD + "Enter a new similarity threshold - 0.0 to 1.0. Higher value = filter out "
                     "higher similarity. Leave blank to cancel.\n>>>" + color.END)
@@ -194,7 +196,7 @@ def scrape_menu():  # menu for setting up tweet scraping
                     print("Invalid Input.")
                     continue
 
-        def lang_sub():
+        def sub_lang():
             langs = ['en','ar','bn','cs','da','de','el','es','fa','fi','fil','fr','he','hi','hu','id','it',
                      'ja','ko','msa','nl','no','pl','pt','ro','ru','sv','th','tr','uk','ur','vl','zh-cn','zh-tw']
             inpt = input(color.BOLD + "Enter a comma separated list of language codes. "
@@ -209,26 +211,26 @@ def scrape_menu():  # menu for setting up tweet scraping
                 print(color.YELLOW + "Accepted languages: " + str(tmp).strip("[]") + "." + color.END)
                 s.lang = tmp
 
-        def mongo_sub():
+        def sub_mongo():
             print(color.YELLOW, end='')
             mongo.mongo_handler()
             print(color.END, end='')
 
         menu = {
-            1: search_sub,
-            2: lim_sub,
-            3: tmp_sub,
-            4: db_sub,
-            5: coll_sub,
-            6: sim_sub,
-            7: lang_sub,
-            8: mongo_sub
+            1: sub_search,
+            2: sub_lim,
+            3: sub_tmp,
+            4: sub_db,
+            5: sub_coll,
+            6: sub_simil,
+            7: sub_lang,
+            8: sub_mongo
         }
         menu[selection]()
 ########################
 
 if __name__ == "__main__":
     try:
-        main_menu()
+        menu_main()
     except KeyboardInterrupt:
         pass
