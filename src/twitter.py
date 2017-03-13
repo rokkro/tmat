@@ -149,7 +149,7 @@ def stream(search, lim, coll_name, db_name, temp, similarity,lang):  # search, l
     while True: #start streaming
         try:
             listener = Listener(lim, tweetcoll,similarity)
-            print("Waiting for new tweets...")
+            print("Waiting for new tweets, press Ctrl+C to stop...")
             twitter_stream = Stream(auth, listener)
             twitter_stream.filter(track=search, languages=lang) #location search is not a filter, excluded for now.
         except KeyboardInterrupt:
