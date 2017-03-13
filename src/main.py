@@ -1,4 +1,4 @@
-import twitter, mongo
+import twitter, mongo, sentiment
 
 class color:
     YELLOW = '\033[93m'
@@ -8,7 +8,10 @@ class color:
 def get_input(msg, inpt_msg, lim):
     while True:
         print(len(inpt_msg) * '-')
-        print(msg)
+        if type(msg) is str:
+            print(msg)
+        else:
+            msg()
         print(len(inpt_msg) * '-')
         i = input(color.BOLD + inpt_msg + color.END)
         if i == 'q':
@@ -30,11 +33,12 @@ def main_menu():
     print(color.END, end='')
     menu = {
         1: scrape_menu,
-        2: exit,
+        2: senti_menu,
         3: exit,
         4: exit,
-        5: exit,
+        5: list_menu,
         6: exit,
+        7: mongo.mongo_handler
     }
     while True:
         i = get_input("[1] - Scrape tweets.\n"
@@ -42,17 +46,65 @@ def main_menu():
           "[3] - Perform Image Analysis.\n"
           "[4] - Data Presentation.\n"
           "[5] - List Databases and Collections.\n"
-          "[6] - Purge temporary data", "*Enter option number or [q] - quit.\n>>>", 5)
+          "[6] - Purge Temporary Data\n"
+          "[7] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
+                      "*Enter option number or [q] - quit.\n>>>", 7)
         try:
             menu[i]()
         except KeyError:
             pass
 
+def list_menu():
+    i = get_list()
+    if i == 'r' or i==None:
+        return
+    cursor = i.find({})
+    for j in cursor:
+        print(j)
+
+def get_list():
+    if not mongo.connected:
+        print("You must be connected to MongoDB!")
+        return
+    while True:
+        def db_list():
+            for j, k in enumerate(mongo.get_dbnames(), 1):  # start at 1
+                print("[" + str(j) + "] - '" + k + "' (" + str(len(mongo.get_collections(k))) + ")")
+
+        inpt = get_input(db_list, "Select a db to view collections.\n>>>", len(mongo.get_dbnames()))
+        if inpt == 'r':
+            return 'r'
+        db = mongo.client[mongo.get_dbnames()[inpt - 1]]  # set up chosen db
+        coll = mongo.get_collections(mongo.get_dbnames()[inpt - 1])  # collections list from that db
+
+        def coll_list():
+            for j, k in enumerate(coll, 1):
+                cursor = db[coll[j - 1]].find({})  # take the specified collection, and find all the documents
+                print("[" + str(j) + "] - '" + k + "' (" + str(cursor.count()) + ")")
+
+        inpt = get_input(coll_list, "Select a collection.\n>>>", len(coll))
+        if inpt == 'r':
+            continue
+        return db[coll[inpt - 1]]
+
+def senti_menu():
+    i = get_input("[1] - Run initial setup.\n[2] - Choose a collection to analyze.","Enter an option number or"
+        " [r] -return.\n>>>",2)
+    if i=='r':
+        return
+    def analysis_sub():
+        i = get_list()
+        sentiment.analyze(i)
+    menu = {
+        1:sentiment.initialize,
+        2:analysis_sub,
+    }
+    menu[i]()
 ########################
 def scrape_menu():  # menu for setting up tweet scraping
     s = twitter.Setup()
-    search = s.search()
-    limit = s.limit()
+    s.search()
+    s.limit()
     while True:
         selection = get_input("[1] - Search = '" + str(s.term).strip('\'[]\'') + "'\n[2] - Limit = " + str(s.lim) +
             "\n[3] - Temporary Collection = " + str(s.temp) +
@@ -63,7 +115,7 @@ def scrape_menu():  # menu for setting up tweet scraping
             "*Enter option number or: [Enter] - begin if MongoDB is connected, [r] - return.""\n>>>", 8)
 
         if selection == '' and mongo.connected:
-            twitter.stream(search, limit, s.coll_name, s.db_name, s.temp, s.sim, s.lang)
+            twitter.stream(s.term, s.lim, s.coll_name, s.db_name, s.temp, s.sim, s.lang)
             break
 
         elif selection == 'r':
@@ -92,7 +144,7 @@ def scrape_menu():  # menu for setting up tweet scraping
                 inpt = input(color.BOLD + "Enter a new name for the database, currently '" + s.db_name +
                     "'. Leave blank to cancel. ""Spaces and special characters will be removed.\n>>>" + color.END)
                 inpt = ''.join(e for e in inpt if e.isalnum())
-                if inpt == '' or inpt == s.db_name:
+                if inpt == '' or inpt == s.db_name or inpt == 'admin' or inpt == 'local':
                     break
                 print(color.YELLOW + "Database changed from '" + s.db_name + "' to '" + inpt + "'.")
                 s.db_name = inpt
