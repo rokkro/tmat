@@ -28,3 +28,4 @@ def get_dbnames():
 
 def get_collections(db_name):
     return client[db_name].collection_names()
+
