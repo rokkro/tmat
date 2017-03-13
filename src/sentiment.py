@@ -1,6 +1,6 @@
 #http://www.nltk.org/howto/sentiment.html
 import warnings
-warnings.filterwarnings("ignore")
+warnings.filterwarnings("ignore") #kill an annoying warning, may have to remove this though...
 import mongo
 from nltk.sentiment.util import *
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
