@@ -13,7 +13,7 @@ def get_input(msg, inpt_msg, lim):
         else:
             msg()
         print(len(inpt_msg) * '-')
-        i = input(color.BOLD + inpt_msg + color.END)
+        i = input(color.BOLD + inpt_msg + color.END).replace(" ","")
         if i == 'q':
             quit()
         elif i == 'r' or i == '':
@@ -27,7 +27,7 @@ def get_input(msg, inpt_msg, lim):
         else:
             return i
 
-def get_list():
+def get_list(db_only=False):
     if not mongo.connected:
         print("You must be connected to MongoDB!")
         return
@@ -37,18 +37,20 @@ def get_list():
                 print("[" + str(j) + "] - '" + k + "' (" + str(len(mongo.get_collections(k))) + ")")
 
         inpt = get_input(db_list, "Select a db to view collections.\n>>>", len(mongo.get_dbnames()))
-        if inpt == 'r':
-            return 'r'
+        if inpt == 'r' or inpt == '':
+            return None
         db = mongo.client[mongo.get_dbnames()[inpt - 1]]  # set up chosen db
         coll = mongo.get_collections(mongo.get_dbnames()[inpt - 1])  # collections list from that db
-
+        if db_only:
+            return coll,db
         def coll_list():
             for j, k in enumerate(coll, 1):
-                cursor = db[coll[j - 1]].find({})  # take the specified collection, and find all the documents
-                print("[" + str(j) + "] - '" + k + "' (" + str(cursor.count()) + ")")
+                tmp = db[coll[j - 1]].find({"temp": True})
+                doc_count = db[coll[j - 1]].find({})  # take the specified collection, and find all the documents
+                print("[" + str(j) + "] - '" + k + "' (" + str(doc_count.count()) + ")" + ("(temp)" if tmp.count()>0 else ""))
 
         inpt = get_input(coll_list, "Select a collection.\n>>>", len(coll))
-        if inpt == 'r':
+        if inpt == 'r' or inpt == '':
             continue
         return db[coll[inpt - 1]]
 
@@ -62,7 +64,7 @@ def menu_main():
         3: exit,
         4: exit,
         5: menu_list,
-        6: exit,
+        6: menu_manage,
         7: mongo.mongo_handler
     }
     while True:
@@ -71,37 +73,99 @@ def menu_main():
           "[3] - Perform Image Analysis.\n"
           "[4] - Data Presentation.\n"
           "[5] - List Databases and Collections.\n"
-          "[6] - Purge Temporary Data\n"
+          "[6] - Manage Collections.\n"
           "[7] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
                       "*Enter option number or [q] - quit.\n>>>", 7)
         try:
             menu[i]()
         except KeyError:
             pass
+#############################
+def menu_manage():
+    selection = get_input("[1] - View Databases, Collections, and Documents.\n"
+                          "[2] - Purge Temporary Collections in a DB.\n"
+                          "[3] - Delete Specific Collections.\n"
+                          "[4] - Mark a Collection as Temporary.\n"
+                          "[5] - Unmark a Temporary Collection.",
+                          "*Enter an option or [r] - return.\n>>>",5)
 
+    def sub_tmp():
+        deletable = []
+        try:
+            coll, db = get_list(True) #gets collection list and chosen db
+        except:
+            return
+        print(color.YELLOW + "The following collections will be DELETED:" + color.END)
+        for j, k in enumerate(coll, 1): #loops through all collections
+            doc_count = db[coll[j - 1]].find({})  # take the current collection, and find all the documents
+            cursor = db[coll[j - 1]].find({"temp":True})  #searches collection for doc with temp = True
+            if cursor.count()>0: #if there's search results, then print the collection with temp = True
+                print("'" + k + "' (" + str(doc_count.count()) + ")")
+                deletable.append(db[coll[j-1]])
+        selection = input(color.YELLOW + color.BOLD +"Are you sure you want to delete these collections and "
+            "all documents within? [y/n]" + color.END + color.BOLD + "\n>>>" + color.END)
+        if selection == 'y':
+          for i in deletable:
+              i.drop()
+          print("Temporary collections deleted.")
+        else:
+          print("Deletion cancelled.")
+
+    def sub_del():
+        print("Select a collection to delete.")
+        coll = get_list()
+        if coll == None:
+            return
+        selection = input(color.YELLOW + color.BOLD + "Are you sure you want to delete this collection and "
+            "all documents within? [y/n]" + color.END + color.BOLD + "\n>>>" + color.END)
+        if selection == 'y':
+            coll.drop()
+            print("Collection deleted.")
+        else:
+            print("Deletion canceled.")
+
+        def sub_mark():
+            '''
+            coll = get_list()
+            tmp = coll.find({"temp": True})
+            coll.replace_one(
+           {  # This creates a coll even if no tweets found. I may want to change this. Marks as tmp or not
+                "temp": temp
+           })
+           '''
+
+    menu = {
+        1: menu_list,
+        2: sub_tmp,
+        3: sub_del,
+    }
+    menu[selection]()
+###########################
 def menu_list():
     i = get_list()
-    if i == 'r' or i==None:
+    if i==None:
         return
     cursor = i.find({})
     for j in cursor:
         print(j)
 
 def menu_sentiment():
-    i = get_input("[1] - Run initial setup.\n[2] - Choose a collection to analyze.","Enter an option number or"
+    selection = get_input("[1] - Run initial setup.\n[2] - Choose a collection to analyze.","Enter an option number or"
                                                                    " [r] -return.\n>>>",2)
-    if i=='r':
+    if selection=='r':
         return
 
     def sub_analysis():
         i = get_list()
+        if i==None:
+            return
         sentiment.analyze(i)
 
     menu = {
         1:sentiment.initialize,
         2:sub_analysis,
     }
-    menu[i]()
+    menu[selection]()
 ########################
 def menu_scrape():  # menu for setting up tweet scraping
     s = twitter.Setup()
@@ -119,6 +183,9 @@ def menu_scrape():  # menu for setting up tweet scraping
         if selection == '' and mongo.connected:
             twitter.stream(s.term, s.lim, s.coll_name, s.db_name, s.temp, s.sim, s.lang)
             break
+
+        elif selection == '':
+            continue
 
         elif selection == 'r':
             return
@@ -198,7 +265,7 @@ def menu_scrape():  # menu for setting up tweet scraping
 
         def sub_lang():
             langs = ['en','ar','bn','cs','da','de','el','es','fa','fi','fil','fr','he','hi','hu','id','it',
-                     'ja','ko','msa','nl','no','pl','pt','ro','ru','sv','th','tr','uk','ur','vi','zh-cn','zh-tw']
+                     'ja','ko','msa','nl','no','pl','pt','ro','ru','sv','th','tr','uk','ur','vl','zh-cn','zh-tw']
             inpt = input(color.BOLD + "Enter a comma separated list of language codes. "
                 "https://dev.twitter.com/web/overview/languages\n>>>").replace(" ",'').split(',')
             if inpt == '':
