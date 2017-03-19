@@ -1,4 +1,6 @@
-To use: insert correct Twitter dev keys into the `config.ini` file (no quotation marks around keys necessary), then run `main.py`, which is a (WIP) menu interface. Make sure all files are in the same directory. Install mongoDB and run with `mongod --dbpath=/path/to/db`.
+To use: insert correct Twitter dev keys into the `config.ini` file (no quotation marks around keys necessary), then run `main.py`, which is a (WIP) menu interface. Make sure all files are in the same directory.
+
+Install mongoDB and run with `mongod --dbpath=/path/to/db`.
 
 Requires Python 3.x, tested on 3.5/3.6.
 --currently adding more menus to simplify configuration--
