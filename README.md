@@ -1,12 +1,12 @@
-To use: insert correct Twitter keys into the `config.ini` file (no quotation marks around keys necessary), then run `main.py`, which is a (WIP) menu interface. Make sure all files are in the same directory.
+To use: insert correct Twitter dev keys into the `config.ini` file (no quotation marks around keys necessary), then run `main.py`, which is a (WIP) menu interface. Make sure all files are in the same directory. Install mongoDB and run with `mongod --dbpath=/path/to/db`.
 
 Requires Python 3.x, tested on 3.5/3.6.
+--currently adding more menus to simplify configuration--
 
-1. twitter streaming [x]  - queue system found to be unnecessary, on occasion a few tweets will be skipped to catch up
-2. Put in a DB (MongoDB) [x]
-3. check duplicates [x] - Checks for exact duplicates and by similarity user can modify (default 55%).
-4. sentiment analaysis [WIP] - Basic SA implemented. Want to improve setup process at some point.
-5. associate characteristics using neural networks to tweets + users
-6. put resulting data somewhere
-7. create nice UI (HTML?, Qt/QML?, Excel?) to present data or something like that
-8. other stuff
+1. Twitter tweet streaming [x]  - queue system found to be unnecessary, on occasion a few tweets will be skipped to catch up.
+2. Set up MongoDB system [x]
+3. Check tweet duplicates [x] - Checks for exact duplicates and by similarity user can modify (default 55%) within same collection.
+4. Sentiment analaysis [x] - Basic SA implemented. Want to improve setup process at some point.
+5. Associate characteristics using neural networks to tweets + users. 
+6. Put resulting data somewhere
+7. Create nice UI (HTML/Qt/Excel/graphing util) to present data if desired.
