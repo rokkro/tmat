@@ -29,7 +29,7 @@ class Listener(StreamListener):
         self.count = 0
         self.lim = lim
         self.coll = coll
-        self.similarity = simil
+        self.simil = simil
 
     def on_data(self, data):
         if self.count == self.lim:
@@ -60,7 +60,7 @@ class Listener(StreamListener):
                 #print(" FIRST: " + c['text'] + " SECOND: " + dataj['text'])
                 #print("\nDuplicate tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
                 return True
-            elif SequenceMatcher(None,cursorText,datajText).ratio() > self.similarity:
+            elif SequenceMatcher(None,cursorText,datajText).ratio() > self.simil:
                 #print("\n" + str(SequenceMatcher(None,cursorText,datajText).ratio() * 100) + "% similar existing"
                 #     " tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
                 #print(" FIRST: " + c['text'] + " SECOND: " + dataj['text'])
