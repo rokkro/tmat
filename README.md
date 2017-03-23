@@ -4,8 +4,6 @@ Install mongoDB and run with `mongod --dbpath=/path/to/db`.
 
 Requires Python 3.x, tested on 3.5/3.6.
 
---currently adding more menus to simplify configuration--
-
 1. Twitter tweet streaming [x]  - queue system found to be unnecessary, on occasion a few tweets will be skipped to catch up.
 2. Set up MongoDB system [x]
 3. Check tweet duplicates [x] - Checks for exact duplicates and by similarity user can modify (default 55%) within same collection.
