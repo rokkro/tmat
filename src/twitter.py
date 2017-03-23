@@ -25,11 +25,11 @@ auth.set_access_token(atoken, asecret)
 api = tweepy.API(auth)
 
 class Listener(StreamListener):
-    def __init__(self, lim, tweetcoll,similarity):
+    def __init__(self, lim, coll, simil):
         self.count = 0
         self.lim = lim
-        self.tweetcoll = tweetcoll
-        self.similarity = similarity
+        self.coll = coll
+        self.similarity = simil
 
     def on_data(self, data):
         if self.count == self.lim:
@@ -39,7 +39,7 @@ class Listener(StreamListener):
             try:
                 if not self.duplicate_find(dataj):  # if no duplicates found, add tweet to db
                     self.count += 1
-                    self.tweetcoll.insert_one(dataj)
+                    self.coll.insert_one(dataj)
                 if self.lim != None:
                     print("\rTweets:", self.count,
                           "[{0:50s}] {1:.1f}% ".format('#' * int((self.count / int(self.lim)) * 50),
@@ -52,7 +52,7 @@ class Listener(StreamListener):
                 quit()
 
     def duplicate_find(self, dataj):
-        cursor = self.tweetcoll.find({'user.screen_name': dataj['user']['screen_name']})
+        cursor = self.coll.find({'user.screen_name': dataj['user']['screen_name']})
         for c in cursor:  # searching for exact same tweets from same user, removing spaces and punct.
             cursorText = c['text'].translate(c['text'].maketrans('', '', string.punctuation)).replace(" ", "")
             datajText = dataj['text'].translate(dataj['text'].maketrans('', '', string.punctuation)).replace(" ", "")
@@ -134,13 +134,13 @@ class Setup(): #settings and setup for tweet scraping
             self.coll_name = self.term[0] + " - " + self.dt #set initial collection name
             break
 
-def stream(search, lim, coll_name, db_name, temp, similarity,lang):  # search, limit, collection name
+def stream(search, lim, coll_name, db_name, temp, simil, lang):
     try:
         print("Initializing DB and Collection...")
         db = mongo.client[db_name]  # initialize db
         tweetcoll = db[coll_name]  # initialize collection
         if temp:
-            tweetcoll.insert_one({ #This creates a coll even if no tweets found. I may want to change this. Marks as tmp or not
+            tweetcoll.insert_one({ #This creates a coll even if no tweets found.
                 "temp" : temp
             })
     except Exception as e:
@@ -148,7 +148,7 @@ def stream(search, lim, coll_name, db_name, temp, similarity,lang):  # search, l
         return
     while True: #start streaming
         try:
-            listener = Listener(lim, tweetcoll,similarity)
+            listener = Listener(lim, tweetcoll, simil)
             print("Waiting for new tweets, press Ctrl+C to stop...")
             twitter_stream = Stream(auth, listener)
             twitter_stream.filter(track=search, languages=lang) #location search is not a filter, excluded for now.
