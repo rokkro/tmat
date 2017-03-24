@@ -1,3 +1,5 @@
+import requests
+
 try:
     import mongo
     import tweepy, json, string, configparser, datetime
@@ -36,20 +38,16 @@ class Listener(StreamListener):
             raise KeyboardInterrupt #easy way to return to menus
         dataj = json.loads(data)
         if self.json_filter(dataj):
-            try:
-                if not self.duplicate_find(dataj):  # if no duplicates found, add tweet to db
-                    self.count += 1
-                    self.coll.insert_one(dataj)
-                if self.lim != None:
-                    print("\rTweets:", self.count,
-                          "[{0:50s}] {1:.1f}% ".format('#' * int((self.count / int(self.lim)) * 50),
-                                                       (self.count / int(self.lim)) * 100), end="", flush=True)
-                else:
-                    print("\rTweets:", self.count, end="", flush=True)
-                return True
-            except Exception as e:
-                print("\nError in on_data: ", e, "\nStreaming stopped.")
-                quit()
+            if not self.duplicate_find(dataj):  # if no duplicates found, add tweet to db
+                self.count += 1
+                self.coll.insert_one(dataj)
+            if self.lim != None:
+                print("\rTweets:", self.count,
+                      "[{0:50s}] {1:.1f}% ".format('#' * int((self.count / int(self.lim)) * 50),
+                                                   (self.count / int(self.lim)) * 100), end="", flush=True)
+            else:
+                print("\rTweets:", self.count, end="", flush=True)
+            return True
 
     def duplicate_find(self, dataj):
         cursor = self.coll.find({'user.screen_name': dataj['user']['screen_name']})
@@ -68,15 +66,11 @@ class Listener(StreamListener):
         return False  # if no duplicates found
 
     def json_filter(self, dataj):  #removes certain tweets
-        try:    #'created_at' exists in some weird broken tweets
-            if "created_at" not in dataj or "retweeted_status" in dataj or \
-                            "quoted_status" in dataj or dataj["in_reply_to_user_id"] != None:
-                return False
-            else:
-                return True  # does NOT affect tweet streaming. Whether or not tweet saved
-        except Exception as e:
-            print("Error in json_filter: ", e)
-            quit()
+        if "created_at" not in dataj or "retweeted_status" in dataj or \
+                        "quoted_status" in dataj or dataj["in_reply_to_user_id"] != None:
+            return False
+        else:
+            return True  # does NOT affect tweet streaming. Whether or not tweet saved
 
     def on_error(self, status):
         print("Error code:", status, end=". ")
@@ -94,11 +88,14 @@ class Setup(): #settings and setup for tweet scraping
     def __init__(self):
         self.temp = False
         self.img = False
+        self.lim = None
         self.db_name = 'twitter'
         self.dt = str(datetime.datetime.now())
         self.sim = .55
         self.lang = ['en']
-        self.coll_name = None
+        self.coll_name = self.dt
+        self.term = []
+        self.users = []
 
     def limit(self):
         while True:
@@ -116,25 +113,52 @@ class Setup(): #settings and setup for tweet scraping
             break
 
     def search(self):
-        self.term = [] #contains actual search terms
         tmp = [] #stores user input to filter out invalid responses
-        while True:
-            i = input("*Enter search term(s), separate multiple terms with '||' :").strip()
-            if i == '': #no input
-                print("You must enter at least one search term.")
+        i = input("*Enter search term(s), separate multiple queries with '||'.\n>>>").strip()
+        if i == 'r':
+            return
+        self.term[:] = []
+        if i == '':
+            self.coll_name = self.dt
+            return
+        tmp = i.split('||') #split into list by ||
+        for i in range(len(tmp)):
+            tmp[i] = tmp[i].strip()  #remove outside spacing from all entries
+            if tmp[i] == '': #if blank after spaces removed, dont append to search term list
                 continue
-            tmp = i.split('||') #split into list by ||
-            for i in range(len(tmp)):
-                tmp[i] = tmp[i].strip()  #remove outside spacing from all entries
-                if tmp[i] == '': #if blank after spaces removed, dont append to search term list
-                    continue
-                self.term.append(tmp[i])
-            if len(self.term) == 0: #if nothing appended to search term list, restart.
-                continue
-            self.coll_name = self.term[0] + " - " + self.dt #set initial collection name
-            break
+            self.term.append(tmp[i])
+        if len(self.term) == 0: #if nothing appended to search term list, return.
+            return
+        self.coll_name = self.term[0] + " - " + self.dt #set initial collection name
 
-def stream(search, lim, coll_name, db_name, temp, simil, lang):
+    def follow(self):# https://twitter.com/intent/user?user_id=XXX
+        tmp = []
+        print("Use http://gettwitterid.com to get a UID from a username. Must be a numeric value.")
+        i = input("*Enter UID(s), separate with '||'. Leave blank for no user tracking, [r] - return/cancel.\n>>>").strip()
+        if i == 'r':
+            return
+        self.users[:] = []  # clear list
+        if i == '':
+            return
+        tmp = i.split('||')
+        for i in range(len(tmp)):
+            tmp[i] = tmp[i].replace(" ","")
+            if tmp[i] == '' or not tmp[i].isdigit():  # if blank/not a num, dont append to search term list
+                continue
+            print("Verifying potential UID...")   #this could break if twitter changes their website
+            try:
+                if requests.get("https://twitter.com/intent/user?user_id=" + tmp[i]).status_code != 200:
+                    if input("UID '" + tmp[i] + "' not found, attempt to follow anyway? [y/n]:").replace(" ","") == 'y':
+                        self.users.append(tmp[i])
+                else:
+                    print("UID '" + tmp[i] + "' found!")
+                    self.users.append(tmp[i])
+            except requests.exceptions.ConnectionError:
+                print("Connection failed. UID's will not be verified.")
+                self.users.append(tmp[i])
+
+
+def stream(search, lim, coll_name, db_name, temp, simil, lang, users):
     try:
         print("Initializing DB and Collection...")
         db = mongo.client[db_name]  # initialize db
@@ -151,12 +175,15 @@ def stream(search, lim, coll_name, db_name, temp, simil, lang):
             listener = Listener(lim, tweetcoll, simil)
             print("Waiting for new tweets, press Ctrl+C to stop...")
             twitter_stream = Stream(auth, listener)
-            twitter_stream.filter(track=search, languages=lang) #location search is not a filter, excluded for now.
+            twitter_stream.filter(track=search, languages=lang, follow=users) #location search is not a filter
         except KeyboardInterrupt:
             print("\n")
             break
         except IncompleteRead:
             print("Incomplete Read - Skipping to newer tweets.\n")
+        except requests.exceptions.ConnectionError:
+            print("Connection Failed - Check you internet.")
+            return
         except Exception as e:
             print("Error: ",e,"\nAttempting to continue...\n")
             continue
@@ -165,10 +192,10 @@ if __name__ == '__main__':
     try:
         s = Setup()
         mongo.mongo_handler()
-        search = s.search()
-        print("Collection: " + s.coll_name + ", Database: " + s.db_name)
+        s.search()
+        #print("Collection: " + s.coll_name + ", Database: " + s.db_name)
         if mongo.connected:
-            stream(search, s.limit(), s.coll_name, s.db_name, s.temp, s.sim, s.lang)
+            stream(s.term, s.limit(), s.coll_name, s.db_name, s.temp, s.sim, s.lang,s.users)
         else:
             print("MongoDB not connected/running. Cannot stream.")
     except BaseException as e:
