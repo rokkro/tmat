@@ -184,21 +184,22 @@ def menu_sentiment():
 def menu_scrape():  # menu for setting up tweet scraping
     s = twitter.Setup()
     s.search()
-    s.limit()
     while True:
-        inpt = get_input("[1] - Search = '" + str(s.term).strip('\'[]\'') + "'\n[2] - Limit = " + str(s.lim) +
+        inpt = get_input("[1] - Search = " + (str(s.term).strip('[]') if len(s.term) > 0 else "None") +
+            "\n[2] - Limit = " + str(s.lim) +
             "\n[3] - Temporary Collection = " + str(s.temp) +
             "\n[4] - Database Name = '" + s.db_name + "'\n[5] - Collection Name = '" + s.coll_name +
             "'\n[6] - Tweet Similarity Threshold = " + str(s.sim) +
             "\n[7] - Languages = " + str(s.lang).strip('[]') +
-            "\n[8] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
-            "*Enter option number or: [Enter] - begin if MongoDB is connected, [r] - return.""\n>>>", 8)
+            "\n[8] - Follow UID(s) = " + (str(s.users).strip('[]') if len(s.users) > 0 else "None") +
+            "\n[9] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
+            "*Enter option number or: [Enter] - start streaming or [r] - return.""\n>>>", 9)
 
-        if inpt == '' and mongo.connected:
-            twitter.stream(s.term, s.lim, s.coll_name, s.db_name, s.temp, s.sim, s.lang)
+        if inpt == '' and mongo.connected and (len(s.term)>0 or len(s.users)>0):
+            twitter.stream(s.term, s.lim, s.coll_name, s.db_name, s.temp, s.sim, s.lang, s.users)
             break
-
         elif inpt == '':
+            print(color.YELLOW + "MongoDB must be connected and a search or UID must have been entered." + color.END)
             continue
 
         elif inpt == 'r':
@@ -206,7 +207,7 @@ def menu_scrape():  # menu for setting up tweet scraping
 
         def sub_search():
             s.search()
-            print(color.YELLOW + "Search changed to '" + str(s.term).strip('\'[]\'') + "'." + color.END)
+            print(color.YELLOW + "Search changed to " +(str(s.term).strip('[]') if len(s.term) > 0 else "None") + "." + color.END)
 
         def sub_lim():
             s.limit()
@@ -261,8 +262,8 @@ def menu_scrape():  # menu for setting up tweet scraping
 
         def sub_simil():
             while True:
-                inpt = input(color.BOLD + "Enter a new similarity threshold - 0.0 to 1.0. Higher value = filter out "
-                    "higher similarity. Leave blank to cancel.\n>>>" + color.END)
+                inpt = input(color.BOLD + "Enter a new simil threshold - 0.0 to 1.0. Higher value = filter out "
+                    "higher simil. Leave blank to cancel.\n>>>" + color.END)
                 if inpt == '' or inpt == s.sim:
                     break
                 try:
@@ -292,6 +293,10 @@ def menu_scrape():  # menu for setting up tweet scraping
                 print(color.YELLOW + "Accepted languages: " + str(tmp).strip("[]") + "." + color.END)
                 s.lang = tmp
 
+        def sub_follow():
+            s.follow()
+            print(color.YELLOW + "Follow list changed to " + (str(s.users).strip('[]') if len(s.users) > 0 else "None") + "." + color.END)
+
         def sub_mongo():
             print(color.YELLOW, end='')
             mongo.mongo_handler()
@@ -305,7 +310,8 @@ def menu_scrape():  # menu for setting up tweet scraping
             5: sub_coll,
             6: sub_simil,
             7: sub_lang,
-            8: sub_mongo
+            8: sub_follow,
+            9: sub_mongo
         }
         menu[inpt]()
 ########################
