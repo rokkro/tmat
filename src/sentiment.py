@@ -2,17 +2,27 @@
 import warnings
 warnings.filterwarnings("ignore")
 import mongo
-from nltk.sentiment.util import *
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from nltk.classify import NaiveBayesClassifier
-from nltk.corpus import subjectivity
-from nltk.sentiment import SentimentAnalyzer
-from nltk import tokenize
-
+try:
+    from nltk.sentiment.util import *
+    from nltk.sentiment.vader import SentimentIntensityAnalyzer
+    from nltk.classify import NaiveBayesClassifier
+    from nltk.corpus import subjectivity
+    from nltk.sentiment import SentimentAnalyzer
+    from nltk import tokenize
+except ModuleNotFoundError as e:
+    print("Module missing, install with pip:",e)
 def initialize():
+
     n_instances = 100
-    subj_docs = [(sent, 'subj') for sent in subjectivity.sents(categories='subj')[:n_instances]]
-    obj_docs = [(sent, 'obj') for sent in subjectivity.sents(categories='obj')[:n_instances]]
+    try:
+        subj_docs = [(sent, 'subj') for sent in subjectivity.sents(categories='subj')[:n_instances]]
+        obj_docs = [(sent, 'obj') for sent in subjectivity.sents(categories='obj')[:n_instances]]
+    except NameError as e:
+        print("Make sure NLTK is installed:",e)
+        return
+    nltk.download('subjectivity')
+    nltk.download('vader_lexicon')
+    nltk.download('punkt')
     len(subj_docs), len(obj_docs)
 
     train_subj_docs = subj_docs[:80]
@@ -41,13 +51,20 @@ def analyze(coll):
         print("MongoDB must be connected to perform sentiment analysis!")
         return
     sentences = []
-    sid = SentimentIntensityAnalyzer()
+    try:
+        sid = SentimentIntensityAnalyzer()
+    except NameError as e:
+        print("Make sure NLTK is installed and you have run initial setup:",e)
+        return
     cursor = coll.find({}) #finds all documents in collection
     for i in cursor: #loop through those
         if "text" not in i: #if the current doc doesnt have 'text' field, move on
             continue
-        sentences.extend(tokenize.sent_tokenize(i["text"])) #prepare tweet text
-        ss = sid.polarity_scores(sentences[0]) #get polarity of text
+        try:
+            sentences.extend(tokenize.sent_tokenize(i["text"])) #prepare tweet text
+            ss = sid.polarity_scores(sentences[0]) #get polarity of text
+        except LookupError as e:
+            print("Make sure you have run initial setup:",e)
         #print(i.get('_id'))
         #print(sentences[0])
         #print(ss)
