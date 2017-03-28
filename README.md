@@ -8,6 +8,7 @@ Requires Python 3.x, tested on 3.5/3.6.
 2. Set up MongoDB system [x]
 3. Check tweet duplicates [x] - Checks for exact duplicates and by similarity user can modify (default 55%) within same collection.
 4. Sentiment analaysis [x] - Basic Vader SA implemented.
-5. Associate characteristics using neural networks to tweets + users. 
+5. Associate characteristics using neural networks to tweets + users. [WIP]
 6. Put resulting data somewhere
-7. Create nice UI (HTML/Qt/Excel/graphing util) to present data if desired.
+7. Present data in meaningful way
+8. Historical tweet searching (if possible)
