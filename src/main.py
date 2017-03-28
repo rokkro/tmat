@@ -5,14 +5,12 @@ class color:
     BOLD = '\033[1m'
     END = '\033[0m'
 
-def get_input(msg, inpt_msg, lim):
+def print_dashes():
+    print('-' * 40)
+
+def get_input(inpt_msg, lim):
     while True:
-        print(len(inpt_msg) * '-')
-        if type(msg) is str:
-            print(msg)
-        else:
-            msg()
-        print(len(inpt_msg) * '-')
+        print_dashes()
         i = input(color.BOLD + inpt_msg + color.END).replace(" ","")
         if i == 'q':
             quit()
@@ -35,8 +33,9 @@ def get_list(db_only=False):
         def db_list():
             for j, k in enumerate(mongo.get_dbnames(), 1):  # start at 1
                 print("[" + str(j) + "] - '" + k + "' (" + str(len(mongo.get_collections(k))) + ")")
-
-        inpt = get_input(db_list, "Select a db to view collections or [r] - return.\n>>>", len(mongo.get_dbnames()))
+        print_dashes()
+        db_list()
+        inpt = get_input("Select a db to view collections or [r] - return.\n>>>", len(mongo.get_dbnames()))
         if inpt == 'r' or inpt == '':
             return None
 
@@ -52,8 +51,9 @@ def get_list(db_only=False):
                 doc_count = db[coll[j - 1]].find({})  # take the specified collection, and find all the documents
                 print("[" + str(j) + "] - '" + k + "' (" + str(doc_count.count()) + ")" +
                       ("(TEMP)" if tmp.count()>0 else ""))
-
-        inpt = get_input(coll_list, "Select a collection or [r] - return.\n>>>", len(coll))
+        print_dashes()
+        coll_list()
+        inpt = get_input( "Select a collection or [r] - return.\n>>>", len(coll))
         if inpt == 'r' or inpt == '':
             continue
         return db[coll[inpt - 1]]
@@ -71,13 +71,14 @@ def menu_main():
         6: mongo.mongo_handler
     }
     while True:
-        i = get_input("[1] - Scrape tweets.\n"
+        print_dashes()
+        print("[1] - Scrape tweets.\n"
           "[2] - Perform Sentiment Analysis.\n"
           "[3] - Perform Image Analysis.\n"
           "[4] - Data Presentation.\n"
           "[5] - Manage Collections.\n"
-          "[6] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
-                      "*Enter option number or [q] - quit.\n>>>", 7)
+          "[6] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END)
+        i = get_input("*Enter option number or [q] - quit.\n>>>", 7)
         try:
             menu[i]()
         except KeyError:
@@ -85,12 +86,14 @@ def menu_main():
 #############################
 def menu_manage():
     while True:
-        inpt = get_input("[1] - View Databases, Collections, and Documents.\n"
-                              "[2] - Purge Temporary Collections in a DB.\n"
-                              "[3] - Delete Specific Collections.\n"
-                              "[4] - Mark/Un-mark a Collection as Temporary.",
-                              "*Enter an option or [r] - return.\n>>>",4)
-
+        print_dashes()
+        print("[1] - View Databases, Collections, and Documents.\n"
+              "[2] - Purge Temporary Collections in a DB.\n"
+              "[3] - Delete Specific Collections.\n"
+              "[4] - Mark/Un-mark a Collection as Temporary.")
+        inpt = get_input("*Enter an option or [r] - return.\n>>>",4)
+        if inpt == 'r':
+            return
         def sub_list():
             i = get_list()
             if i == None:
@@ -129,6 +132,7 @@ def menu_manage():
             coll = get_list()
             if coll == None:
                 return
+            print(coll)
             inpt = input(color.YELLOW + color.BOLD + "Are you sure you want to delete this collection and "
                 "all documents within? [y/n]" + color.END + color.BOLD + "\n>>>" + color.END)
             if inpt == 'y':
@@ -161,11 +165,15 @@ def menu_manage():
             3: sub_del,
             4: sub_mark,
         }
-        menu[inpt]()
+        try:
+            menu[inpt]()
+        except BaseException as e:
+            print("Error:",e)
 ########################
 def menu_sentiment():
-    inpt = get_input("[1] - Run initial setup.\n[2] - Choose a collection to analyze.","Enter an option number or"
-                                                                   " [r] - return.\n>>>",2)
+    print_dashes()
+    print("[1] - Run initial setup.\n[2] - Choose a collection to analyze.")
+    inpt = get_input("Enter an option number or [r] - return.\n>>>",2)
     if inpt=='r':
         return
 
@@ -185,15 +193,16 @@ def menu_scrape():  # menu for setting up tweet scraping
     s = twitter.Setup()
     s.search()
     while True:
-        inpt = get_input("[1] - Search = " + (str(s.term).strip('[]') if len(s.term) > 0 else "None") +
+        print_dashes()
+        print("[1] - Search = " + (str(s.term).strip('[]') if len(s.term) > 0 else "None") +
             "\n[2] - Limit = " + str(s.lim) +
             "\n[3] - Temporary Collection = " + str(s.temp) +
             "\n[4] - Database Name = '" + s.db_name + "'\n[5] - Collection Name = '" + s.coll_name +
             "'\n[6] - Tweet Similarity Threshold = " + str(s.sim) +
             "\n[7] - Languages = " + str(s.lang).strip('[]') +
             "\n[8] - Follow UID(s) = " + (str(s.users).strip('[]') if len(s.users) > 0 else "None") +
-            "\n[9] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
-            "*Enter option number or: [Enter] - start streaming or [r] - return.""\n>>>", 9)
+            "\n[9] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END)
+        inpt = get_input("*Enter option number or: [Enter] - start streaming or [r] - return.""\n>>>", 9)
 
         if inpt == '' and mongo.connected and (len(s.term)>0 or len(s.users)>0):
             twitter.stream(s.term, s.lim, s.coll_name, s.db_name, s.temp, s.sim, s.lang, s.users)
