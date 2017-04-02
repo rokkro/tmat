@@ -119,7 +119,7 @@ def menu_scrape():  # menu for setting up tweet scraping
 
         def sub_mongo():
             print(color.YELLOW, end='')
-            mongo.mongo_handler()
+            mongo.mongo_connection()
             print(color.END, end='')
 
         menu = {
