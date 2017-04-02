@@ -1,14 +1,14 @@
-from display import get_input,get_list
-from analysis import sentiment
+from display import get_input,select_coll
+from analysis import sentiment,image
 
 def menu_sentiment():
     inpt = get_input("[1] - Run initial setup.\n[2] - Choose a collection to analyze.",
-                     "Enter an option number or [r] - return.\n>>>",2)
+                     "*Enter an option number or [r] - return.\n>>>",2)
     if inpt=='r':
         return
 
     def sub_analysis():
-        i = get_list()
+        i = select_coll()
         if i==None:
             return
         sentiment.analyze(i)
@@ -19,5 +19,9 @@ def menu_sentiment():
     }
 
     menu[inpt]()
+
 def menu_image():
-    print("placeholder")
+    coll = select_coll()
+    if coll == None:
+        return
+    image.insert_data(coll)
