@@ -1,7 +1,7 @@
 from analysis import menu_analysis
 from twitter import menu_twitter
 from display import color,get_input
-import menu_coll,mongo
+import menu_list,mongo
 
 def menu_main():
     print(color.YELLOW, end='')
@@ -10,9 +10,9 @@ def menu_main():
     menu = {
         1: menu_twitter.menu_scrape,
         2: menu_analysis.menu_sentiment,
-        3: exit,
+        3: menu_analysis.menu_image,
         4: exit,
-        5: menu_coll.menu_manage,
+        5: menu_list.menu_manage,
         6: mongo.mongo_connection
     }
     while True:
