@@ -1,4 +1,5 @@
-from display import color,get_list,get_input
+from display import color,select_coll,get_input,select_db
+
 def menu_manage():
     while True:
         inpt = get_input("[1] - View Databases, Collections, and Documents.\n"
@@ -8,8 +9,12 @@ def menu_manage():
                 "*Enter an option or [r] - return.\n>>>",4)
         if inpt == 'r':
             return
+
+        if inpt == '':
+            continue
+
         def sub_list():
-            i = get_list()
+            i = select_coll()
             if i == None:
                 return
             cursor = i.find({})
@@ -19,16 +24,18 @@ def menu_manage():
         def sub_tmp():
             deletable = []
             try:
-                coll, db = get_list(True) #gets collection list and chosen db
+                coll, db = select_db() #gets collection list and chosen db
             except:
                 return
             print(color.YELLOW + "The following collections will be DELETED:" + color.END)
+
             for j, k in enumerate(coll, 1): #loops through all collections
                 doc_count = db[coll[j - 1]].find({})  # take the current collection, and find all the documents
                 cursor = db[coll[j - 1]].find({"temp": True})  #searches collection for doc with temp = True
                 if cursor.count()>0: #if there's search results, then print the collection with temp = True
                     print("'" + k + "' (" + str(doc_count.count()) + ")")
                     deletable.append(db[coll[j-1]])
+
             if len(deletable) == 0:
                 print(color.YELLOW + "No temporary collections in this db." + color.END)
                 return
@@ -43,7 +50,7 @@ def menu_manage():
 
         def sub_del():
             print("Select a collection to delete.")
-            coll = get_list()
+            coll = select_coll()
             if coll == None:
                 return
             inpt = input(color.YELLOW + color.BOLD + "Are you sure you want to delete this collection and "
@@ -54,8 +61,8 @@ def menu_manage():
             else:
                 print("Deletion canceled.")
 
-        def sub_mark(): #be careful if you manually added in "temp" keys
-            coll = get_list()
+        def sub_mark(): #be careful if you manually added in other "temp" keys
+            coll = select_coll()
             if coll == None:
                 return
             c_true = coll.find({"temp": True})
