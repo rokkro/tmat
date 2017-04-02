@@ -1,7 +1,8 @@
 import mongo
 from twitter.streaming import Setup, stream
 from display import get_input, color
-def menu_scrape():  # menu for setting up tweet scraping
+
+def menu_scrape():
     s = Setup()
     s.search()
     while True:
@@ -82,8 +83,8 @@ def menu_scrape():  # menu for setting up tweet scraping
 
         def sub_simil():
             while True:
-                inpt = input(color.BOLD + "Enter a new simil threshold - 0.0 to 1.0. Higher value = filter out "
-                    "higher simil. Leave blank to cancel.\n>>>" + color.END)
+                inpt = input(color.BOLD + "*Enter a new value: 0.0 to 1.0. Higher value = filter out "
+                    "images with > similarity. Leave blank to cancel.\n>>>" + color.END)
                 if inpt == '' or inpt == s.sim:
                     break
                 try:
