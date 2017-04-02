@@ -1,4 +1,4 @@
-To use: insert correct Twitter (tweet streaming) and/or Kairos (image analysis) API keys into the `config.py` file, then run `main.py`, which is a menu interface.
+To use: insert correct Twitter (tweet streaming) and/or Kairos (image analysis) API keys into the `config.py` file, then run `menu_main.py`, which is a menu interface.
 
 Install mongoDB and run with `mongod --dbpath=/path/to/db`.
 
