@@ -5,7 +5,7 @@ import menu_manage,mongo
 
 def menu_main():
     print(color.YELLOW, end='')
-    mongo.mongo_handler()
+    mongo.mongo_connection()
     print(color.END, end='')
     menu = {
         1: menu_twitter.menu_scrape,
@@ -13,7 +13,7 @@ def menu_main():
         3: exit,
         4: exit,
         5: menu_manage.menu_manage,
-        6: mongo.mongo_handler
+        6: mongo.mongo_connection
     }
     while True:
         i = get_input("[1] - Scrape tweets.\n"
