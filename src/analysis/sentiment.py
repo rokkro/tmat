@@ -11,6 +11,7 @@ try:
     from nltk import tokenize
 except ModuleNotFoundError as e:
     print("Module missing, install with pip:",e)
+
 def initialize():
 
     n_instances = 100
