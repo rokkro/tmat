@@ -1,4 +1,4 @@
-from menu_provide import get_input,get_list
+from display import get_input,get_list
 from analysis import sentiment
 
 def menu_sentiment():
@@ -17,6 +17,7 @@ def menu_sentiment():
         1: sentiment.initialize,
         2:sub_analysis,
     }
+
     menu[inpt]()
 def menu_image():
     print("placeholder")
