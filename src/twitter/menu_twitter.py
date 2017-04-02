@@ -1,6 +1,6 @@
 import mongo
 from twitter.streaming import Setup, stream
-from menu_provide import get_input, color
+from display import get_input, color
 def menu_scrape():  # menu for setting up tweet scraping
     s = Setup()
     s.search()
