@@ -25,34 +25,34 @@ def get_input(menu,inpt_msg, lim):
         else:
             return i
 
-def get_list(db_only=False):
+def select_db():
     if not mongo.connected:
         print("You must be connected to MongoDB!")
         return
-    while True:
-        print("Do not select 'admin' or 'local' databases.")
-        def db_list():
-            for j, k in enumerate(mongo.get_dbnames(), 1):  # start at 1
-                print("[" + str(j) + "] - '" + k + "' (" + str(len(mongo.get_collections(k))) + ")")
-        db_list()
-        inpt = get_input(None,"Select a db to view collections or [r] - return.\n>>>", len(mongo.get_dbnames()))
-        if inpt == 'r' or inpt == '':
-            return None
+    print("Do not select 'admin' or 'local' databases.")
 
-        db = mongo.client[mongo.get_dbnames()[inpt - 1]]  # set up chosen db
-        coll = mongo.get_collections(mongo.get_dbnames()[inpt - 1])  # collections list from that db
+    for j, k in enumerate(mongo.get_dbnames(), 1):  # start at 1
+        print("[" + str(j) + "] - '" + k + "' (" + str(len(mongo.get_collections(k))) + ")") #print databases
+    inpt = get_input(None,"Select a db to view collections or [r] - return.\n>>>", len(mongo.get_dbnames()))
+    if inpt == 'r' or inpt == '':
+        return None
 
-        if db_only:
-            return coll,db
+    db = mongo.client[mongo.get_dbnames()[inpt - 1]]  # set up chosen db
+    coll = mongo.get_collections(mongo.get_dbnames()[inpt - 1])  # collections list from that db
+    return coll,db
 
-        def coll_list():
-            for j, k in enumerate(coll, 1):
-                tmp = db[coll[j - 1]].find({"temp": True})
-                doc_count = db[coll[j - 1]].find({})  # take the specified collection, and find all the documents
-                print("[" + str(j) + "] - '" + k + "' (" + str(doc_count.count()) + ")" +
-                      ("(TEMP)" if tmp.count()>0 else ""))
-        coll_list()
-        inpt = get_input(None,"Select a collection or [r] - return.\n>>>", len(coll))
-        if inpt == 'r' or inpt == '':
-            continue
-        return db[coll[inpt - 1]]
+def select_coll():
+    try:
+        coll,db = select_db()
+    except:
+        return None
+    for j, k in enumerate(coll, 1):
+        tmp = db[coll[j - 1]].find({"temp": True})
+        doc_count = db[coll[j - 1]].find({})  # take the specified collection, and find all the documents
+        print("[" + str(j) + "] - '" + k + "' (" + str(doc_count.count()) + ")" +
+              ("(TEMP)" if tmp.count()>0 else ""))
+
+    inpt = get_input(None,"Select a collection or [r] - return.\n>>>", len(coll))
+    if inpt == 'r' or inpt == '':
+        return None
+    return db[coll[inpt - 1]]
