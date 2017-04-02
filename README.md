@@ -1,14 +1,13 @@
-To use: insert correct Twitter dev keys into the `config.ini` file (no quotation marks around keys necessary), then run `main.py`, which is a (WIP) menu interface. Make sure all files are in the same directory.
+To use: insert correct Twitter (tweet streaming) and/or Kairos (image analysis) API keys into the `config.py` file, then run `main.py`, which is a menu interface.
 
 Install mongoDB and run with `mongod --dbpath=/path/to/db`.
 
 Requires Python 3.x, tested on 3.5/3.6.
 
-1. Twitter tweet streaming [x]  - queue system found to be unnecessary, on occasion tweets will be skipped to catch up.
+1. Twitter tweet streaming [x]  - queue system found to be unnecessary, rarely tweets will be skipped to catch up.
 2. Set up MongoDB system [x]
 3. Check tweet duplicates [x] - Checks for exact duplicates and by similarity user can modify (default 55%) within same collection.
 4. Sentiment analaysis [x] - Basic Vader SA implemented.
-5. Associate characteristics using neural networks to tweets + users. [WIP]
-6. Put resulting data somewhere
-7. Present data in meaningful way
-8. Historical tweet searching (if possible)
+5. Associate characteristics using neural networks to tweets + users. [WIP!]
+6. Present data in meaningful way
+7. Historical tweet gathering (if possible)
