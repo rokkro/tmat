@@ -1,7 +1,7 @@
 from analysis import menu_analysis
 from twitter import menu_twitter
-from menu_provide import *
-import menu_manage
+from menu_provide import color,get_input
+import menu_manage,mongo
 
 def menu_main():
     print(color.YELLOW, end='')
