@@ -18,3 +18,5 @@ def menu_sentiment():
         2:sub_analysis,
     }
     menu[inpt]()
+def menu_image():
+    print("placeholder")
