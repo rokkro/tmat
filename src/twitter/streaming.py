@@ -179,7 +179,7 @@ def stream(search, lim, coll_name, db_name, temp, simil, lang, users):
 if __name__ == '__main__':
     try:
         s = Setup()
-        mongo.mongo_handler()
+        mongo.mongo_connection()
         s.search()
         #print("Collection: " + s.coll_name + ", Database: " + s.db_name)
         if mongo.connected:
