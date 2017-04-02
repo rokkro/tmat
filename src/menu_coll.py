@@ -1,4 +1,4 @@
-from menu_provide import color,get_list,get_input
+from display import color,get_list,get_input
 def menu_manage():
     while True:
         inpt = get_input("[1] - View Databases, Collections, and Documents.\n"
