@@ -4,7 +4,7 @@ from pymongo.errors import ConnectionFailure
 client = None
 connected = False
 
-def mongo_handler():
+def mongo_connection():
     global client, connected
     if connected:
         print("Disconnected from MongoDB.")
@@ -28,4 +28,3 @@ def get_dbnames():
 
 def get_collections(db_name):
     return client[db_name].collection_names()
-
