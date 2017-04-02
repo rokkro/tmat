@@ -1,3 +1,4 @@
+from json import JSONDecodeError
 from display import get_input,select_coll
 from analysis import sentiment,image
 
@@ -24,4 +25,7 @@ def menu_image():
     coll = select_coll()
     if coll == None:
         return
-    image.insert_data(coll)
+    try:
+        image.insert_data(coll)
+    except JSONDecodeError as e:
+        print("Possible Kairos Error. Verify your API keys are correct.",e)
