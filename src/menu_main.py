@@ -1,7 +1,7 @@
 from analysis import menu_analysis
 from twitter import menu_twitter
-from menu_provide import color,get_input
-import menu_manage,mongo
+from display import color,get_input
+import menu_coll,mongo
 
 def menu_main():
     print(color.YELLOW, end='')
@@ -12,7 +12,7 @@ def menu_main():
         2: menu_analysis.menu_sentiment,
         3: exit,
         4: exit,
-        5: menu_manage.menu_manage,
+        5: menu_coll.menu_manage,
         6: mongo.mongo_connection
     }
     while True:
