@@ -8,6 +8,7 @@ auth_headers={
 def image_base64(file):
     with open(file,'rb') as img:
         return base64.b64encode(img.read()).decode('ascii')
+
 def emotion():
     url = 'https://api.kairos.com/v2/media'
     with open("test.jpg",'rb') as img:
