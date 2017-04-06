@@ -66,7 +66,7 @@ def analyze(coll):
         except LookupError as e:
             print("Error: Make sure you have run initial setup:",e)
         if config.verbose:
-            print("DB _id:", i.get('_id'))
+            print("Document _id:", i.get('_id'))
             print(sentences[0])
             print(ss)
         coll.update_one({'_id':i.get('_id')},{ '$set' : {
