@@ -29,3 +29,5 @@ def menu_image():
         image.insert_data(coll)
     except JSONDecodeError as e:
         print("Possible Kairos Error. Verify your API keys are correct.",e)
+    except BaseException as e:
+        print("Error:",e)
