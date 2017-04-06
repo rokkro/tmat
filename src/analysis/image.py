@@ -5,9 +5,9 @@ auth_headers={
     'app_key': config.appkey
 }
 def get_image(response):
-    with open('image.jpg','wb') as f: #convert response into saved image
+    with open('ta-image.jpg','wb') as f: #convert response into saved image
         f.write(response.content)
-    return "image.jpg"
+    return "ta-image.jpg"
 
 def image_base64(file): #makes image usable for detect()
     with open(file,'rb') as img:
@@ -53,4 +53,4 @@ def insert_data(coll):
         else:
             #print(profile_pic+ " DEFAULT!" + " " + i['user']['screen_name'])
             continue
-    os.remove("image.jpg")
+    os.remove("ta-image.jpg")
