@@ -43,13 +43,15 @@ class Listener(StreamListener):
             cursorText = c['text'].translate(c['text'].maketrans('', '', string.punctuation)).replace(" ", "")
             datajText = dataj['text'].translate(dataj['text'].maketrans('', '', string.punctuation)).replace(" ", "")
             if cursorText == datajText:
-                #print(" FIRST: " + c['text'] + " SECOND: " + dataj['text'])
-                #print("\nDuplicate tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
+                if config.verbose:
+                    print(" FIRST: " + c['text'] + " SECOND: " + dataj['text'])
+                    print("\nDuplicate tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
                 return True
             elif SequenceMatcher(None,cursorText,datajText).ratio() > self.simil:
-                #print("\n" + str(SequenceMatcher(None,cursorText,datajText).ratio() * 100) + "% similar existing"
-                #     " tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
-                #print(" FIRST: " + c['text'] + " SECOND: " + dataj['text'])
+                if config.verbose:
+                    print("\n" + str(SequenceMatcher(None,cursorText,datajText).ratio() * 100) + "% similar existing"
+                        " tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
+                    print(" FIRST: " + c['text'] + " SECOND: " + dataj['text'])
                 return True
         return False  # if no duplicates found
 
