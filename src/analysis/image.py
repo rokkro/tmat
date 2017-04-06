@@ -40,6 +40,7 @@ def insert_data(coll):
             continue
         if not i['user']['default_profile_image'] and 'default_profile' not in profile_pic: #filter both default pics
             if config.verbose:
+                print("Document _id:", i.get('_id'))
                 print(profile_pic + " " + i['user']['screen_name'])
             img = get_image(response)
             det = detect(img)
