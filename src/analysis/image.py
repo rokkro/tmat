@@ -39,14 +39,18 @@ def insert_data(coll):
         if not i['user']['default_profile_image'] and 'default_profile' not in profile_pic: #filter both default pics
             print(profile_pic + " " + i['user']['screen_name'])
             img = get_image(response)
-            emo =emotion(img)
             det = detect(img)
+            if 'Errors' in det:
+                print("Error:", det['Errors'][0]['ErrCode'] , "-", det['Errors'][0]['Message'])
+                continue
+            emo =emotion(img)
+
+            coll.update_one({'_id': i.get('_id')}, {'$set': {
+                "face": {
+                    "emotion":emo,
+                    "detection": det
+                }}})
         else:
             #print(profile_pic+ " DEFAULT!" + " " + i['user']['screen_name'])
             continue
     os.remove("image.jpg")
-
-if __name__ == '__main__':
-    img = get_image()
-    emotion(img)
-    detect(img)
