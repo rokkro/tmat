@@ -1,5 +1,5 @@
 #http://www.nltk.org/howto/sentiment.html
-import warnings, mongo
+import warnings, mongo, config
 warnings.filterwarnings("ignore") #stop useless warning
 try:
     from nltk.sentiment.util import *
@@ -64,10 +64,11 @@ def analyze(coll):
             sentences.extend(tokenize.sent_tokenize(i["text"])) #prepare tweet text
             ss = sid.polarity_scores(sentences[0]) #get polarity of text
         except LookupError as e:
-            print("Make sure you have run initial setup:",e)
-        #print(i.get('_id'))
-        #print(sentences[0])
-        #print(ss)
+            print("Error: Make sure you have run initial setup:",e)
+        if config.verbose:
+            print("DB _id:", i.get('_id'))
+            print(sentences[0])
+            print(ss)
         coll.update_one({'_id':i.get('_id')},{ '$set' : {
             "sentiment":{
                 "pos": ss['pos'],
