@@ -31,7 +31,7 @@ def menu_manage():
 
             for j, k in enumerate(coll, 1): #loops through all collections
                 doc_count = db[coll[j - 1]].find({})  # take the current collection, and find all the documents
-                cursor = db[coll[j - 1]].find({"temp": True})  #searches collection for doc with temp = True
+                cursor = db[coll[j - 1]].find({"ta-temp": True})  #searches collection for doc with temp = True
                 if cursor.count()>0: #if there's search results, then print the collection with temp = True
                     print("'" + k + "' (" + str(doc_count.count()) + ")")
                     deletable.append(db[coll[j-1]])
@@ -61,22 +61,22 @@ def menu_manage():
             else:
                 print("Deletion canceled.")
 
-        def sub_mark(): #be careful if you manually added in other "temp" keys
+        def sub_mark(): 
             coll = select_coll()
             if coll == None:
                 return
-            c_true = coll.find({"temp": True})
-            c_false = coll.find({"temp": False})
+            c_true = coll.find({"ta-temp": True})
+            c_false = coll.find({"ta-temp": False})
             if c_true.count()>0: #may want to reevaluate unique cases here, will flip any "temp" : True/False
                 for i in c_true:
-                    coll.replace_one({"temp": True},{"temp": False}) #safer to replace than delete
+                    coll.replace_one({"ta-temp": True},{"ta-temp": False}) #safer to replace than delete
                 print(color.YELLOW + "Collection marked as permanent." + color.END)
             elif c_false.count() > 0:
                 for i in c_false:
-                    coll.replace_one({"temp": False}, {"temp": True})
+                    coll.replace_one({"ta-temp": False}, {"ta-temp": True})
                 print(color.YELLOW + "Collection marked as temporary." + color.END)
             else:
-                coll.insert_one({"temp": True})
+                coll.insert_one({"ta-temp": True})
                 print(color.YELLOW + "Collection marked as temporary." + color.END)
 
         menu = {
