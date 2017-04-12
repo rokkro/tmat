@@ -84,7 +84,7 @@ def menu_scrape():
         def sub_simil():
             while True:
                 inpt = input(color.BOLD + "*Enter a new value: 0.0 to 1.0. Higher value = filter out "
-                    "images with > similarity. Leave blank to cancel.\n>>>" + color.END)
+                    "tweets with > similarity. Leave blank to cancel.\n>>>" + color.END)
                 if inpt == '' or inpt == s.sim:
                     break
                 try:
