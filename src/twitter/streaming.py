@@ -155,7 +155,7 @@ def stream(search, lim, coll_name, db_name, temp, simil, lang, users):
         tweetcoll = db[coll_name]  # initialize collection
         if temp:
             tweetcoll.insert_one({ #This creates a coll even if no tweets found.
-                "ta-temp" : temp
+                "coll_temp" : temp
             })
     except Exception as e:
         print("Error:",e)
