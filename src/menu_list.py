@@ -31,7 +31,7 @@ def menu_manage():
 
             for j, k in enumerate(coll, 1): #loops through all collections
                 doc_count = db[coll[j - 1]].find({})  # take the current collection, and find all the documents
-                cursor = db[coll[j - 1]].find({"coll_temp": True})  #searches collection for doc with temp = True
+                cursor = db[coll[j - 1]].find({"t_temp": True})  #searches collection for doc with temp = True
                 if cursor.count()>0: #if there's search results, then print the collection with temp = True
                     print("'" + k + "' (" + str(doc_count.count()) + ")")
                     deletable.append(db[coll[j-1]])
@@ -65,18 +65,18 @@ def menu_manage():
             coll = select_coll()
             if coll == None:
                 return
-            c_true = coll.find({"coll_temp": True})
-            c_false = coll.find({"coll_temp": False})
+            c_true = coll.find({"t_temp": True})
+            c_false = coll.find({"t_temp": False})
             if c_true.count()>0: #may want to reevaluate unique cases here, will flip any "temp" : True/False
                 for i in c_true:
-                    coll.replace_one({"coll_temp": True},{"coll_temp": False}) #safer to replace than delete
+                    coll.replace_one({"t_temp": True},{"t_temp": False}) #safer to replace than delete
                 print(color.YELLOW + "Collection marked as permanent." + color.END)
             elif c_false.count() > 0:
                 for i in c_false:
-                    coll.replace_one({"coll_temp": False}, {"coll_temp": True})
+                    coll.replace_one({"t_temp": False}, {"t_temp": True})
                 print(color.YELLOW + "Collection marked as temporary." + color.END)
             else:
-                coll.insert_one({"coll_temp": True})
+                coll.insert_one({"t_temp": True})
                 print(color.YELLOW + "Collection marked as temporary." + color.END)
 
         menu = {
