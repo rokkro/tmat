@@ -27,11 +27,15 @@ def menu_scrape():
             return
 
         def sub_search():
+            print(color.BOLD,end='')
             s.search()
+            print(color.END,end='')
             print(color.YELLOW + "Search changed to " +(str(s.term).strip('[]') if len(s.term) > 0 else "None") + "." + color.END)
 
         def sub_lim():
+            print(color.BOLD,end='')
             s.limit()
+            print(color.END,end='')
             print(color.YELLOW + "Limit changed to " + str(s.lim) + "." + color.END)
 
         def sub_tmp():
@@ -47,7 +51,7 @@ def menu_scrape():
         def sub_db():
             while True:
                 inpt = input(color.BOLD + "Enter a new name for the database, currently '" + s.db_name +
-                    "'. Leave blank to cancel. ""Spaces and special characters will be removed.\n>>>" + color.END)
+                    "'. Leave blank to cancel.\nSpaces and special characters will be removed.\n>>>" + color.END)
                 inpt = ''.join(e for e in inpt if e.isalnum())
                 if inpt == '' or inpt == s.db_name or inpt == 'admin' or inpt == 'local':
                     break
@@ -115,7 +119,9 @@ def menu_scrape():
                 s.lang = tmp
 
         def sub_follow():
+            print(color.BOLD,end='')
             s.follow()
+            print(color.END,end='')
             print(color.YELLOW + "Follow list changed to " + (str(s.users).strip('[]') if len(s.users) > 0 else "None") + "." + color.END)
 
         def sub_mongo():
