@@ -12,7 +12,10 @@ except ImportError as e:
     print("Module missing, install with pip:",e)
 
 def initialize():
-
+    nltk.download('subjectivity')
+    nltk.download('vader_lexicon')
+    nltk.download('punkt')
+    
     n_instances = 100
     try:
         subj_docs = [(sent, 'subj') for sent in subjectivity.sents(categories='subj')[:n_instances]]
@@ -20,9 +23,6 @@ def initialize():
     except NameError as e:
         print("Make sure NLTK is installed:",e)
         return
-    nltk.download('subjectivity')
-    nltk.download('vader_lexicon')
-    nltk.download('punkt')
     len(subj_docs), len(obj_docs)
 
     train_subj_docs = subj_docs[:80]
