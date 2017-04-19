@@ -8,7 +8,7 @@ try:
     from nltk.corpus import subjectivity
     from nltk.sentiment import SentimentAnalyzer
     from nltk import tokenize
-except ModuleNotFoundError as e:
+except ImportError as e:
     print("Module missing, install with pip:",e)
 
 def initialize():
