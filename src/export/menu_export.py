@@ -1,7 +1,7 @@
 from display import select_coll, get_input
 
 def menu_filter_sentiment():
-    print("test")
+    print("test ")
 def menu_filter_image():
 
 def menu_filter_tweets():
