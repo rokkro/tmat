@@ -14,7 +14,7 @@ def menu_scrape():
             "\n[7] - Languages = " + str(s.lang).strip('[]') +
             "\n[8] - Follow UID(s) = " + (str(s.users).strip('[]') if len(s.users) > 0 else "None") +
             "\n[9] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
-            "*Enter option number or: [Enter] - start streaming or [r] - return.""\n>>>", 9)
+            "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>", 9)
 
         if inpt == '' and mongo.connected and (len(s.term)>0 or len(s.users)>0):
             stream(s.term, s.lim, s.coll_name, s.db_name, s.temp, s.sim, s.lang, s.users)
