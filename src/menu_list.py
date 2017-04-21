@@ -1,12 +1,12 @@
-from display import color,select_coll,get_input,select_db
+from display import color,get_coll,get_menu,get_db
 
 def menu_manage():
     while True:
-        inpt = get_input("[1] - View Databases, Collections, and Documents.\n"
+        inpt = get_menu("[1] - View Databases, Collections, and Documents.\n"
               "[2] - Purge Temporary Collections in a DB.\n"
               "[3] - Delete Specific Collections.\n"
               "[4] - Mark/Un-mark a Collection as Temporary.",
-                "*Enter an option or [r] - return.\n>>>",4)
+                "*Enter an option or [r] - return.\n>>>", 4)
         if inpt == 'r':
             return
 
@@ -14,7 +14,7 @@ def menu_manage():
             continue
 
         def sub_list():
-            i = select_coll()
+            i = get_coll()
             if i == None:
                 return
             cursor = i.find({})
@@ -24,7 +24,7 @@ def menu_manage():
         def sub_tmp():
             deletable = []
             try:
-                coll, db = select_db() #gets collection list and chosen db
+                coll, db = get_db() #gets collection list and chosen db
             except:
                 return
             print(color.YELLOW + "The following collections will be DELETED:" + color.END)
@@ -50,7 +50,7 @@ def menu_manage():
 
         def sub_del():
             print("Select a collection to delete.")
-            coll = select_coll()
+            coll = get_coll()
             if coll == None:
                 return
             inpt = input(color.YELLOW + color.BOLD + "Are you sure you want to delete this collection and "
@@ -62,7 +62,7 @@ def menu_manage():
                 print("Deletion canceled.")
 
         def sub_mark(): #be careful if you manually added in other "temp" keys
-            coll = select_coll()
+            coll = get_coll()
             if coll == None:
                 return
             c_true = coll.find({"t_temp": True})

@@ -1,7 +1,7 @@
 from analysis import menu_analysis
 from twitter import menu_twitter
-from display import color,get_input
-import menu_list,mongo
+from display import color,get_menu
+import menu_list,mongo,exp_csv
 
 def menu_main():
     print(color.YELLOW, end='')
@@ -11,12 +11,12 @@ def menu_main():
         1: menu_twitter.menu_scrape,
         2: menu_analysis.menu_sentiment,
         3: menu_analysis.menu_image,
-        4: exit,
+        4: exp_csv.setup,
         5: menu_list.menu_manage,
         6: mongo.mongo_connection
     }
     while True:
-        i = get_input("[1] - Scrape tweets.\n"
+        i = get_menu("[1] - Scrape tweets.\n"
           "[2] - Perform Sentiment Analysis.\n"
           "[3] - Perform Image Analysis.\n"
           "[4] - Export as CSV.\n"
