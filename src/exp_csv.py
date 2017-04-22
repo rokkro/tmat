@@ -12,10 +12,14 @@ def write_data(fname):
         'User Emotion','User Race','User Age','User Gender','User Country','User City',
         'User Verified', 'User Followers', 'User Following'
     ]
+    row = [
+        ['user', 'screen_name'], ['created_at'], ['text'], ['lang'], ['favorite_count'], ['retweet_count'],
+        ['sentiment', 'pos'], ['sentiment', 'neu'], ['sentiment', 'neg'], ['sentiment', 'compound'],
+        ['face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'gender', 'type']
+    ]
     with open(fname,'w',newline='') as out_file:
         w = writer(out_file, dialect='excel')
         w.writerow(headers)
-        #begin grand loop
         def error_slap(cursor,list): #handles non existant key errors, replacing them with the right stuff
             try:
                 for i in range(len(list)):
@@ -23,22 +27,13 @@ def write_data(fname):
                 print(cursor)
             except Exception as e:
                 print("Error:",e)
-       # row = [i['user']['screen_name'], i['created_at'], i['text'], i['lang'],
-       #  i['face']['detection']['images'][0]['faces'][0]['attributes']['gender']['type']]
-        row = [
-            ['user','screen_name'],['created_at'],['text'],['lang'],['favorite_count'],['retweet_count'],
-            ['sentiment', 'pos'],['sentiment','neu'],['sentiment', 'neg'],['sentiment', 'compound'],
-            ['face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'gender', 'type']
-        ]
+
+
         all = coll.find({})
         for k,i in enumerate(all):
             for item in row:
                 error_slap(i,item)
 
-
-            #uemotion =
-            #urace =
-            #uage =
             error_slap(i,['user','time_zone'])
 
 
