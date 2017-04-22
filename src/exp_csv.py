@@ -47,7 +47,7 @@ def write_data(fname):
             try:
                 for i in range(len(list)): #loop through the list
                     cursor = cursor[list[i]] #keep accessing the next sub element in document, till reach the final key
-                print(cursor)
+                #print(cursor)
                 data.append(cursor)
             except Exception as e:
                 print("Error:",e)
@@ -55,10 +55,31 @@ def write_data(fname):
 
 
         all = coll.find({})
+        ethbiggest = embiggest = 0
         for k,i in enumerate(all):
             for item in list_guide:
                 error_slap(i,item)
+            for emotion in range(10,16):
+                try:
+                    if float(data[emotion]) > embiggest:
+                       embiggest = data[emotion]
+                except (ValueError,TypeError):
+                    continue
+            for ethnicity in range(16,21):
+                try:
+                    if float(data[ethnicity]) > ethbiggest:
+                        ethbiggest = data[ethnicity]
+                except (ValueError,TypeError):
+                    continue
+            del data[17:21]
+            data[16] = ethbiggest
+            del data[11:16]
+            data[10] = embiggest
             w.writerow(data)
+            for i in data:
+                print(i)
+            ethbiggest = 0
+            embiggest = 0
             data[:] = []
 
 
