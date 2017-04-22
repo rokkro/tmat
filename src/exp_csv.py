@@ -9,7 +9,7 @@ def write_data(fname):
     headers = [
         'Username', 'Tweet Date', 'Tweet Content','Tweet Language', 'Tweet Favorites','Tweet Retweets',
         'Sentiment Pos','Sentiment Neu','Sentiment Neg','Sentiment Comp',
-        'User Emotion','User Ethnicity','User Age','Glasses','User Gender','User Country','User City',
+        'User Emotion','User Ethnicity','User Age','Age Group','Glasses','User Gender','Eye Gap', 'Lips','Dwell','Attention','Blinking','User Country','User City',
         'User Verified', 'User Followers', 'User Following'
     ]
     list_guide = [
@@ -26,23 +26,21 @@ def write_data(fname):
         ['face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'other'], #other
         ['face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'black'], #black
         ['face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'white'], #white
+        ['face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'age'],  # age
+        ['face', 'emotion', 'frames', 0, 'people', 0, 'demographics', 'age_group'], #age group
         ['face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'glasses'], #glasses
+        ['face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'gender', 'type'],  # gender
         ['face', 'detection', 'images', 0, 'faces', 0, 'leftEyeCenterX'],  # leftEyeX
         ['face', 'detection', 'images', 0, 'faces', 0, 'rightEyeCenterX'],  # rightEyeX
         ['face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'lips'],  # lips
-        ['face', 'emotion', 'frames', 0, 'people', 0, 'demographics', 'age_group'],  # age group
         ['face', 'emotion', 'frames', 0, 'people', 0, 'tracking', 'glances'],  # glances
         ['face', 'emotion', 'frames', 0, 'people', 0, 'tracking', 'dwell'],  # dwell
         ['face', 'emotion', 'frames', 0, 'people', 0, 'tracking', 'attention'],  # attention
         ['face', 'emotion', 'frames', 0, 'people', 0, 'tracking', 'blink'],  # blinking
-        ['face', 'detection', 'images', 0, 'faces', 0, 'attributes','age'], #age
-        ['face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'gender', 'type'], #gender
         ['place','country'], ['place','name'], ['user','verified'],['user','followers_count'],['user','friends_count']
     ]
-    data = {
-
-    }
-    with open(fname,'w',newline='') as out_file:
+    data = []
+    with open(fname,'w',newline='',encoding='utf-8') as out_file:
         w = writer(out_file, dialect='excel')
         w.writerow(headers)
         def error_slap(cursor,list): #handles non existant key errors, replacing them with the right stuff
@@ -50,20 +48,18 @@ def write_data(fname):
                 for i in range(len(list)): #loop through the list
                     cursor = cursor[list[i]] #keep accessing the next sub element in document, till reach the final key
                 print(cursor)
+                data.append(cursor)
             except Exception as e:
                 print("Error:",e)
+                data.append("")
 
 
         all = coll.find({})
         for k,i in enumerate(all):
             for item in list_guide:
                 error_slap(i,item)
-
-            error_slap(i,['user'])
-
-
-
-        w.writerow(['test'])
+            w.writerow(data)
+            data[:] = []
 
 
 def setup():
