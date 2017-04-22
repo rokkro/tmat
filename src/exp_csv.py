@@ -16,38 +16,30 @@ def write_data(fname):
         w = writer(out_file, dialect='excel')
         w.writerow(headers)
         #begin grand loop
-        def error_slap(cursor,lisst): #woooo!
+        def error_slap(cursor,list): #handles non existant key errors, replacing them with the right stuff
             try:
-                for i in range(len(lisst)):
-                    cursor = cursor[lisst[i]]
+                for i in range(len(list)):
+                    cursor = cursor[list[i]]
                 print(cursor)
             except Exception as e:
-                print(e)
+                print("Error:",e)
        # row = [i['user']['screen_name'], i['created_at'], i['text'], i['lang'],
        #  i['face']['detection']['images'][0]['faces'][0]['attributes']['gender']['type']]
-
+        row = [
+            ['user','screen_name'],['created_at'],['text'],['lang'],['favorite_count'],['retweet_count'],
+            ['sentiment', 'pos'],['sentiment','neu'],['sentiment', 'neg'],['sentiment', 'compound'],
+            ['face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'gender', 'type']
+        ]
         all = coll.find({})
         for k,i in enumerate(all):
-            error_slap(i,['favorite_count'])
-            error_slap(i,['sentiment','pos'])
-            #uname =
-            #tdate =
-            #tweet = i['text']
-            #tlang = i['lang']
-            tfaves = i['favorite_count']
-            tretweets = i['retweet_count']
-            tspos = i['sentiment']['pos']
-            tsneu = i['sentiment']['neu']
-            tsneg = i['sentiment']['neg']
-            tscomp = i['sentiment']['compound']
+            for item in row:
+                error_slap(i,item)
+
+
             #uemotion =
             #urace =
             #uage =
-            print(k,i)
-            ugender = i['face']['detection']['images'][0]['faces'][0]['attributes']['gender']['type']
-            print(ugender)
-            utimezone = i['user']['time_zone']
-            print("MAED IT TO TIMEZONE")
+            error_slap(i,['user','time_zone'])
 
 
 
