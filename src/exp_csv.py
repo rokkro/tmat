@@ -7,19 +7,47 @@ def write_data(fname):
     if coll == None:
         return
     headers = [
-        'Username', 'Tweet Date', 'Tweet Content','Favorites','Retweets',
+        'Username', 'Tweet Date', 'Tweet Content','Tweet Language', 'Tweet Favorites','Tweet Retweets',
         'Sentiment Pos','Sentiment Neu','Sentiment Neg','Sentiment Comp',
-        'Emotion','Race','Age','Gender','Tweet Language','Country','City',
-        'Verified', 'Followers', 'Following'
+        'User Emotion','User Race','User Age','User Gender','User Country','User City',
+        'User Verified', 'User Followers', 'User Following'
     ]
-
     with open(fname,'w',newline='') as out_file:
         w = writer(out_file, dialect='excel')
         w.writerow(headers)
         #begin grand loop
+        def error_slap(cursor,lisst): #woooo!
+            try:
+                for i in range(len(lisst)):
+                    cursor = cursor[lisst[i]]
+                print(cursor)
+            except Exception as e:
+                print(e)
+       # row = [i['user']['screen_name'], i['created_at'], i['text'], i['lang'],
+       #  i['face']['detection']['images'][0]['faces'][0]['attributes']['gender']['type']]
+
         all = coll.find({})
-        for i in all:
-            username = i.find()
+        for k,i in enumerate(all):
+            error_slap(i,['favorite_count'])
+            error_slap(i,['sentiment','pos'])
+            #uname =
+            #tdate =
+            #tweet = i['text']
+            #tlang = i['lang']
+            tfaves = i['favorite_count']
+            tretweets = i['retweet_count']
+            tspos = i['sentiment']['pos']
+            tsneu = i['sentiment']['neu']
+            tsneg = i['sentiment']['neg']
+            tscomp = i['sentiment']['compound']
+            #uemotion =
+            #urace =
+            #uage =
+            print(k,i)
+            ugender = i['face']['detection']['images'][0]['faces'][0]['attributes']['gender']['type']
+            print(ugender)
+            utimezone = i['user']['time_zone']
+            print("MAED IT TO TIMEZONE")
 
 
 
