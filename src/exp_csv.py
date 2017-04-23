@@ -63,11 +63,16 @@ def write_data(fname):
                 #print("Error:",e)
                 data.append([list[0],""])
 
+        def delete_data(r,value):
+            if len(r) > 0:
+                for s in range(1,len(r)):
+                    del data[r[s]-s+1]
+                data[r[0]][1] = value
+
         def set_largest(tag):
             biggest = 0
             r = []
             for j in range(len(data)):
-                #print(j,data[j])
                 if tag in data[j]:
                     r.append(j)
                     try:
@@ -75,16 +80,19 @@ def write_data(fname):
                             biggest = data[j][1]
                     except:
                         continue
+            return r,biggest
 
-            if len(r) > 0:
-                for s in range(1,len(r)):
-                    print(r[s], "DELETING",data[r[s]-s+1])
-                    print(r)
-                    del data[r[s]-s+1]
-                #print("DATA SUV ZERO",data[r[0]][1])
-                data[r[0]][1] = biggest
-                #print(r[0][1])
+        def get_difference(tag):
+            r, val = set_largest(tag)
+            for i in range(len(r)):
+                try:
+                    if float(data[r[i]][1]) < val:
+                        val-=float(data[r[i]][1])
+                except ValueError:
+                    continue
+            return r,val
         all = coll.find({})
+
         for k,i in enumerate(all): #loop through all the documents.
             # k=row number, so go from k * len(list_guide) to k*len(list_guide)+len(list_guide) for CURRENT ROW DATA
             for item in list_guide: #creating a SINGLE row of data with specified tag group
@@ -94,43 +102,16 @@ def write_data(fname):
                 error_slap(i,item, "em")
                 error_slap(i, item, "eth")
                 error_slap(i, item, "ep")
-            set_largest("em")
-            set_largest("eth")
+            r, val = set_largest("em")
+            delete_data(r,val)
+            r, val = set_largest("eth")
+            delete_data(r,val)
+            r, val = get_difference("ep")
+            delete_data(r,val)
 
-            '''
-            em = find_tag("em")
-            for emotion in range(em[0],em[len(em)-1]):
-                try:
-                    if float(data[emotion]) > embiggest:
-                       embiggest = data[emotion]
-                except (ValueError,TypeError):
-                    continue
-            del data[em[0]:em[len(em) - 1]]
-            data[em[0]] = embiggest
-            offset+=em[len(em)-1]-em[0]
-            eth = find_tag("eth",em[0],offset)
-            for ethnicity in range(eth[0],eth[len(eth)-1]+1):
-                try:
-                    if float(data[ethnicity]) > ethbiggest:
-                        ethbiggest = data[ethnicity]
-                except (ValueError,TypeError):
-                    continue
-            del data[eth[0]:eth[len(eth) - 1]]
-            data[eth[0]] = ethbiggest
-            offset+=eth[len(eth)-1]-eth[0]
-            ep = find_tag("ep",eth[0],offset)
-            for eyes in range(ep[0],ep[len(ep)-1]+1):
-                try:
-                    epgap = data[ep[0]] - data[ep[len(ep)-1]]
-                except (ValueError, TypeError):
-                    continue
-            del data[ep[0]:ep[len(ep) - 1]]
-            data[ep[0]] = epgap
-            '''
+            for i in range(len(data)):
+                data[i] = data[i][1]
             w.writerow(data)
-
-            #for i in data:
-            #    print(i)
             data[:] = []
 def find_tag(tag,upper=0,offset=0): #basic tag range
     r = []
