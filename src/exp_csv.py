@@ -61,36 +61,42 @@ def write_data(fname):
                     data.append([list[0],cursor])
             except Exception as e:
                 #print("Error:",e)
-                data.append(["",""])
+                data.append([list[0],""])
 
-
-        all = coll.find({})
-        for k,i in enumerate(all): #loop through all the documents.
-            # k=row number, so go from k * len(list_guide) to k*len(list_guide)+len(list_guide) for CURRENT ROW DATA
+        def set_largest(tag):
             biggest = 0
             r = []
-            for item in list_guide: #creating a SINGLE row of data with specified tag group
-                error_slap(i,item,"u")
-                error_slap(i, item, "t")
-                error_slap(i, item, "s")
-                error_slap(i,item,"em")
-                error_slap(i, item, "eth")
-                error_slap(i, item, "ep")
-
-            for j in range(len(list_guide)):
+            for j in range(len(data)):
                 #print(j,data[j])
-                if "em" in data[j]:
+                if tag in data[j]:
                     r.append(j)
-                    if float(data[j][1]) > biggest:
-                        biggest = data[j][1]
-                #print(data)
+                    try:
+                        if float(data[j][1]) > biggest:
+                            biggest = data[j][1]
+                    except:
+                        continue
+
             if len(r) > 0:
                 for s in range(1,len(r)):
-                    #print(r[s], "DELETING",data[r[s]-s+1])
+                    print(r[s], "DELETING",data[r[s]-s+1])
+                    print(r)
                     del data[r[s]-s+1]
                 #print("DATA SUV ZERO",data[r[0]][1])
                 data[r[0]][1] = biggest
                 #print(r[0][1])
+        all = coll.find({})
+        for k,i in enumerate(all): #loop through all the documents.
+            # k=row number, so go from k * len(list_guide) to k*len(list_guide)+len(list_guide) for CURRENT ROW DATA
+            for item in list_guide: #creating a SINGLE row of data with specified tag group
+                error_slap(i,item,"u")
+                error_slap(i, item, "t")
+                error_slap(i, item, "s")
+                error_slap(i,item, "em")
+                error_slap(i, item, "eth")
+                error_slap(i, item, "ep")
+            set_largest("em")
+            set_largest("eth")
+
             '''
             em = find_tag("em")
             for emotion in range(em[0],em[len(em)-1]):
@@ -126,7 +132,6 @@ def write_data(fname):
             #for i in data:
             #    print(i)
             data[:] = []
-            r[:] = []
 def find_tag(tag,upper=0,offset=0): #basic tag range
     r = []
     for j,i in enumerate(list_guide):
