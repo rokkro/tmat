@@ -10,4 +10,4 @@ Requires Python 3.x, tested on 3.5/3.6.
 4. Sentiment analaysis [x] - Basic <a href="https://github.com/cjhutto/vaderSentiment">Vader Sentiment</a> implemented.
 5. Associate characteristics using Kairos to tweets + users. [x]
 6. Export to .csv spreadsheets. [x]
-7. Historical tweet gathering (if possible)
+7. Historical tweet gathering 
