@@ -31,13 +31,16 @@ def detect(img):
 #https://dev.twitter.com/basics/user-profile-images-and-banners
 def insert_data(coll,limit):
     success = 0
+    count = 1
     print("Running Image analysis...")
     cursor = coll.find({})  # finds all documents in collection
     for lim,i in enumerate(cursor):  # loop through those
         if lim == limit:
             break
+        print("\r#" + str(count), end=" ", flush=True)
         profile_pic =i['user']['profile_image_url_https'].replace("_normal","")
         response = requests.get(profile_pic)
+        count+=1
         if response.status_code == 404 or response.status_code == 403: #dead links to images
             continue
         if not i['user']['default_profile_image'] and 'default_profile' not in profile_pic: #filter both default pics
