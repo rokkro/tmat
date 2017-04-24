@@ -27,10 +27,21 @@ Requires Python 3.x, tested on 3.5/3.6.
  7. Queries using both the follower and search term options, will retrieve ANY new tweets from the specified user, and ANY tweets
     from any user who tweets the specified search term.
     
-  #### Sentiment Analysis:
+  #### Sentiment Analysis with Vader Sentiment:
 1.  The NLTK Python module is used with <a href="https://github.com/cjhutto/vaderSentiment">Vader Sentiment</a>.
       Specifically, `subjectivity`, `vader_lexicon`, and `punkt` are used with the Naive Bayes Classifier to train it to understand
       tweet content.
 2.  Four values are found from analysis: the positivity, negativity, and neutrality of the tweet. 
       In addition, the compound value is calculated: see the Vader Sentiment link above for an explanation.
-3.  These values are inserted in each tweet document in the specified collection under `sentiment` - (`pos`,`neg`,`neu`, and `compound`).
+3.  These values are inserted in each tweet document in the specified collection under `sentiment` : (`pos`,`neg`,`neu`, and `compound`).
+
+  #### Image Analysis with Kairos
+1.  The Kairos facial detection and emotion/age/gender APIs are used.
+2.  The profile image URL is taken from the current document in the collection, and is tested if it exists.
+3.  The current doc is checked for `default_profile_image` being false, and the URL does not contain a 'default' picture URL.
+4.  The current image is individually downloaded as `ta-image.jpg`, then is uploaded to the Kairos detect API.
+5.  If the API does not find a face, then the next document repeats this process (overwriting `ta-image.jpg` with each new image).
+6.  If a face is found, then the image is uploaded and run through the Kairos emotion API. 
+7.  Data from the detection and emotion API are inserted into the current document under `face` : (`detect` and `emotion`)
+8.  When the final image is processed, `ta-image.jpg` is deleted.
+9.  Occasionally, the Kairos API will return facial detection data, but not emotion data. 
