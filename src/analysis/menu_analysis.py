@@ -9,7 +9,7 @@ def menu_sentiment():
         return
 
     def sub_analysis():
-        i = select_coll()
+        i = get_coll()
         if i==None:
             return
         sentiment.analyze(i)
