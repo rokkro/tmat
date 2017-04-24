@@ -16,7 +16,7 @@ def menu_main():
         1: menu_twitter.menu_scrape,
         2: menu_analysis.menu_sentiment,
         3: menu_analysis.menu_image,
-        4: exp_csv.setup,
+        4: csv.setup,
         5: menu_list.menu_manage,
         6: connect
     }
