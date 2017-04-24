@@ -8,3 +8,4 @@ appid = ''
 appkey = ''
 #CONSOLE OUTPUT. ERRORS WILL STILL BE PRINTED.
 verbose = False
+startup_connect = True
