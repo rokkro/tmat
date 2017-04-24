@@ -19,7 +19,7 @@ def menu_main():
         i = get_menu("[1] - Scrape tweets.\n"
           "[2] - Perform Sentiment Analysis.\n"
           "[3] - Perform Image Analysis.\n"
-          "[4] - Export as CSV.\n"
+          "[4] - Export as csv.\n"
           "[5] - Manage Collections.\n"
           "[6] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
             "*Enter option number or [q] - quit.\n>>>", 7)

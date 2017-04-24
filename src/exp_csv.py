@@ -16,7 +16,7 @@ def write_data(fname,coll):
         w = writer(out_file, dialect='excel')
         w.writerow(headers)
 
-        def get_biggest(values):
+        def get_biggest(values): #find largest emotion/ethnicity value
             biggest = 0
             name = ""
             for i in values:
@@ -28,7 +28,7 @@ def write_data(fname,coll):
                     continue
             return name,biggest
 
-        def get_difference(values):
+        def get_difference(values): #subtract eye values
             name, val = get_biggest(values)
             for i in values:
                 try:
@@ -38,7 +38,7 @@ def write_data(fname,coll):
                     continue
             return val
 
-        def set_value(doc,item,append=True):
+        def set_value(doc,item,append=True): #append to data/catch key errors
             try:
                 for i in item:
                     doc = doc[i[0]]
@@ -54,7 +54,7 @@ def write_data(fname,coll):
 
 
         all = coll.find({})
-        for iterator,doc in enumerate(all): #far less convoluted than i originally had it set up
+        for doc in all: #go through all docs
             set_value(doc,[['user'],['screen_name']]) #@username
             set_value(doc,[['face'],['detection'],['images'],[0],['faces'],[0],['attributes'],['age']]) #kairos age
             set_value(doc,[['face'],['emotion'],['frames'],[0],['people'], [0], ['demographics'], ['age_group']])  # age group
@@ -109,6 +109,7 @@ def write_data(fname,coll):
 
             w.writerow(data)
             data[:] = []
+        print(color.YELLOW + fname + " created in the current directory!" + color.END)
 
 def setup():
     coll = get_coll()
