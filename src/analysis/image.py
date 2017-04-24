@@ -64,5 +64,5 @@ def insert_data(coll,limit):
             if config.verbose:
                 print(profile_pic+ " DEFAULT PICTURE, IGNORED." + " " + i['user']['screen_name'])
             continue
+    print("Finished: " + str(success) + " of " + (str(count-1) if limit is not '' else str(cursor.count())) + " successfully processed and inserted!")
     os.remove("ta-image.jpg")
-    print("Finished: " + str(success) + " of " + str(cursor.count()) + " successfully processed and inserted!")
