@@ -13,7 +13,12 @@ Requires Python 3.x, tested on 3.5/3.6.
 7. Historical tweet gathering 
 
 ## Notes:
-
+  #### MongoDB
+1.  Tweets are placed in MongoDB databases. These databases contain collections, and these collections contain documents.
+2.  A document will contain the Twitter API data, the Kairos API data, the Vader Sentiment data, and anything else that is inserted.
+      A document is basically a JSON file, but in binary format - a <a href="https://docs.mongodb.com/manual/core/document/">BSON</a>.
+3.  When a collection is marked as temporary, a single document is created with the value `"temp" : True`. 
+      This makes it easier to delete a group of collections later using the "Manage Collections" menu later.
   #### Tweet Streaming:
  1.  Tweepy is used as the Python module to interface with the Twitter API.
  2.  Retrieves new tweets created while the program is running.
@@ -35,7 +40,7 @@ Requires Python 3.x, tested on 3.5/3.6.
       In addition, the compound value is calculated: see the Vader Sentiment link above for an explanation.
 3.  These values are inserted in each tweet document in the specified collection under `sentiment` : (`pos`,`neg`,`neu`, and `compound`).
 
-  #### Image Analysis with Kairos
+  #### Facial Analysis with Kairos
 1.  The Kairos facial detection and emotion/age/gender APIs are used.
 2.  The profile image URL is taken from the current document in the collection, and is tested if it exists.
 3.  The current doc is checked for `default_profile_image` being false, and the URL does not contain a 'default' picture URL.
