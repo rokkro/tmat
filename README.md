@@ -19,6 +19,8 @@ Requires Python 3.x, tested on 3.5/3.6.
       A document is basically a JSON file, but in binary format - a <a href="https://docs.mongodb.com/manual/core/document/">BSON</a>.
 3.  When a collection is marked as temporary, a single document is created with the value `"temp" : True`. 
       This makes it easier to delete a group of collections later using the "Manage Collections" menu later.
+4.  MongoDB must be running to use most of the functions of this program.
+
   #### Tweet Streaming:
  1.  Tweepy is used as the Python module to interface with the Twitter API.
  2.  Retrieves new tweets created while the program is running.
