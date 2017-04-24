@@ -29,11 +29,13 @@ def detect(img):
     return response.json()
 
 #https://dev.twitter.com/basics/user-profile-images-and-banners
-def insert_data(coll):
+def insert_data(coll,limit):
     success = 0
     print("Running Image analysis...")
     cursor = coll.find({})  # finds all documents in collection
-    for i in cursor:  # loop through those
+    for lim,i in enumerate(cursor):  # loop through those
+        if lim == limit:
+            break
         profile_pic =i['user']['profile_image_url_https'].replace("_normal","")
         response = requests.get(profile_pic)
         if response.status_code == 404 or response.status_code == 403: #dead links to images

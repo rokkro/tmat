@@ -1,5 +1,6 @@
 try:
     import mongo, config,requests
+    from display import color,get_menu
     import tweepy, json, string, datetime
     from tweepy import Stream
     from tweepy import OAuthHandler
@@ -88,23 +89,13 @@ class Setup(): #settings and setup for tweet scraping
         self.users = []
 
     def limit(self):
-        while True:
-            self.lim = input("*Enter number of tweets to retrieve. Leave blank for unlimited: ")
-            try:
-                if self.lim == '': #if no input
-                    self.lim = None #set limit to None/unlimited
-                    break
-                self.lim = int(self.lim) #typecast to int, filtering out invalid characters
-                if self.lim < 0: #no negative nums
-                    continue
-            except ValueError:
-                print("Invalid Input.")
-                continue
-            break
+        self.lim = get_menu(None,"*Enter number of tweets to retrieve. Leave blank for unlimited.\n>>>")
+        if self.lim == '':
+            self.lim = None
 
     def search(self):
         tmp = [] #stores user input to filter out invalid responses
-        i = input("*Enter search term(s), separate multiple queries with '||'.\n>>>").strip()
+        i = input(color.BOLD + "*Enter search term(s), separate multiple queries with '||'.\n>>>" + color.END).strip()
         if i == 'r':
             return
         self.term[:] = []
@@ -124,7 +115,8 @@ class Setup(): #settings and setup for tweet scraping
     def follow(self):# https://twitter.com/intent/user?user_id=XXX
         tmp = []
         print("Use http://gettwitterid.com to get a UID from a username. Must be a numeric value.")
-        i = input("*Enter UID(s), separate with '||'. Leave blank for no user tracking, [r] - return/cancel.\n>>>").strip()
+        i = input(color.BOLD + "*Enter UID(s), separate with '||'. Leave blank for no user tracking, [r] - "
+                               "return/cancel.\n>>>" + color.END).strip()
         if i == 'r':
             return
         self.users[:] = []  # clear list
@@ -150,7 +142,7 @@ class Setup(): #settings and setup for tweet scraping
 
 def stream(search, lim, coll_name, db_name, temp, simil, lang, users):
     try:
-        print("Initializing DB and Collection...")
+        print(color.YELLOW + "Initializing DB and Collection...")
         db = mongo.client[db_name]  # initialize db
         tweetcoll = db[coll_name]  # initialize collection
         if temp:
@@ -160,10 +152,12 @@ def stream(search, lim, coll_name, db_name, temp, simil, lang, users):
     except Exception as e:
         print("Error:",e)
         return
+    listener = None
     while True: #start streaming
         try:
+            print("UPDATED LIMIT!",lim)
             listener = Listener(lim, tweetcoll, simil)
-            print("Waiting for new tweets, press Ctrl+C to stop...")
+            print("Waiting for new tweets, press Ctrl+C to stop..." + color.END)
             twitter_stream = Stream(auth, listener)
             twitter_stream.filter(track=search, languages=lang, follow=users) #location search is not a filter
         except KeyboardInterrupt:
@@ -175,6 +169,7 @@ def stream(search, lim, coll_name, db_name, temp, simil, lang, users):
             print("Connection Failed - Check you internet.")
             return
         except Exception as e:
+            lim-=listener.count #subtracts downloaded tweets from the limit for next round
             print("Error: ",e,"\nAttempting to continue...\n")
             continue
 

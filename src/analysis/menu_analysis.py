@@ -26,7 +26,8 @@ def menu_image():
     if coll == None:
         return
     try:
-        image.insert_data(coll)
+        limit = get_menu(None,"Enter the number of tweets to analyze.\nLeave blank for all in the collection.\n>>>")
+        image.insert_data(coll,limit)
     except JSONDecodeError as e:
         print("Possible Kairos Error. Verify your API keys are correct.",e)
     except BaseException as e:

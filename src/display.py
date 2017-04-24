@@ -1,11 +1,11 @@
-import mongo
+import mongo,math
 
 class color:
     YELLOW = '\033[93m'
     BOLD = '\033[1m'
     END = '\033[0m'
 
-def get_menu(menu, inpt_msg, lim):
+def get_menu(menu, inpt_msg, lim=math.inf):
     while True:
         if menu is not None:
             print('-' * 40)
