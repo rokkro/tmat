@@ -11,3 +11,4 @@ Requires Python 3.x, tested on 3.5/3.6.
 5. Associate characteristics using Kairos to tweets + users. [x]
 6. Export to .csv spreadsheets. [x]
 7. Historical tweet gathering 
+
