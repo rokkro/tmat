@@ -5,7 +5,7 @@ class color:
     BOLD = '\033[1m'
     END = '\033[0m'
 
-def get_input(menu,inpt_msg, lim):
+def get_menu(menu, inpt_msg, lim):
     while True:
         if menu is not None:
             print('-' * 40)
@@ -25,7 +25,7 @@ def get_input(menu,inpt_msg, lim):
         else:
             return i
 
-def select_db():
+def get_db():
     if not mongo.connected:
         print("You must be connected to MongoDB!")
         return
@@ -33,7 +33,7 @@ def select_db():
 
     for j, k in enumerate(mongo.get_dbnames(), 1):  # start at 1
         print("[" + str(j) + "] - '" + k + "' (" + str(len(mongo.get_collections(k))) + ")") #print databases
-    inpt = get_input(None,"Select a db to view collections or [r] - return.\n>>>", len(mongo.get_dbnames()))
+    inpt = get_menu(None, "*Select a db to view collections or [r] - return.\n>>>", len(mongo.get_dbnames()))
     if inpt == 'r' or inpt == '':
         return None
 
@@ -41,9 +41,9 @@ def select_db():
     coll = mongo.get_collections(mongo.get_dbnames()[inpt - 1])  # collections list from that db
     return coll,db
 
-def select_coll():
+def get_coll():
     try:
-        coll,db = select_db()
+        coll,db = get_db()
     except:
         return None
     for j, k in enumerate(coll, 1):
@@ -52,7 +52,7 @@ def select_coll():
         print("[" + str(j) + "] - '" + k + "' (" + str(doc_count.count()) + ")" +
               ("(TEMP)" if tmp.count()>0 else ""))
 
-    inpt = get_input(None,"Select a collection or [r] - return.\n>>>", len(coll))
+    inpt = get_menu(None, "*Select a collection or [r] - return.\n>>>", len(coll))
     if inpt == 'r' or inpt == '':
         return None
     return db[coll[inpt - 1]]

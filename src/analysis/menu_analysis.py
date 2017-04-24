@@ -1,15 +1,15 @@
 from json import JSONDecodeError
-from display import get_input,select_coll
+from display import get_menu,get_coll
 from analysis import sentiment,image
 
 def menu_sentiment():
-    inpt = get_input("[1] - Run initial setup.\n[2] - Choose a collection to analyze.",
-                     "*Enter an option number or [r] - return.\n>>>",2)
+    inpt = get_menu("[1] - Run initial setup.\n[2] - Choose a collection to analyze.",
+                     "*Enter an option number or [r] - return.\n>>>", 2)
     if inpt=='r':
         return
 
     def sub_analysis():
-        i = select_coll()
+        i = get_coll()
         if i==None:
             return
         sentiment.analyze(i)
@@ -22,7 +22,7 @@ def menu_sentiment():
     menu[inpt]()
 
 def menu_image():
-    coll = select_coll()
+    coll = get_coll()
     if coll == None:
         return
     try:
