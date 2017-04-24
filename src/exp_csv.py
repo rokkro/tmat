@@ -10,121 +10,106 @@ headers = [
     'Sentiment Pos', 'Sentiment Neu', 'Sentiment Neg', 'Sentiment Comp',
     'User Emotion', 'User Ethnicity',  'Eye Gap',
 ]
-list_guide = [  # u=user general, t=tweet general, s=sentiment, em=emotions,eth=ethnicity, ep=eyepos, group tags!!
-    ['u', 'user', 'screen_name'],  # username
-    ['u', 'face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'age'],  # age
-    ['u', 'face', 'emotion', 'frames', 0, 'people', 0, 'demographics', 'age_group'],  # age group
-    ['u', 'face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'glasses'],  # glasses
-    ['u', 'face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'gender', 'type'],  # gender
-    ['u', 'face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'lips'],  # lips
-    ['u', 'face', 'emotion', 'frames', 0, 'people', 0, 'tracking', 'glances'],  # glances
-    ['u', 'face', 'emotion', 'frames', 0, 'people', 0, 'tracking', 'dwell'],  # dwell
-    ['u', 'face', 'emotion', 'frames', 0, 'people', 0, 'tracking', 'attention'],  # attention
-    ['u', 'face', 'emotion', 'frames', 0, 'people', 0, 'tracking', 'blink'],  # blinking
-    ['u', 'place', 'country'], ['u', 'place', 'name'], ['u', 'user', 'verified'], ['u', 'user', 'followers_count'],
-    ['u', 'user', 'friends_count'],  # following
-    ['t', 'created_at'], ['t', 'text'], ['t', 'lang'], ['t', 'favorite_count'], ['t', 'retweet_count'],
-    ['s', 'sentiment', 'pos'], ['s', 'sentiment', 'neu'], ['s', 'sentiment', 'neg'], ['s', 'sentiment', 'compound'],
-
-    ['em', 'face', 'emotion', 'frames', 0, 'people', 0, 'emotions', 'anger'],  # anger
-    ['em', 'face', 'emotion', 'frames', 0, 'people', 0, 'emotions', 'disgust'],  # disgust
-    ['em', 'face', 'emotion', 'frames', 0, 'people', 0, 'emotions', 'fear'],  # fear
-    ['em', 'face', 'emotion', 'frames', 0, 'people', 0, 'emotions', 'joy'],  # joy
-    ['em', 'face', 'emotion', 'frames', 0, 'people', 0, 'emotions', 'sadness'],  # sadness
-    ['em', 'face', 'emotion', 'frames', 0, 'people', 0, 'emotions', 'surprise'],  # surprise
-
-    ['eth', 'face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'asian'],  # asian
-    ['eth', 'face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'hispanic'],  # hispanic
-    ['eth', 'face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'other'],  # other
-    ['eth', 'face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'black'],  # black
-    ['eth', 'face', 'detection', 'images', 0, 'faces', 0, 'attributes', 'white'],  # white
-    ['ep', 'face', 'detection', 'images', 0, 'faces', 0, 'leftEyeCenterX'],  # leftEyeX
-    ['ep', 'face', 'detection', 'images', 0, 'faces', 0, 'rightEyeCenterX'],  # rightEyeX
-
-]
 def write_data(fname):
     coll = get_coll()
     if coll == None:
         return
-
     data = []
     with open(fname,'w',newline='',encoding='utf-8') as out_file:
         w = writer(out_file, dialect='excel')
         w.writerow(headers)
 
-        def error_slap(cursor,list,tag): #handles non existant key errors, replacing them with the right stuff
-            try:
-                if list[0] == tag:
-                    for i in range(1,len(list)): #loop through the sub list
-                        cursor = cursor[list[i]] #keep accessing the next sub element in document, till reach the final key
-                    #print(cursor)
-                    data.append([list[0],cursor])
-            except Exception as e:
-                #print("Error:",e)
-                data.append([list[0],""])
-
-        def delete_data(r,value):
-            if len(r) > 0:
-                for s in range(1,len(r)):
-                    del data[r[s]-s+1]
-                data[r[0]][1] = value
-
-        def set_largest(tag):
+        def get_biggest(values):
             biggest = 0
-            r = []
-            for j in range(len(data)):
-                if tag in data[j]:
-                    r.append(j)
-                    try:
-                        if float(data[j][1]) > biggest:
-                            biggest = data[j][1]
-                    except:
-                        continue
-            return r,biggest
-
-        def get_difference(tag):
-            r, val = set_largest(tag)
-            for i in range(len(r)):
+            name = ""
+            for i in values:
                 try:
-                    if float(data[r[i]][1]) < val:
-                        val-=float(data[r[i]][1])
-                except ValueError:
+                    if float(values.get(i)) > biggest:
+                        biggest = values.get(i)
+                        name = i
+                except:
                     continue
-            return r,val
+            return name,biggest
+
+        def get_difference(values):
+            name, val = get_biggest(values)
+            for i in values:
+                try:
+                    if float(values.get(i)) < val:
+                        val-=values.get(i)
+                except:
+                    continue
+            return val
+
+        def set_value(doc,item,append=True):
+            try:
+                for i in item:
+                    doc = doc[i[0]]
+                if append:
+                    data.append(doc)
+                else:
+                    return doc
+            except:
+                if append:
+                    data.append("")
+                else:
+                    return None
+
+
         all = coll.find({})
+        for iterator,doc in enumerate(all): #far less convoluted than i originally had it set up
+            set_value(doc,[['user'],['screen_name']])
+            set_value(doc,[['face'],['detection'],['images'],[0],['faces'],[0],['attributes'],['age']])
+            set_value(doc,[['face'],['emotion'],['frames'],[0],['people'], [0], ['demographics'], ['age_group']])  # age group
+            set_value(doc,[['face'],['detection'],['images'], [0], ['faces'], [0], ['attributes'], ['glasses']])  # glasses
+            set_value(doc,[['face'], ['detection'], ['images'], [0], ['faces'], [0], ['attributes'], ['gender'],['type']])  # gender
+            set_value(doc,[['face'], ['detection'], ['images'], [0], ['faces'], [0], ['attributes'], ['lips']])  # lips
+            set_value(doc,[['face'], ['emotion'], ['frames'], [0], ['people'], [0], ['tracking'], ['glances']])  # glances
+            set_value(doc,[['face'],['emotion'],['frames'], [0], ['people'], [0], ['tracking'], ['dwell']])  # dwell
+            set_value(doc,[['face'], ['emotion'], ['frames'], [0], ['people'], [0], ['tracking'], ['attention']]) #attention
+            set_value(doc,[['face'], ['emotion'], ['frames'], [0], ['people'], [0], ['tracking'], ['blink']]) #blinking
+            set_value(doc,[['place'], ['country']])
+            set_value(doc,[['place'], ['name']])
+            set_value(doc,[['user'], ['verified']])
+            set_value(doc,[['user'], ['followers_count']]) #followers
+            set_value(doc,[['user'], ['friends_count']]) #following
+            set_value(doc,[['created_at']]) #tweet date
+            set_value(doc, [['text']])
+            set_value(doc, [['lang']])
+            set_value(doc,[['favorite_count']]) #will be 0 unless historical tweet
+            set_value(doc,[['retweet_count']])
+            set_value(doc,[['sentiment'],['pos']])
+            set_value(doc, [['sentiment'],['neu']])
+            set_value(doc,[['sentiment'],['neg']])
+            set_value(doc,[['sentiment'],['compound']])
+            emotions = {
+                "anger": set_value(doc,[['face'], ['emotion'], ['frames'], [0], ['people'], [0], ['emotions'], ['anger']],False),
+                "disgust": set_value(doc,[['face'], ['emotion'], ['frames'], [0], ['people'], [0], ['emotions'], ['disgust']],False),
+                "fear" : set_value(doc,[['face'], ['emotion'], ['frames'], [0], ['people'], [0], ['emotions'], ['fear']],False),
+                "joy" : set_value(doc,[['face'], ['emotion'], ['frames'], [0], ['people'], [0], ['emotions'], ['joy']],False),
+                "sadness" : set_value(doc,[['face'], ['emotion'], ['frames'], [0], ['people'], [0], ['emotions'], ['sadness']],False),
+                "surprise" :set_value(doc,[['face'], ['emotion'], ['frames'], [0], ['people'], [0], ['emotions'], ['surprise']],False),
+            }
+            name, biggest = get_biggest(emotions)
+            data.append(name)
 
-        for k,i in enumerate(all): #loop through all the documents.
-            # k=row number, so go from k * len(list_guide) to k*len(list_guide)+len(list_guide) for CURRENT ROW DATA
-            for item in list_guide: #creating a SINGLE row of data with specified tag group
-                error_slap(i,item,"u")
-                error_slap(i, item, "t")
-                error_slap(i, item, "s")
-                error_slap(i,item, "em")
-                error_slap(i, item, "eth")
-                error_slap(i, item, "ep")
-            r, val = set_largest("em")
-            delete_data(r,val)
-            r, val = set_largest("eth")
-            delete_data(r,val)
-            r, val = get_difference("ep")
-            delete_data(r,val)
-
-            for i in range(len(data)):
-                data[i] = data[i][1]
+            ethnicity = {
+                "asian":set_value(doc,[['face'], ['detection'], ['images'], [0], ['faces'], [0], ['attributes'], ['asian']],False),
+                "hispanic":set_value(doc,[['face'], ['detection'], ['images'], [0], ['faces'],[0],['attributes'],['hispanic']],False),
+                "other":set_value(doc,[['face'], ['detection'], ['images'], [0], ['faces'], [0], ['attributes'], ['other']],False),
+                "black":set_value(doc,[['face'], ['detection'], ['images'], [0], ['faces'], [0], ['attributes'], ['black']],False),
+                "white":set_value(doc,[['face'], ['detection'], ['images'], [0], ['faces'], [0], ['attributes'], ['white']],False),
+            }
+            name, biggest = get_biggest(ethnicity)
+            data.append(name)
+            eyegap = {
+                "leftCenterX":set_value(doc,[['face'], ['detection'], ['images'], [0], ['faces'], [0], ['leftEyeCenterX']],False),
+                "rightCenterX":set_value(doc,[['face'], ['detection'], ['images'], [0], ['faces'], [0], ['rightEyeCenterX']],False),
+            }
+            diff = get_difference(eyegap)
+            data.append(diff)
             w.writerow(data)
             data[:] = []
-def find_tag(tag,upper=0,offset=0): #basic tag range
-    r = []
-    for j,i in enumerate(list_guide):
-        if i[0] == tag:
-            if j >=upper:
-                r.append(j-offset)
-            else:
-                r.append(j)
-    if len(r) > 0:
-        return r
-    else:
-        return [0,0]
 
 def setup():
     fname = input(color.BOLD + "*Please enter a filename. A .csv extension will be added.\n"
@@ -134,5 +119,9 @@ def setup():
         return
     if ".csv" not in fname:
         fname = fname + ".csv"
-    write_data(fname)
-
+    try:
+        write_data(fname)
+    except PermissionError:
+        print(color.YELLOW + "Permission Error: Check if it's open in another program\nor if you have "
+                             "permission to create files here." + color.END)
+        return
