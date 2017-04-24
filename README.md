@@ -26,3 +26,11 @@ Requires Python 3.x, tested on 3.5/3.6.
       Adding more filters (language, follower, etc) supposedly increases the frequency of this error.
  7. Queries using both the follower and search term options, will retrieve ANY new tweets from the specified user, and ANY tweets
     from any user who tweets the specified search term.
+    
+  #### Sentiment Analysis:
+1.  The NLTK Python module is used with <a href="https://github.com/cjhutto/vaderSentiment">Vader Sentiment</a>.
+      Specifically, `subjectivity`, `vader_lexicon`, and `punkt` are used with the Naive Bayes Classifier to train it to understand
+      tweet content.
+2.  Four values are found from analysis: the positivity, negativity, and neutrality of the tweet. 
+      In addition, the compound value is calculated: see the Vader Sentiment link above for an explanation.
+3.  These values are inserted in each tweet document in the specified collection under `sentiment` - (`pos`,`neg`,`neu`, and `compound`).
