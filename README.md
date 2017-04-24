@@ -20,6 +20,7 @@ Requires Python 3.x, tested on 3.5/3.6.
 3.  When a collection is marked as temporary, a single document is created with the value `"temp" : True`. 
       This makes it easier to delete a group of collections later using the "Manage Collections" menu later.
 4.  MongoDB must be running to use most of the functions of this program.
+5.  Do not modify, delete, or insert into the `local` or `admin` collections. 
 
   #### Tweet Streaming:
  1.  Tweepy is used as the Python module to interface with the Twitter API.
