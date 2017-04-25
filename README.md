@@ -56,7 +56,7 @@ Requires Python 3.x, tested on 3.5/3.6.
 
   #### CSV Export
 1.  Column headings are manually defined within the `headers` list in `export.py`.
-2.  The set values searched for in the specified collection to see if they exists. If they exist, the values are directly inserted into       the `data` list. If they do not exist, a blank is appended.
-3.  Before being added to `data`, the emotion values are compared with one another for the highest value, then the emotion the highest value refers to is added to the list. The same is done with the various ethnicity values provided by the Kairos API. 
-4.  The `rightEyeCenterX` is subtracted from `leftEyeCenterX` for the `eyegap`, which is then inserted into `data`.
-5.  The `data` list is then written to the CSV file as a single row beneath the column headers. This process is repeated for every document in the collection.
+2.  The values are serached for within the current document. If they exist, the values are directly inserted into the `data` list. If they do not exist, a blank is inserted.
+3.  Before being added to `data`, the emotion values are compared with one another for the highest value. Whatever the highest value refers to is inserted into the list. The same is done with the ethnicity values provided by the Kairos API. 
+4.  The `rightEyeCenterX` is subtracted from `leftEyeCenterX` (or is it the other way around?) for the `eyegap`, which is then inserted into `data`.
+5.  The `data` list is then written to the CSV file as a single row (the current document). This process is repeated for every document in the collection.
