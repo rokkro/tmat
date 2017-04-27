@@ -155,7 +155,6 @@ def stream(search, lim, coll_name, db_name, temp, simil, lang, users):
     listener = None
     while True: #start streaming
         try:
-            print("UPDATED LIMIT!",lim)
             listener = Listener(lim, tweetcoll, simil)
             print("Waiting for new tweets, press Ctrl+C to stop..." + color.END)
             twitter_stream = Stream(auth, listener)
