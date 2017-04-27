@@ -9,15 +9,14 @@ try:
     from nltk.sentiment import SentimentAnalyzer
     from nltk import tokenize
 except ImportError as e:
-    print("Module missing, install with pip:",e)
+    print("Error:",e)
 
 def initialize():
-    nltk.download('subjectivity')
-    nltk.download('vader_lexicon')
-    nltk.download('punkt')
-    
-    n_instances = 100
     try:
+        nltk.download('subjectivity')
+        nltk.download('vader_lexicon')
+        nltk.download('punkt')
+        n_instances = 100
         subj_docs = [(sent, 'subj') for sent in subjectivity.sents(categories='subj')[:n_instances]]
         obj_docs = [(sent, 'obj') for sent in subjectivity.sents(categories='obj')[:n_instances]]
     except NameError as e:

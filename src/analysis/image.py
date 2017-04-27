@@ -1,4 +1,7 @@
-import requests, base64,config, os
+try:
+    import config, requests, base64, os
+except ImportError as e:
+    print("Error",e)
 
 auth_headers={
     'app_id': config.appid,

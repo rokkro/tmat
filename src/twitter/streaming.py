@@ -1,5 +1,5 @@
 try:
-    import mongo, config,requests
+    import config,mongo,requests
     from display import color,get_menu
     import tweepy, json, string, datetime
     from tweepy import Stream
@@ -8,7 +8,7 @@ try:
     from http.client import IncompleteRead
     from difflib import SequenceMatcher
 except ImportError as e:
-    print("Error: module missing/not installed:", e)
+    print("Error:", e)
     quit()
 
 auth = OAuthHandler(config.ckey, config.csecret)

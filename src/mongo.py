@@ -1,5 +1,9 @@
-from pymongo import MongoClient
-from pymongo.errors import ConnectionFailure
+try:
+    from pymongo import MongoClient
+    from pymongo.errors import ConnectionFailure
+except ImportError as e:
+    print("Install missing modules with pip!\nError:",e)
+    quit()
 
 client = None
 connected = False
