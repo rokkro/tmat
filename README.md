@@ -52,7 +52,8 @@ Requires Python 3.x, tested on 3.5/3.6.
 6.  If a face is found, the image is then uploaded and run through the Kairos emotion API. 
 7.  Data from the detection and emotion API are inserted into the current document under `face` : (`detect` and `emotion`)
 8.  When the final image is processed, `ta-image.jpg` is deleted.
-9.  Occasionally, the Kairos API will return facial detection data, but not emotion data. 
+9.  Occasionally, the Kairos API will return facial detection data, but not emotion data.
+10. The older the collection, the more dead profile pic links.
 
   #### CSV Export
 1.  Column headings are manually defined within the `headers` list in `export.py`.
