@@ -52,7 +52,7 @@ def analyze(coll):
     sentences = []
     try:
         sid = SentimentIntensityAnalyzer()
-    except NameError as e:
+    except (NameError, LookupError) as e:
         print("Make sure NLTK is installed and you have run initial setup:",e)
         return
     cursor = coll.find({}) #finds all documents in collection
