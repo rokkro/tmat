@@ -28,6 +28,8 @@ def menu_image():
         return
     try:
         limit = get_menu(None,"Enter the number of tweets to analyze.\nLeave blank for all in the collection.\n>>>")
+        if limit == 'r':
+            return
         image.insert_data(coll,limit)
     except KeyboardInterrupt:
         os.remove("ta-image.jpg")

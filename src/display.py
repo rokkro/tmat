@@ -5,12 +5,12 @@ class color:
     BOLD = '\033[1m'
     END = '\033[0m'
 
-def get_menu(menu, inpt_msg, lim=math.inf):
+def get_menu(menu, inpt_msg, items=math.inf):
     while True:
         if menu is not None:
             print('-' * 40)
             for num,i in enumerate(menu):
-                print("[" + str(num+1) + "] - " + i)
+                print("[" + color.YELLOW + str(num+1) + color.END + "] - " + i)
         print('-' * 40)
         i = input(color.BOLD + inpt_msg + color.END).replace(" ","")
         if i == 'q':
@@ -21,7 +21,7 @@ def get_menu(menu, inpt_msg, lim=math.inf):
             i = int(i)
         except ValueError:
             continue
-        if i > lim or i < 1:
+        if i > items or i < 1:
             continue
         else:
             return i
@@ -30,10 +30,10 @@ def get_db():
     if not mongo.connected:
         print("You must be connected to MongoDB!")
         return
-    print("Do not select 'admin' or 'local' databases.")
+    print(color.YELLOW + "Do not select 'admin' or 'local' databases." + color.END)
 
     for j, k in enumerate(mongo.get_dbnames(), 1):  # start at 1
-        print("[" + str(j) + "] - '" + k + "' (" + str(len(mongo.get_collections(k))) + ")") #print databases
+        print("[" + color.YELLOW + str(j) + color.END + "] - '" + k + "' (" + str(len(mongo.get_collections(k))) + ")") #print databases
     inpt = get_menu(None, "*Select a db to view collections or [r] - return.\n>>>", len(mongo.get_dbnames()))
     if inpt == 'r' or inpt == '':
         return None
@@ -50,7 +50,7 @@ def get_coll():
     for j, k in enumerate(coll, 1):
         tmp = db[coll[j - 1]].find({"temp": True})
         doc_count = db[coll[j - 1]].find({})  # take the specified collection, and find all the documents
-        print("[" + str(j) + "] - '" + k + "' (" + str(doc_count.count()) + ")" +
+        print("[" + color.YELLOW + str(j) + color.END + "] - '" + k + "' (" + str(doc_count.count()) + ")" +
               ("(TEMP)" if tmp.count()>0 else ""))
 
     inpt = get_menu(None, "*Select a collection or [r] - return.\n>>>", len(coll))
