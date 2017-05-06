@@ -38,34 +38,38 @@ def insert_data(coll,limit):
     print("Running Image analysis...")
     cursor = coll.find({})  # finds all documents in collection
     for lim,i in enumerate(cursor):  # loop through those
-        if lim == limit:
-            break
-        print("\r#" + str(count), end=" ", flush=True)
-        profile_pic =i['user']['profile_image_url_https'].replace("_normal","")
-        response = requests.get(profile_pic)
-        count+=1
-        if response.status_code == 404 or response.status_code == 403: #dead links to images
-            continue
-        if not i['user']['default_profile_image'] and 'default_profile' not in profile_pic: #filter both default pics
-            if config.verbose:
-                print("Document _id:", i.get('_id'))
-                print(profile_pic + " " + i['user']['screen_name'])
-            img = get_image(response)
-            det = detect(img)
-            if 'Errors' in det:
-                print("Error:", det['Errors'][0]['ErrCode'] , "-", det['Errors'][0]['Message'] + ". Moving onto the next...")
+        try:
+            if lim == limit:
+                break
+            print("\r#" + str(count), end=" ", flush=True)
+            count+=1 #current
+            profile_pic =i['user']['profile_image_url_https'].replace("_normal","")
+            response = requests.get(profile_pic)
+            if response.status_code == 404 or response.status_code == 403: #dead links to images
                 continue
+            if not i['user']['default_profile_image'] and 'default_profile' not in profile_pic: #filter both default pics
+                if config.verbose:
+                    print("Document _id:", i.get('_id'))
+                    print(profile_pic + " " + i['user']['screen_name'])
+                img = get_image(response)
+                det = detect(img)
+                if 'Errors' in det:
+                    print("Error:", det['Errors'][0]['ErrCode'] , "-", det['Errors'][0]['Message'] + ". Moving onto the next...")
+                    continue
 
-            emo =emotion(img)
-            coll.update_one({'_id': i.get('_id')}, {'$set': {
-                "face": {
-                    "emotion":emo,
-                    "detection": det
-                }}})
-            success+=1
-        else:
-            if config.verbose:
-                print(profile_pic+ " DEFAULT PICTURE, IGNORED." + " " + i['user']['screen_name'])
+                emo =emotion(img)
+                coll.update_one({'_id': i.get('_id')}, {'$set': {
+                    "face": {
+                        "emotion":emo,
+                        "detection": det
+                    }}})
+                success+=1 #successfully inserted into DB!
+            else:
+                if config.verbose:
+                    print(profile_pic+ " DEFAULT PICTURE, IGNORED." + " " + i['user']['screen_name'])
+                continue
+        except BaseException as e: #pretty basic way to catch errors until I know what they are
+            print("Error:",e)
             continue
     print("Finished: " + str(success) + " of " + (str(count-1) if limit is not '' else str(cursor.count())) + " successfully processed and inserted!")
     os.remove("ta-image.jpg")
