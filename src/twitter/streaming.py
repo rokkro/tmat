@@ -89,9 +89,13 @@ class Setup(): #settings and setup for tweet scraping
         self.users = []
 
     def limit(self):
-        self.lim = get_menu(None,"*Enter number of tweets to retrieve. Leave blank for unlimited.\n>>>")
-        if self.lim == '':
+        inpt = get_menu(None,"*Enter number of tweets to retrieve. Leave blank for unlimited.\n>>>")
+        if inpt == 'r':
+            return
+        if inpt == '':
             self.lim = None
+        else:
+            self.lim = inpt
 
     def search(self):
         tmp = [] #stores user input to filter out invalid responses

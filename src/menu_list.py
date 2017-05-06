@@ -2,10 +2,10 @@ from display import color,get_coll,get_menu,get_db
 
 def menu_manage():
     while True:
-        inpt = get_menu("[1] - View Databases, Collections, and Documents.\n"
-              "[2] - Purge Temporary Collections in a DB.\n"
-              "[3] - Delete Specific Collections.\n"
-              "[4] - Mark/Un-mark a Collection as Temporary.",
+        inpt = get_menu(["View Databases, Collections, and Documents.",
+              "Purge Temporary Collections in a DB.",
+              "Delete Specific Collections.",
+              "Mark/Un-mark a Collection as Temporary."],
                 "*Enter an option or [r] - return.\n>>>", 4)
         if inpt == 'r':
             return

@@ -9,7 +9,8 @@ def get_menu(menu, inpt_msg, lim=math.inf):
     while True:
         if menu is not None:
             print('-' * 40)
-            print(menu)
+            for num,i in enumerate(menu):
+                print("[" + str(num+1) + "] - " + i)
         print('-' * 40)
         i = input(color.BOLD + inpt_msg + color.END).replace(" ","")
         if i == 'q':
