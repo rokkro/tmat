@@ -6,14 +6,14 @@ def menu_scrape():
     s = Setup()
     s.search()
     while True:
-        inpt = get_menu("[1] - Search = " + (str(s.term).strip('[]') if len(s.term) > 0 else "None") +
-            "\n[2] - Limit = " + str(s.lim) +
-            "\n[3] - Temporary Collection = " + str(s.temp) +
-            "\n[4] - Database Name = '" + s.db_name + "'\n[5] - Collection Name = '" + s.coll_name +
-            "'\n[6] - Tweet Similarity Threshold = " + str(s.sim) +
-            "\n[7] - Languages = " + str(s.lang).strip('[]') +
-            "\n[8] - Follow UID(s) = " + (str(s.users).strip('[]') if len(s.users) > 0 else "None") +
-                        "\n[9] - MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END,
+        inpt = get_menu(["Search = " + (str(s.term).strip('[]') if len(s.term) > 0 else "None"),
+            "Limit = " + str(s.lim),
+            "Temporary Collection = " + str(s.temp),
+            "Database Name = '" + s.db_name + "'\n[5] - Collection Name = '" + s.coll_name + "'",
+            "Tweet Similarity Threshold = " + str(s.sim),
+            "Languages = " + str(s.lang).strip('[]'),
+            "Follow UID(s) = " + (str(s.users).strip('[]') if len(s.users) > 0 else "None"),
+            "MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END],
                         "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>", 9)
 
         if inpt == '' and mongo.connected and (len(s.term)>0 or len(s.users)>0):

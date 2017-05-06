@@ -53,7 +53,7 @@ def analyze(coll):
     try:
         sid = SentimentIntensityAnalyzer()
     except (NameError, LookupError) as e:
-        print("Make sure NLTK is installed and you have run initial setup:",e)
+        print("Error: Make sure NLTK is installed and you have run initial setup:",e)
         return
     cursor = coll.find({}) #finds all documents in collection
     for i in cursor: #loop through those

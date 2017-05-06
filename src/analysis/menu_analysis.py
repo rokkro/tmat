@@ -4,7 +4,7 @@ from analysis import sentiment,image
 import os
 
 def menu_sentiment():
-    inpt = get_menu("[1] - Run initial setup.\n[2] - Choose a collection to analyze.",
+    inpt = get_menu(["Run initial setup.","Choose a collection to analyze."],
                      "*Enter an option number or [r] - return.\n>>>", 2)
     if inpt=='r':
         return
