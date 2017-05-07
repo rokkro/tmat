@@ -26,6 +26,10 @@ def emotion(img):
         print(response.json())
     return response.json()
 
+def remove_image():
+    if os.path.exists("ta-image.jpg"):
+        os.remove("ta-image.jpg")
+
 def detect(img):
     url = 'https://api.kairos.com/detect'
     response = requests.post(url,json={'image':image_base64(img)},headers=auth_headers)
@@ -76,15 +80,15 @@ def insert_data(coll,limit):
             print("Possible Kairos Error, verify your keys are accurate:",e)
             return
         except KeyboardInterrupt:
-            os.remove("ta-image.jpg")
+            remove_image()
             return
         except KeyError:
             continue
         except BaseException as e:
             print(type(e),"Error:",e)
-            os.remove("ta-image.jpg")
+            remove_image()
             continue
 
     print(color.YELLOW + "Finished: " + str(success) + " of " + (str(count-1) if limit is not None else str(cursor.count())) + " successfully processed and inserted!" + color.END)
     cursor.close()
-    os.remove("ta-image.jpg")
+    remove_image()
