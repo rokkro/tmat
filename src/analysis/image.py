@@ -89,6 +89,6 @@ def insert_data(coll,limit):
             remove_image()
             continue
 
-    print(color.YELLOW + "Finished: " + str(success) + " of " + (str(count-1) if limit is not None else str(cursor.count())) + " successfully processed and inserted!" + color.END)
+    print(color.YELLOW + "\nFinished: " + str(success) + " of " + (str(count-1) if limit is not None else str(cursor.count())) + " successfully processed and inserted!" + color.END)
     cursor.close()
     remove_image()

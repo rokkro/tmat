@@ -21,7 +21,7 @@ def get_menu(menu, inpt_msg, items=None):
             i = int(i)
         except ValueError:
             continue
-        if i > items or i < 1:
+        if items is not None and i > items or i < 1:
             continue
         else:
             return i
