@@ -76,11 +76,13 @@ def insert_data(coll,limit):
             print("Possible Kairos Error, verify your keys are accurate:",e)
             return
         except KeyboardInterrupt:
+            os.remove("ta-image.jpg")
             return
         except KeyError:
             continue
-        except BaseException as e: #pretty basic way to catch errors until I know what they are
+        except BaseException as e:
             print(type(e),"Error:",e)
+            os.remove("ta-image.jpg")
             continue
 
     print(color.YELLOW + "Finished: " + str(success) + " of " + (str(count-1) if limit is not '' else str(cursor.count())) + " successfully processed and inserted!" + color.END)
