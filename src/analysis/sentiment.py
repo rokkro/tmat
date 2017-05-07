@@ -77,4 +77,5 @@ def analyze(coll):
             }
         }})
         sentences[:] = [] #empty list
+    cursor.close()
     print("Sentiment values have been attached to each tweet document in the collection.")
