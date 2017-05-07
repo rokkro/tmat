@@ -1,7 +1,9 @@
 #http://www.nltk.org/howto/sentiment.html
-import warnings, mongo, config
+import warnings
 warnings.filterwarnings("ignore") #stop useless warning
 try:
+    import mongo, config
+    from display import color
     from nltk.sentiment.util import *
     from nltk.sentiment.vader import SentimentIntensityAnalyzer
     from nltk.classify import NaiveBayesClassifier
@@ -44,6 +46,7 @@ def initialize():
 
     for key,value in sorted(sentim_analyzer.evaluate(test_set).items()):
          print('{0}: {1}'.format(key, value))
+    print(color.YELLOW + "Setup Finished!" + color.END)
 
 def analyze(coll):
     if not mongo.connected:
@@ -78,4 +81,4 @@ def analyze(coll):
         }})
         sentences[:] = [] #empty list
     cursor.close()
-    print("Sentiment values have been attached to each tweet document in the collection.")
+    print(color.YELLOW + "Sentiment values have been attached to each tweet document in the collection." + color.END)

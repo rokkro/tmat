@@ -1,6 +1,7 @@
 try:
     from display import color
     import config,requests, base64, os
+    from json import JSONDecodeError
 except ImportError as e:
     print("Error",e)
 
@@ -71,9 +72,15 @@ def insert_data(coll,limit):
                 success+=1 #successfully inserted into DB!
             else:
                 continue
-
+        except JSONDecodeError as e:
+            print("Possible Kairos Error, verify your keys are accurate:",e)
+            return
+        except KeyboardInterrupt:
+            return
+        except KeyError:
+            continue
         except BaseException as e: #pretty basic way to catch errors until I know what they are
-            print("Error:",e)
+            print(type(e),"Error:",e)
             continue
 
     print(color.YELLOW + "Finished: " + str(success) + " of " + (str(count-1) if limit is not '' else str(cursor.count())) + " successfully processed and inserted!" + color.END)

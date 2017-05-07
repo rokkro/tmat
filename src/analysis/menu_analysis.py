@@ -1,4 +1,3 @@
-from json import JSONDecodeError
 from display import get_menu,get_coll
 from analysis import sentiment,image
 import os
@@ -26,14 +25,8 @@ def menu_image():
     coll = get_coll()
     if coll == None:
         return
-    try:
-        limit = get_menu(None,"Enter the number of tweets to analyze.\nLeave blank for all in the collection.\n>>>")
-        if limit == 'r':
-            return
-        image.insert_data(coll,limit)
-    except KeyboardInterrupt:
-        os.remove("ta-image.jpg")
-    except JSONDecodeError as e:
-        print("Possible Kairos Error. Verify your API keys are correct.",e)
-    except BaseException as e:
-        print("Error:",e)
+
+    limit = get_menu(None,"Enter the number of tweets to analyze.\nLeave blank for all in the collection.\n>>>")
+    if limit == 'r':
+        return
+    image.insert_data(coll,limit)
