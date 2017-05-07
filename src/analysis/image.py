@@ -37,7 +37,7 @@ def detect(img):
 def insert_data(coll,limit):
     success = 0
     count = 1
-    print("Running Image analysis...")
+    print(color.YELLOW + "Running Image analysis..." + color.END)
     cursor = coll.find({},no_cursor_timeout=True)  # finds all documents in collection
     for lim,i in enumerate(cursor):  # loop through those
         try:
@@ -85,6 +85,6 @@ def insert_data(coll,limit):
             os.remove("ta-image.jpg")
             continue
 
-    print(color.YELLOW + "Finished: " + str(success) + " of " + (str(count-1) if limit is not '' else str(cursor.count())) + " successfully processed and inserted!" + color.END)
+    print(color.YELLOW + "Finished: " + str(success) + " of " + (str(count-1) if limit is not None else str(cursor.count())) + " successfully processed and inserted!" + color.END)
     cursor.close()
     os.remove("ta-image.jpg")
