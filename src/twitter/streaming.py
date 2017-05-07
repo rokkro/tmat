@@ -47,13 +47,16 @@ class Listener(StreamListener):
                 if config.verbose:
                     print(" FIRST: " + c['text'] + " SECOND: " + dataj['text'])
                     print("\nDuplicate tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
+                cursor.close()
                 return True
             elif SequenceMatcher(None,cursorText,datajText).ratio() > self.simil:
                 if config.verbose:
                     print("\n" + str(SequenceMatcher(None,cursorText,datajText).ratio() * 100) + "% similar existing"
                         " tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
                     print(" FIRST: " + c['text'] + " SECOND: " + dataj['text'])
+                cursor.close()
                 return True
+        cursor.close()
         return False  # if no duplicates found
 
     def json_filter(self, dataj):  #removes certain tweets
@@ -149,10 +152,17 @@ def stream(search, lim, coll_name, db_name, temp, simil, lang, users):
         print(color.YELLOW + "Initializing DB and Collection...")
         db = mongo.client[db_name]  # initialize db
         tweetcoll = db[coll_name]  # initialize collection
-        if temp:
+        c_true =  tweetcoll.find({"t_temp":True})
+        c_false = tweetcoll.find({"t_temp":False})
+        doc_count =c_true.count() + c_false.count()
+        if doc_count > 0: #if there's already t_temp doc
+            tweetcoll.update_many({"t_temp":not temp},{'$set':{"t_temp":temp}})
+        else:
             tweetcoll.insert_one({ #This creates a coll even if no tweets found.
                 "t_temp" : temp
             })
+        c_true.close()
+        c_false.close()
     except Exception as e:
         print("Error:",e)
         return

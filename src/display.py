@@ -48,12 +48,14 @@ def get_coll():
     except:
         return None
     for j, k in enumerate(coll, 1):
-        tmp = db[coll[j - 1]].find({"temp": True})
+        tmp = db[coll[j - 1]].find({"t_temp": True})
         doc_count = db[coll[j - 1]].find({})  # take the specified collection, and find all the documents
         print("[" + color.YELLOW + str(j) + color.END + "] - '" + k + "' (" + str(doc_count.count()) + ")" +
               ("(TEMP)" if tmp.count()>0 else ""))
-
+        tmp.close()
+        doc_count.close()
     inpt = get_menu(None, "*Select a collection or [r] - return.\n>>>", len(coll))
+
     if inpt == 'r' or inpt == '':
         return None
     return db[coll[inpt - 1]]

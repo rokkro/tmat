@@ -33,7 +33,6 @@ def menu_main():
         except KeyError:
             pass
 
-
 if __name__ == "__main__":
     try:
         menu_main()

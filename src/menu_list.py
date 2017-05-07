@@ -7,6 +7,7 @@ def menu_manage():
               "Delete Specific Collections.",
               "Mark/Un-mark a Collection as Temporary."],
                 "*Enter an option or [r] - return.\n>>>", 4)
+
         if inpt == 'r':
             return
 
@@ -20,6 +21,7 @@ def menu_manage():
             cursor = i.find({})
             for j in cursor:
                 print(j)
+            cursor.close()
 
         def sub_tmp():
             deletable = []
@@ -31,10 +33,12 @@ def menu_manage():
 
             for j, k in enumerate(coll, 1): #loops through all collections
                 doc_count = db[coll[j - 1]].find({})  # take the current collection, and find all the documents
-                cursor = db[coll[j - 1]].find({"t_temp": True})  #searches collection for doc with temp = True
-                if cursor.count()>0: #if there's search results, then print the collection with temp = True
+                cursor = db[coll[j - 1]].find({"t_temp": True})  #searches collection for doc with t_temp = True
+                if cursor.count()>0: #if there's search results, then print the collection with t_temp = True
                     print("'" + k + "' (" + str(doc_count.count()) + ")")
                     deletable.append(db[coll[j-1]])
+                doc_count.close()
+                cursor.close()
 
             if len(deletable) == 0:
                 print(color.YELLOW + "No temporary collections in this db." + color.END)
@@ -44,9 +48,9 @@ def menu_manage():
             if inpt == 'y':
               for i in deletable:
                   i.drop()
-              print("Temporary collections deleted.")
+              print(color.YELLOW + "Temporary collections deleted." + color.END)
             else:
-              print("Deletion cancelled.")
+              print(color.YELLOW + "Deletion cancelled." + color.END)
 
         def sub_del():
             print("Select a collection to delete.")
@@ -57,27 +61,29 @@ def menu_manage():
                 "all documents within? [y/n]" + color.END + color.BOLD + "\n>>>" + color.END)
             if inpt == 'y':
                 coll.drop()
-                print("Collection deleted.")
+                print(color.YELLOW + "Collection deleted." + color.END)
             else:
-                print("Deletion canceled.")
+                print(color.YELLOW + "Deletion canceled." + color.END)
 
         def sub_mark(): #be careful if you manually added in other "temp" keys
             coll = get_coll()
             if coll == None:
                 return
-            c_true = coll.find({"t_temp": True})
-            c_false = coll.find({"t_temp": False})
-            if c_true.count()>0: #may want to reevaluate unique cases here, will flip any "temp" : True/False
-                for i in c_true:
-                    coll.replace_one({"t_temp": True},{"t_temp": False}) #safer to replace than delete
+            c_true = coll.find({"t_temp":True})
+            c_false = coll.find({"t_temp":False})
+            if c_true.count() > 0: #we will assume we want to flip any t_temp = trues moreso if there are multiple t_temps
+                coll.update_many({"t_temp": True}, {'$set': {"t_temp": False}})
                 print(color.YELLOW + "Collection marked as permanent." + color.END)
             elif c_false.count() > 0:
-                for i in c_false:
-                    coll.replace_one({"t_temp": False}, {"t_temp": True})
+                coll.update_many({"t_temp": False}, {'$set': {"t_temp": True}})
                 print(color.YELLOW + "Collection marked as temporary." + color.END)
             else:
-                coll.insert_one({"t_temp": True})
+                coll.insert_one({  # This creates a coll even if no tweets found.
+                    "t_temp": True
+                })
                 print(color.YELLOW + "Collection marked as temporary." + color.END)
+            c_true.close()
+            c_false.close()
 
         menu = {
             1: sub_list,

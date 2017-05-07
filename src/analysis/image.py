@@ -36,10 +36,10 @@ def insert_data(coll,limit):
     success = 0
     count = 1
     print("Running Image analysis...")
-    cursor = coll.find({})  # finds all documents in collection
+    cursor = coll.find({},no_cursor_timeout=True)  # finds all documents in collection
     for lim,i in enumerate(cursor):  # loop through those
         try:
-            if lim == limit:
+            if lim == limit: #if we hit the limit
                 break
             print("\r#" + str(count), end=" ", flush=True)
             count+=1 #current
@@ -53,6 +53,7 @@ def insert_data(coll,limit):
                     print(profile_pic + " " + i['user']['screen_name'])
                 img = get_image(response)
                 det = detect(img)
+
                 if 'Errors' in det:
                     print("Error:", det['Errors'][0]['ErrCode'] , "-", det['Errors'][0]['Message'] + ". Moving onto the next...")
                     continue
@@ -72,4 +73,5 @@ def insert_data(coll,limit):
             print("Error:",e)
             continue
     print("Finished: " + str(success) + " of " + (str(count-1) if limit is not '' else str(cursor.count())) + " successfully processed and inserted!")
+    cursor.close()
     os.remove("ta-image.jpg")
