@@ -1,5 +1,6 @@
 try:
-    import config, requests, base64, os
+    from display import color
+    import config,requests, base64, os
 except ImportError as e:
     print("Error",e)
 
@@ -41,12 +42,15 @@ def insert_data(coll,limit):
         try:
             if lim == limit: #if we hit the limit
                 break
-            print("\r#" + str(count), end=" ", flush=True)
+            print("\r#" + str(count), end=" ", flush=True) #counter
             count+=1 #current
-            profile_pic =i['user']['profile_image_url_https'].replace("_normal","")
+
+            profile_pic =i['user']['profile_image_url_https'].replace("_normal","") #get image URL
+
             response = requests.get(profile_pic)
             if response.status_code == 404 or response.status_code == 403: #dead links to images
                 continue
+
             if not i['user']['default_profile_image'] and 'default_profile' not in profile_pic: #filter both default pics
                 if config.verbose:
                     print("Document _id:", i.get('_id'))
@@ -63,15 +67,15 @@ def insert_data(coll,limit):
                     "face": {
                         "emotion":emo,
                         "detection": det
-                    }}})
+                }}})
                 success+=1 #successfully inserted into DB!
             else:
-                if config.verbose:
-                    print(profile_pic+ " DEFAULT PICTURE, IGNORED." + " " + i['user']['screen_name'])
                 continue
+
         except BaseException as e: #pretty basic way to catch errors until I know what they are
             print("Error:",e)
             continue
-    print("Finished: " + str(success) + " of " + (str(count-1) if limit is not '' else str(cursor.count())) + " successfully processed and inserted!")
+
+    print(color.YELLOW + "Finished: " + str(success) + " of " + (str(count-1) if limit is not '' else str(cursor.count())) + " successfully processed and inserted!" + color.END)
     cursor.close()
     os.remove("ta-image.jpg")
