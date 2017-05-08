@@ -19,10 +19,10 @@ Requires Python 3.x, tested on 3.5/3.6.
 1.  Tweets are placed in MongoDB databases. These databases contain collections, and these collections contain documents.
 2.  A document will contain the Twitter API data, the Kairos API data, the Vader Sentiment data, and anything else that is inserted.
       A document is basically a JSON file, but in binary format - a <a href="https://docs.mongodb.com/manual/core/document/">BSON</a>.
-3.  When a collection is marked as temporary, a single document is created with the value `"temp" : True`. 
+3.  When a collection is marked as temporary, a single document is created with the value `"t_temp" : True`. 
       This makes it easier to delete a group of collections later using the "Manage Collections" menu later.
 4.  MongoDB must be running to use most of the functions of this program.
-5.  Do not modify, delete, or insert into the `local` or `admin` collections. 
+5.  Do not modify, delete, or insert into the `local` or `admin` collections unless you know what you're doing.
 
   #### Tweet Streaming:
  1.  Tweepy is used as the Python module to interface with the Twitter API.
@@ -34,7 +34,7 @@ Requires Python 3.x, tested on 3.5/3.6.
  5. Tweet data from the Twitter API is inserted into the specified MongoDB database and collection, in a JSON-like format.
  6. Incomplete Read error occurs when the API needs to "catch up" to the latest tweets. Some tweets are skipped when this occurs.
       Adding more filters (language, follower, etc) supposedly increases the frequency of this error.
- 7. Queries using both the follower and search term options, will retrieve ANY new tweets from the specified user, and ANY tweets
+ 7. Queries using both the follower and search term options, will retrieve ANY new tweets from the specified user, and ANY  new tweets
     from any user who tweets the specified search term.
     
   #### Sentiment Analysis with Vader Sentiment:
@@ -53,7 +53,7 @@ Requires Python 3.x, tested on 3.5/3.6.
 5.  If the API does not find a face, then the next document repeats this process (overwriting `ta-image.jpg` with each new image).
 6.  If a face is found, the image is then uploaded and run through the Kairos emotion API. 
 7.  Data from the detection and emotion API are inserted into the current document under `face` : (`detect` and `emotion`)
-8.  When the final image is processed, `ta-image.jpg` is deleted.
+8.  When the final image is processed, `ta-image.jpg` is deleted. If an error occurs the image is deleted.
 9.  Occasionally, the Kairos API will return facial detection data, but not emotion data.
 10. The older the collection, the more dead profile pic links.
 
