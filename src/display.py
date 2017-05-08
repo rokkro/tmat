@@ -7,10 +7,12 @@ class color:
 
 def get_menu(menu, inpt_msg, items=None):
     while True:
+
         if menu is not None:
             print('-' * 40)
             for num,i in enumerate(menu):
                 print("[" + color.YELLOW + str(num+1) + color.END + "] - " + i)
+
         print('-' * 40)
         i = input(color.BOLD + inpt_msg + color.END).replace(" ","")
         if i == 'q':

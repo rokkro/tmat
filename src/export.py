@@ -11,7 +11,6 @@ def write_data(fname,coll):
         'User Emotion', 'User Ethnicity', 'Eye Gap',
     ]
     data = []
-
     with open(fname,'w',newline='',encoding='utf-8') as out_file:
         w = writer(out_file, dialect='excel')
         w.writerow(headers)

@@ -16,21 +16,22 @@ auth.set_access_token(config.atoken, config.asecret)
 api = tweepy.API(auth)
 
 class Listener(StreamListener):
-    def __init__(self, lim, coll, simil):
+    def __init__(self, lim, coll, sim):
         self.count = 0
         self.lim = lim
         self.coll = coll
-        self.simil = simil
+        self.sim = sim
 
     def on_data(self, data):
         if self.count == self.lim:
             raise KeyboardInterrupt #easy way to return to menus
-        dataj = json.loads(data)
-        if self.json_filter(dataj):
-            if not self.duplicate_find(dataj):  # if no duplicates found, add tweet to db
+
+        json_data = json.loads(data)
+        if self.json_filter(json_data):
+            if not self.duplicate_find(json_data):  # if no duplicates found, add tweet to db
                 self.count += 1
-                self.coll.insert_one(dataj)
-            if self.lim != None:
+                self.coll.insert_one(json_data)
+            if self.lim is not None:
                 print("\rTweets:", self.count,
                       "[{0:50s}] {1:.1f}% ".format('#' * int((self.count / int(self.lim)) * 50),
                                                    (self.count / int(self.lim)) * 100), end="", flush=True)
@@ -38,30 +39,32 @@ class Listener(StreamListener):
                 print("\rTweets:", self.count, end="", flush=True)
             return True
 
-    def duplicate_find(self, dataj):
-        cursor = self.coll.find({'user.screen_name': dataj['user']['screen_name']})
+    def duplicate_find(self, json_data):
+        cursor = self.coll.find({'user.screen_name': json_data['user']['screen_name']})
         for c in cursor:  # searching for exact same tweets from same user, removing spaces and punct.
-            cursorText = c['text'].translate(c['text'].maketrans('', '', string.punctuation)).replace(" ", "")
-            datajText = dataj['text'].translate(dataj['text'].maketrans('', '', string.punctuation)).replace(" ", "")
-            if cursorText == datajText:
+            coll_tweet = c['text'].translate(c['text'].maketrans('', '', string.punctuation)).replace(" ", "")
+            json_tweet = json_data['text'].translate(json_data['text'].maketrans('', '', string.punctuation)).replace(" ", "")
+
+            if coll_tweet == json_tweet:
                 if config.verbose:
-                    print(" FIRST: " + c['text'] + " SECOND: " + dataj['text'])
-                    print("\nDuplicate tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
+                    print(" FIRST: " + c['text'] + " SECOND: " + json_data['text'])
+                    print("\nDuplicate tweet from " + "@" + json_data['user']['screen_name'] + " ignored.")
                 cursor.close()
                 return True
-            elif SequenceMatcher(None,cursorText,datajText).ratio() > self.simil:
+            elif SequenceMatcher(None,coll_tweet,json_tweet).ratio() > self.sim:
                 if config.verbose:
-                    print("\n" + str(SequenceMatcher(None,cursorText,datajText).ratio() * 100) + "% similar existing"
-                        " tweet from " + "@" + dataj['user']['screen_name'] + " ignored.")
-                    print(" FIRST: " + c['text'] + " SECOND: " + dataj['text'])
+                    print("\n" + str(SequenceMatcher(None,coll_tweet,json_tweet).ratio() * 100) + "% similar existing"
+                        " tweet from " + "@" + json_data['user']['screen_name'] + " ignored.")
+                    print(" FIRST: " + c['text'] + " SECOND: " + json_data['text'])
                 cursor.close()
                 return True
+
         cursor.close()
         return False  # if no duplicates found
 
-    def json_filter(self, dataj):  #removes certain tweets
-        if "created_at" not in dataj or "retweeted_status" in dataj or \
-                        "quoted_status" in dataj or dataj["in_reply_to_user_id"] != None:
+    def json_filter(self, json_data):  #removes certain tweets
+        if "created_at" not in json_data or "retweeted_status" in json_data or \
+                        "quoted_status" in json_data or json_data["in_reply_to_user_id"] != None:
             return False
         else:
             return True  # does NOT affect tweet streaming. Whether or not tweet saved
@@ -71,14 +74,14 @@ class Listener(StreamListener):
         if status == 406:
             print("Invalid tweet search request.")
         if status == 401:
-            print("Authentication failed. Check your keys or verify your system clock is accurate.")
+            print("Authentication failed. Check your keys and verify your system clock is accurate.")
         if status == 420:
             print("Rate limit reached. Wait a bit before streaming again.")
-        print("Streaming stopped.")
+        print(color.YELLOW + "Streaming stopped." + color.END)
         quit()
 
 
-class Setup(): #settings and setup for tweet scraping
+class Setup: #settings and setup for tweet scraping
     def __init__(self):
         self.temp = False
         self.img = False
@@ -127,7 +130,7 @@ class Setup(): #settings and setup for tweet scraping
         if i == 'r':
             return
         self.users[:] = []  # clear list
-        if i == '':
+        if i == '': #if blank, then clear list beforehand
             return
         tmp = i.split('||')
         for i in range(len(tmp)):
@@ -146,15 +149,15 @@ class Setup(): #settings and setup for tweet scraping
                 print("Connection failed. UID's will not be verified.")
                 self.users.append(tmp[i])
 
-
 def stream(search, lim, coll_name, db_name, temp, simil, lang, users):
     try:
         print(color.YELLOW + "Initializing DB and Collection...")
         db = mongo.client[db_name]  # initialize db
         tweetcoll = db[coll_name]  # initialize collection
-        c_true =  tweetcoll.find({"t_temp":True})
+        c_true = tweetcoll.find({"t_temp":True})
         c_false = tweetcoll.find({"t_temp":False})
-        doc_count =c_true.count() + c_false.count()
+        doc_count = c_true.count() + c_false.count()
+
         if doc_count > 0: #if there's already t_temp doc
             tweetcoll.update_many({"t_temp":not temp},{'$set':{"t_temp":temp}})
         else:
@@ -163,9 +166,10 @@ def stream(search, lim, coll_name, db_name, temp, simil, lang, users):
             })
         c_true.close()
         c_false.close()
-    except Exception as e:
+    except BaseException as e:
         print("Error:",e)
         return
+
     listener = None
     while True: #start streaming
         try:
@@ -175,11 +179,11 @@ def stream(search, lim, coll_name, db_name, temp, simil, lang, users):
             twitter_stream.filter(track=search, languages=lang, follow=users) #location search is not a filter
         except KeyboardInterrupt:
             print("\n")
-            break
+            return
         except IncompleteRead:
             print("Incomplete Read - Skipping to newer tweets.\n")
         except requests.exceptions.ConnectionError:
-            print("Connection Failed - Check you internet.")
+            print("Connection Failed - Check your internet.")
             return
         except Exception as e:
             lim-=listener.count #subtracts downloaded tweets from the limit for next round
@@ -191,12 +195,9 @@ if __name__ == '__main__':
         s = Setup()
         mongo.mongo_connection()
         s.search()
-        #print("Collection: " + s.coll_name + ", Database: " + s.db_name)
         if mongo.connected:
             stream(s.term, s.limit(), s.coll_name, s.db_name, s.temp, s.sim, s.lang,s.users)
         else:
-            print("MongoDB not connected/running. Cannot stream.")
+            print("MongoDB not connected.")
     except BaseException as e:
         print("Error:",e)
-    except KeyboardInterrupt:
-        pass
