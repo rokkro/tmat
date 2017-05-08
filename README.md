@@ -12,6 +12,8 @@ Requires Python 3.x, tested on 3.5/3.6.
 6. Export to .csv spreadsheets. [x]
 7. Historical tweet gathering 
 
+(8. Remember to put a relevant commit message for all updates lol)
+
 ## Notes:
   #### MongoDB
 1.  Tweets are placed in MongoDB databases. These databases contain collections, and these collections contain documents.
