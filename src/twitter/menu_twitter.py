@@ -15,7 +15,7 @@ def menu_scrape():
             "Languages = " + str(s.lang).strip('[]'),
             "Follow UID(s) = " + (str(s.users).strip('[]') if len(s.users) > 0 else "None"),
             "MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END],
-                        "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>", 9)
+            "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>", 9)
 
         if inpt == '' and mongo.connected and (len(s.term)>0 or len(s.users)>0):
             stream(s.term, s.lim, s.coll_name, s.db_name, s.temp, s.sim, s.lang, s.users)
@@ -23,7 +23,6 @@ def menu_scrape():
         elif inpt == '':
             print(color.YELLOW + "MongoDB must be connected and a search or UID must have been entered." + color.END)
             continue
-
         elif inpt == 'r':
             return
 

@@ -1,7 +1,7 @@
 #http://www.nltk.org/howto/sentiment.html
-import warnings
-warnings.filterwarnings("ignore") #stop useless warning
 try:
+    import warnings
+    warnings.filterwarnings("ignore")  # stop useless warning
     import mongo, config
     from display import color
     from nltk.sentiment.util import *
@@ -14,6 +14,7 @@ except ImportError as e:
     print("Error:",e)
 
 def initialize():
+    print(color.YELLOW + "Running NLTK Setup..." + color.END)
     try:
         nltk.download('subjectivity')
         nltk.download('vader_lexicon')
@@ -24,8 +25,8 @@ def initialize():
     except NameError as e:
         print("Make sure NLTK is installed:",e)
         return
+    
     len(subj_docs), len(obj_docs)
-
     train_subj_docs = subj_docs[:80]
     test_subj_docs = subj_docs[80:100]
     train_obj_docs = obj_docs[:80]
@@ -79,6 +80,6 @@ def analyze(coll):
                 "compound": ss['compound']
             }
         }})
-        sentences[:] = [] #empty list
+        sentences[:] = []  # empty list
     cursor.close()
     print(color.YELLOW + "Sentiment values have been attached to each tweet document in the collection." + color.END)
