@@ -187,7 +187,7 @@ def stream(search, lim, coll_name, db_name, temp, simil, lang, users):
             return
         except Exception as e:
             lim-=listener.count #subtracts downloaded tweets from the limit for next round
-            print("Error: ",e,"\nAttempting to continue...\n")
+            #print("Error: ",e,"\nAttempting to continue...\n")
             continue
 
 if __name__ == '__main__':
