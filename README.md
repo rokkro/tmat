@@ -1,9 +1,9 @@
 To use: insert correct Twitter (tweet streaming) and/or Kairos (image analysis) API keys into the `config.py` file, then run `menu_main.py`, which is a menu interface.
 
 Install mongoDB and run with `mongod --dbpath=/path/to/db`.
-
+  
 Requires Python 3.x, tested on 3.5/3.6.
-
+   
 1. Twitter tweet streaming [x]
 2. Set up MongoDB system [x]
 3. Check tweet duplicates [x] 
