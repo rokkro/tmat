@@ -1,13 +1,13 @@
 from analysis import menu_analysis
 from twitter import menu_twitter
-from display import color, get_menu
+from display import Color, get_menu
 import menu_list, mongo, export, config
 
 def menu_main():
     def sub_connect():
-        print(color.YELLOW, end='')
+        print(Color.YELLOW, end='')
         mongo.mongo_connection()
-        print(color.END, end='')
+        print(Color.END, end='')
 
     if config.startup_connect:
         sub_connect()
@@ -25,7 +25,7 @@ def menu_main():
                       "Perform Image Analysis.",
                       "Export as csv.",
                       "Manage Collections.",
-                      "MongoDB Connected = " + color.YELLOW + str(mongo.connected) + color.END],
+                      "MongoDB Connected = " + Color.YELLOW + str(mongo.connected) + Color.END],
                      "*Enter option number or [q] - quit.\n>>>", 7)
         try:
             menu[i]()

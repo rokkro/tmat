@@ -2,11 +2,12 @@ try:
     from pymongo import MongoClient
     from pymongo.errors import ConnectionFailure
 except ImportError as e:
-    print("Install missing modules with pip!\nError:",e)
+    print("Install missing modules with pip!\nError:", e)
     quit()
 
 client = None
 connected = False
+
 
 def mongo_connection():
     global client, connected
@@ -18,8 +19,8 @@ def mongo_connection():
     else:
         print("Attempting connection to MongoDB...")
         try:
-            client = MongoClient(serverSelectionTimeoutMS=30) #may want to change timeout if not localhost
-            client.server_info() #forces connection verification
+            client = MongoClient(serverSelectionTimeoutMS=30)  # localhost timeout
+            client.server_info()  # forces connection verification
             print("Connection Succeeded!")
             connected = True
         except (ConnectionFailure, KeyboardInterrupt) as e:
@@ -27,8 +28,10 @@ def mongo_connection():
         except Exception as e:
             print("Error:", e)
 
+
 def get_dbnames():
     return client.database_names()
+
 
 def get_collections(db_name):
     return client[db_name].collection_names()
