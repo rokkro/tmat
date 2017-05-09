@@ -26,6 +26,7 @@ class Listener(StreamListener):
 
     def on_data(self, data):
         if self.count == self.lim:
+            print("\n" + Color.YELLOW + str(self.count) + " tweets successfully inserted!" + Color.END)
             raise KeyboardInterrupt  # easy way to return to menus
 
         json_data = json.loads(data)
@@ -183,7 +184,6 @@ def stream(search, lim, coll_name, db_name, temp, simil, lang, users):
             twitter_stream = Stream(auth, listener)
             twitter_stream.filter(track=search, languages=lang, follow=users)  # location search is not a filter
         except KeyboardInterrupt:
-            print("\n")
             return
         except IncompleteRead:
             print("Incomplete Read - Skipping to newer tweets.\n")
