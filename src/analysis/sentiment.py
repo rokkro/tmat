@@ -1,20 +1,24 @@
-#http://www.nltk.org/howto/sentiment.html
+# http://www.nltk.org/howto/sentiment.html
+
 try:
     import warnings
+
     warnings.filterwarnings("ignore")  # stop useless warning
     import mongo, config
-    from display import color
-    from nltk.sentiment.util import *
+    from display import Color
+    import nltk
+    from nltk.sentiment.util import mark_negation, extract_unigram_feats
     from nltk.sentiment.vader import SentimentIntensityAnalyzer
     from nltk.classify import NaiveBayesClassifier
     from nltk.corpus import subjectivity
     from nltk.sentiment import SentimentAnalyzer
     from nltk import tokenize
 except ImportError as e:
-    print("Error:",e)
+    print("Error:", e)
+
 
 def initialize():
-    print(color.YELLOW + "Running NLTK Setup..." + color.END)
+    print(Color.YELLOW + "Running NLTK Setup..." + Color.END)
     try:
         nltk.download('subjectivity')
         nltk.download('vader_lexicon')
@@ -23,16 +27,15 @@ def initialize():
         subj_docs = [(sent, 'subj') for sent in subjectivity.sents(categories='subj')[:n_instances]]
         obj_docs = [(sent, 'obj') for sent in subjectivity.sents(categories='obj')[:n_instances]]
     except NameError as e:
-        print("Make sure NLTK is installed:",e)
+        print("Make sure NLTK is installed:", e)
         return
-    
-    len(subj_docs), len(obj_docs)
+
     train_subj_docs = subj_docs[:80]
     test_subj_docs = subj_docs[80:100]
     train_obj_docs = obj_docs[:80]
     test_obj_docs = obj_docs[80:100]
-    training_docs = train_subj_docs +train_obj_docs
-    testing_docs = test_subj_docs+test_obj_docs
+    training_docs = train_subj_docs + train_obj_docs
+    testing_docs = test_subj_docs + test_obj_docs
     sentim_analyzer = SentimentAnalyzer()
     all_words_neg = sentim_analyzer.all_words([mark_negation(doc) for doc in training_docs])
 
@@ -43,11 +46,12 @@ def initialize():
     test_set = sentim_analyzer.apply_features(testing_docs)
 
     trainer = NaiveBayesClassifier.train
-    classifier = sentim_analyzer.train(trainer, training_set)
+    sentim_analyzer.train(trainer, training_set)
 
-    for key,value in sorted(sentim_analyzer.evaluate(test_set).items()):
-         print('{0}: {1}'.format(key, value))
-    print(color.YELLOW + "Setup Finished!" + color.END)
+    for key, value in sorted(sentim_analyzer.evaluate(test_set).items()):
+        print('{0}: {1}'.format(key, value))
+    print(Color.YELLOW + "Setup Finished!" + Color.END)
+
 
 def analyze(coll):
     if not mongo.connected:
@@ -57,23 +61,23 @@ def analyze(coll):
     try:
         sid = SentimentIntensityAnalyzer()
     except (NameError, LookupError) as e:
-        print("Error: Make sure NLTK is installed and you have run initial setup:",e)
+        print("Error: Make sure NLTK is installed and you have run initial setup:", e)
         return
-    cursor = coll.find({}) #finds all documents in collection
-    for i in cursor: #loop through those
-        if "text" not in i: #if the current doc doesnt have 'text' field, move on
+    cursor = coll.find({})  # finds all documents in collection
+    for i in cursor:  # loop through those
+        if "text" not in i:  # if the current doc doesnt have 'text' field, move on
             continue
         try:
-            sentences.extend(tokenize.sent_tokenize(i["text"])) #prepare tweet text
-            ss = sid.polarity_scores(sentences[0]) #get polarity of text
+            sentences.extend(tokenize.sent_tokenize(i["text"]))  # prepare tweet text
+            ss = sid.polarity_scores(sentences[0])  # get polarity of text
         except LookupError as e:
-            print("Error: Make sure you have run initial setup:",e)
+            print("Error: Make sure you have run initial setup:", e)
         if config.verbose:
             print("Document _id:", i.get('_id'))
             print(sentences[0])
             print(ss)
-        coll.update_one({'_id':i.get('_id')},{ '$set' : {
-            "sentiment":{
+        coll.update_one({'_id': i.get('_id')}, {'$set': {
+            "sentiment": {
                 "pos": ss['pos'],
                 "neg": ss['neg'],
                 "neu": ss['neu'],
@@ -82,4 +86,4 @@ def analyze(coll):
         }})
         sentences[:] = []  # empty list
     cursor.close()
-    print(color.YELLOW + "Sentiment values have been attached to each tweet document in the collection." + color.END)
+    print(Color.YELLOW + "Sentiment values have been attached to each tweet document in the collection." + Color.END)

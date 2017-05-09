@@ -1,4 +1,4 @@
-from display import get_coll, color
+from display import get_coll, Color
 from csv import writer
 
 def write_data(fname,coll):
@@ -108,17 +108,17 @@ def write_data(fname,coll):
 
             w.writerow(data)
             data[:] = []
-        print(color.YELLOW + fname + " created in the current directory!" + color.END)
+        print(Color.YELLOW + fname + " created in the current directory!" + Color.END)
 
 def setup():
     coll = get_coll()
     if coll == None:
         return
 
-    fname = input(color.BOLD + "*Please enter a filename. A .csv extension will be added.\n"
-                               "Leave blank to cancel.\n>>>" + color.END).replace(" ","")
+    fname = input(Color.BOLD + "*Please enter a filename. A .csv extension will be added.\n"
+                               "Leave blank to cancel.\n>>>" + Color.END).replace(" ", "")
     if fname == '':
-        print(color.YELLOW + "Export Cancelled." + color.END)
+        print(Color.YELLOW + "Export Cancelled." + Color.END)
         return
     if ".csv" not in fname:
         fname = fname + ".csv"
@@ -126,6 +126,6 @@ def setup():
     try:
         write_data(fname,coll)
     except PermissionError:
-        print(color.YELLOW + "Permission Error: Check if the specified file is open in another program\nand if you have "
-                             "permission to create files here." + color.END)
+        print(Color.YELLOW + "Permission Error: Check if the specified file is open in another program\nand if you have "
+                             "permission to create files here." + Color.END)
         return
