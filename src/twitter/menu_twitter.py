@@ -1,11 +1,12 @@
 import mongo
-from twitter.streaming import Setup, stream
+from twitter.tweet_setup import Setup
+from twitter.streaming import stream
 from display import get_menu, Color
 
 
 def menu_scrape():
     s = Setup()
-    s.search()
+    s.set_search()
     while True:
         inpt = get_menu(["Search = " + (str(s.term).strip('[]') if s.term else "None"),
                          "Limit = " + str(s.lim),
@@ -19,7 +20,10 @@ def menu_scrape():
                         "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>", 9)
 
         if inpt == '' and mongo.connected and (s.term or s.users):
-            stream(s.term, s.lim, s.coll_name, s.db_name, s.temp, s.sim, s.lang, s.users)
+            print(Color.YELLOW)
+            s.init_db()
+            stream(s)
+            print(Color.END)
             break
         elif inpt == '':
             print(Color.YELLOW + "MongoDB must be connected and a search or UID must have been entered." + Color.END)
@@ -29,14 +33,14 @@ def menu_scrape():
 
         def sub_search():
             print(Color.BOLD, end='')
-            s.search()
+            s.set_search()
             print(Color.END, end='')
             print(Color.YELLOW + "Search changed to " + (
                 str(s.term).strip('[]') if s.term else "None") + "." + Color.END)
 
         def sub_lim():
             print(Color.BOLD, end='')
-            s.limit()
+            s.set_limit()
             print(Color.END, end='')
             print(Color.YELLOW + "Limit changed to " + str(s.lim) + "." + Color.END)
 
@@ -124,7 +128,7 @@ def menu_scrape():
 
         def sub_follow():
             print(Color.BOLD, end='')
-            s.follow()
+            s.set_follow()
             print(Color.END, end='')
             print(Color.YELLOW + "Follow list changed to " + (
                 str(s.users).strip('[]') if s.users else "None") + "." + Color.END)
