@@ -34,7 +34,10 @@ class Setup:  # settings and setup for tweet scraping
             if valid < oldest:
                 print("Date is older than " + str(oldest) + ".")
                 return
-            self.until = valid.year + "-" + valid.month + "-" + valid.day
+            if valid > dt:
+                print("Date is in the future!")
+                return
+            self.until = valid.date()
             print("Date set to " + str(self.until) + ".")
         except (ValueError, IndexError):
             print("Invalid Date.")
