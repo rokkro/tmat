@@ -17,7 +17,7 @@ def sub_search(s):
         return
     s.set_search(inpt)
     print(Color.END, end='')
-    print(Color.YELLOW + "Search changed to " + (
+    print(Color.YELLOW + "Search set to " + (
         str(s.term).strip('[]') if s.term else "None") + "." + Color.END)
 
 
@@ -31,7 +31,7 @@ def sub_lim(s):
     else:
         s.lim = inpt
     print(Color.END, end='')
-    print(Color.YELLOW + "Limit changed to " + str(s.lim) + "." + Color.END)
+    print(Color.YELLOW + "Limit set to " + str(s.lim) + "." + Color.END)
 
 
 def sub_tmp(s):
@@ -142,7 +142,6 @@ def sub_mongo(s):
 def menu_stream():
     s = Setup(True)
     sub_search(s)
-    print("\n")
     while True:
         inpt = get_menu("STREAMING",["Search = " + (str(s.term).strip('[]') if s.term else "None"),
                          "Limit = " + str(s.lim),
@@ -202,7 +201,6 @@ def menu_hist():
     s = Setup()
     sub_search(s)
     sub_lim(s)
-    print("\n")
     while True:
         inpt = get_menu("HISTORIC",["Search = " + (str(s.term).strip('[]') if s.term else "None"),
                          "Limit = " + str(s.lim),

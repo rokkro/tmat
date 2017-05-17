@@ -1,5 +1,6 @@
 from twitter import tweet_filter
-import config, tweepy, json
+from display import Color
+import config, tweepy
 from tweepy import api
 from tweepy import OAuthHandler
 
@@ -11,6 +12,7 @@ def scrape(Setup):
     #http://stackoverflow.com/a/23996991
     searched_tweets = []
     last_id = -1
+    print("Retrieving tweets...")
     while len(searched_tweets) < Setup.lim:
         count = Setup.lim - len(searched_tweets)
         try:
@@ -24,6 +26,7 @@ def scrape(Setup):
                     if not tweet_filter.duplicate_find(Setup.tweet_coll, json_data._json,
                                                        Setup.sim):  # if no duplicates found, add tweet to db
                         Setup.tweet_coll.insert_one(json_data._json)
+            print(Color.END,end='')
             print("\rTweets:", len(searched_tweets),
                   "[{0:50s}] {1:.1f}% ".format('#' * int((len(searched_tweets) / int(Setup.lim)) * 50),
                                                (len(searched_tweets) / int(Setup.lim)) * 100), end="", flush=True)
