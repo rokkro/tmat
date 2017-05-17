@@ -1,3 +1,4 @@
+from twitter import tweet_filter
 import config, tweepy
 from tweepy import api
 from tweepy import OAuthHandler
@@ -18,8 +19,13 @@ def scrape(Setup):
                 break
             searched_tweets.extend(new_tweets)
             last_id = new_tweets[-1].id
-            for i, k in enumerate(searched_tweets):
-                print(i, k)
+            for iter, json_data in enumerate(searched_tweets):
+                if tweet_filter.json_filter(json_data):
+                    if not tweet_filter.duplicate_find(Setup.tweet_coll, json_data,
+                                                       Setup.sim):  # if no duplicates found, add tweet to db
+                        Setup.tweet_coll.insert_one(json_data)
+
+                print(iter, json_data)
         except tweepy.TweepError as e:
             print(e)
             break

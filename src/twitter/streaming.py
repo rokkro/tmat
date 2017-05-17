@@ -1,12 +1,12 @@
 try:
-    import config, requests
-    import tweepy, json,string
+    import config
+    from twitter import tweet_filter
+    import requests, tweepy, json
     from display import Color
     from tweepy import Stream
     from tweepy.streaming import StreamListener
     from tweepy import OAuthHandler
     from http.client import IncompleteRead
-    from difflib import SequenceMatcher
 except ImportError as e:
     print("Error:", e)
     quit()
@@ -30,8 +30,8 @@ class Listener(StreamListener):
             raise KeyboardInterrupt  # easy way to return to menus
 
         json_data = json.loads(data)
-        if self.json_filter(json_data):
-            if not self.duplicate_find(json_data):  # if no duplicates found, add tweet to db
+        if tweet_filter.json_filter(json_data):
+            if not tweet_filter.duplicate_find(self.coll,json_data,self.sim):  # if no duplicates found, add tweet to db
                 self.count += 1
                 self.coll.insert_one(json_data)
             print(Color.END,end="")
@@ -42,37 +42,6 @@ class Listener(StreamListener):
             else:
                 print("\rTweets:", self.count, end="", flush=True)
             return True
-
-    def duplicate_find(self, json_data):
-        cursor = self.coll.find({'user.screen_name': json_data['user']['screen_name']})
-        for c in cursor:  # searching for exact same tweets from same user, removing spaces and punct.
-            coll_tweet = c['text'].translate(c['text'].maketrans('', '', string.punctuation)).replace(" ", "")
-            json_tweet = json_data['text'].translate(json_data['text'].maketrans('', '', string.punctuation)).replace(
-                " ", "")
-
-            if coll_tweet == json_tweet:
-                if config.verbose:
-                    print(" FIRST: " + c['text'] + " SECOND: " + json_data['text'])
-                    print("\nDuplicate tweet from " + "@" + json_data['user']['screen_name'] + " ignored.")
-                cursor.close()
-                return True
-            elif SequenceMatcher(None, coll_tweet, json_tweet).ratio() > self.sim:
-                if config.verbose:
-                    print("\n" + str(SequenceMatcher(None, coll_tweet, json_tweet).ratio() * 100) + "% similar existing"
-                                                                                                    " tweet from " + "@" +
-                          json_data['user']['screen_name'] + " ignored.")
-                    print(" FIRST: " + c['text'] + " SECOND: " + json_data['text'])
-                cursor.close()
-                return True
-
-        cursor.close()
-        return False  # if no duplicates found
-
-    def json_filter(self, json_data):  # removes certain tweets
-        if "created_at" not in json_data or "retweeted_status" in json_data or \
-                        "quoted_status" in json_data or json_data["in_reply_to_user_id"] != None:
-            return False
-        return True  # does NOT affect tweet streaming. Whether or not tweet saved
 
     def on_error(self, status):
         print("Error code:", status, end=". ")
