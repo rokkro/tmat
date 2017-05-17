@@ -21,7 +21,7 @@ def menu_main():
     }
     while True:
         i = get_menu("MAIN",["Stream Tweets.",
-                      "Historical Tweets",
+                      "Historical Tweets.",
                       "Perform Sentiment Analysis.",
                       "Perform Image Analysis.",
                       "Export as CSV.",

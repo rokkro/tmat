@@ -1,6 +1,7 @@
 import mongo
 from twitter.tweet_setup import Setup
 from twitter.streaming import stream
+from twitter.historical import scrape
 from display import get_menu, Color
 
 
@@ -210,6 +211,17 @@ def menu_hist():
                          "Before Date = " + str(s.until),
                          "MongoDB Connected = " + Color.YELLOW + str(mongo.connected) + Color.END],
                         "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>", 9)
+
+        if inpt == '' and mongo.connected and s.term and s.lim:
+            print(Color.YELLOW)
+            s.init_db()
+            scrape(s)
+            print(Color.END)
+            break
+        elif inpt == '':
+            print(Color.YELLOW + "MongoDB must be connected, and both a search and limit must have been entered." + Color.END)
+            continue
+
         menu = {
             1: sub_search,
             2: sub_lim,
