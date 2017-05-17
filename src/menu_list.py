@@ -1,9 +1,10 @@
-from display import Color, get_coll, get_menu, get_db
+from display import Color, get_coll, get_menu, get_db, header
 
 
 def menu_manage():
+    print("\n")
     while True:
-        inpt = get_menu(["View Databases, Collections, and Documents.",
+        inpt = get_menu("MODIFY COLLECTIONS",["View Databases, Collections, and Documents.",
                          "Purge Temporary Collections in a DB.",
                          "Delete Specific Collections.",
                          "Mark/Un-mark a Collection as Temporary."],
