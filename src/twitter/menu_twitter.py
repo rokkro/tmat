@@ -141,6 +141,7 @@ def sub_mongo(s):
 
 def menu_stream():
     s = Setup(True)
+    sub_search(s)
     print("\n")
     while True:
         inpt = get_menu("STREAMING",["Search = " + (str(s.term).strip('[]') if s.term else "None"),
@@ -199,6 +200,8 @@ def sub_date(s):
 
 def menu_hist():
     s = Setup()
+    sub_search(s)
+    sub_lim(s)
     print("\n")
     while True:
         inpt = get_menu("HISTORIC",["Search = " + (str(s.term).strip('[]') if s.term else "None"),
