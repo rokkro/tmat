@@ -1,21 +1,23 @@
 import mongo
 
-
 class Color:
     YELLOW = '\033[93m'
+    CYAN = '\033[96m'
     BOLD = '\033[1m'
     END = '\033[0m'
 
+def header(text):
+    print(Color.CYAN + ('-' * int((40 - len(text)) / 2)) + Color.BOLD +
+          text + Color.CYAN + ('-' * int((40 - len(text)) / 2)) + Color.END)
 
-def get_menu(menu, inpt_msg, items=None):
+def get_menu(head,menu, inpt_msg, items=None):
     while True:
-
         if menu is not None:
-            print('-' * 40)
+            header(head)
             for num, i in enumerate(menu):
                 print("[" + Color.YELLOW + str(num + 1) + Color.END + "] - " + i)
 
-        print('-' * 40)
+        print(Color.CYAN + '-' * 40 + Color.END)
         i = input(Color.BOLD + inpt_msg + Color.END).replace(" ", "")
         if i == 'q':
             quit()
@@ -35,12 +37,14 @@ def get_db():
     if not mongo.connected:
         print("You must be connected to MongoDB!")
         return
+
+    header("DATABASES")
     print(Color.YELLOW + "Do not select 'admin' or 'local' databases." + Color.END)
 
     for j, k in enumerate(mongo.get_dbnames(), 1):  # start at 1
         print("[" + Color.YELLOW + str(j) + Color.END + "] - '" + k + "' (" + str(
             len(mongo.get_collections(k))) + ")")  # print databases
-    inpt = get_menu(None, "*Select a db to view collections or [r] - return.\n>>>", len(mongo.get_dbnames()))
+    inpt = get_menu("",None, "*Select a db to view collections or [r] - return.\n>>>", len(mongo.get_dbnames()))
     if inpt == 'r' or inpt == '':
         return None
 
@@ -54,6 +58,7 @@ def get_coll():
         coll, db = get_db()
     except BaseException:
         return None
+    header("COLLECTIONS")
     for j, k in enumerate(coll, 1):
         tmp = db[coll[j - 1]].find({"t_temp": True})
         doc_count = db[coll[j - 1]].find({})  # take the specified collection, and find all the documents
@@ -61,7 +66,7 @@ def get_coll():
               ("(TEMP)" if tmp.count() > 0 else ""))
         tmp.close()
         doc_count.close()
-    inpt = get_menu(None, "*Select a collection or [r] - return.\n>>>", len(coll))
+    inpt = get_menu("",None, "*Select a collection or [r] - return.\n>>>", len(coll))
 
     if inpt == 'r' or inpt == '':
         return None

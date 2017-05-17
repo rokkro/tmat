@@ -115,7 +115,7 @@ def setup():
     if coll == None:
         return
 
-    fname = input(Color.BOLD + "*Please enter a filename. A .csv extension will be added.\n"
+    fname = input(Color.BOLD + "*Enter a filename. A .csv extension will be added.\n"
                                "Leave blank to cancel.\n>>>" + Color.END).replace(" ", "")
     if fname == '':
         print(Color.YELLOW + "Export Cancelled." + Color.END)

@@ -8,22 +8,23 @@ def menu_main():
         print(Color.YELLOW, end='')
         mongo.mongo_connection()
         print(Color.END, end='')
-
     if config.startup_connect:
         sub_connect()
     menu = {
-        1: menu_twitter.menu_scrape,
-        2: menu_analysis.menu_sentiment,
-        3: menu_analysis.menu_image,
-        4: export.setup,
-        5: menu_list.menu_manage,
-        6: sub_connect
+        1: menu_twitter.menu_stream,
+        2: menu_twitter.menu_hist,
+        3: menu_analysis.menu_sentiment,
+        4: menu_analysis.menu_image,
+        5: export.setup,
+        6: menu_list.menu_manage,
+        7: sub_connect
     }
     while True:
-        i = get_menu(["Scrape tweets.",
+        i = get_menu("MAIN",["Stream Tweets.",
+                      "Historical Tweets",
                       "Perform Sentiment Analysis.",
                       "Perform Image Analysis.",
-                      "Export as csv.",
+                      "Export as CSV.",
                       "Manage Collections.",
                       "MongoDB Connected = " + Color.YELLOW + str(mongo.connected) + Color.END],
                      "*Enter option number or [q] - quit.\n>>>", 7)

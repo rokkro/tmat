@@ -3,7 +3,8 @@ from analysis import sentiment, image
 
 
 def menu_sentiment():
-    inpt = get_menu(["Run initial setup.", "Choose a collection to analyze."],
+    print("\n")
+    inpt = get_menu("SENTIMENT",["Run initial setup.", "Choose a collection to analyze."],
                     "*Enter an option number or [r] - return.\n>>>", 2)
     if inpt == 'r':
         return
@@ -25,7 +26,7 @@ def menu_image():
     coll = get_coll()
     if coll is None:
         return
-    limit = get_menu(None, "Enter the number of tweets to analyze.\nLeave blank for all in the collection.\n>>>")
+    limit = get_menu("",None, "Enter the number of tweets to analyze.\nLeave blank for all in the collection.\n>>>")
     if limit == 'r':
         return
     image.insert_data(coll, limit)
