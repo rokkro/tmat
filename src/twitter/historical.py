@@ -1,20 +1,19 @@
 import config, tweepy
 from tweepy import api
 from tweepy import OAuthHandler
+
 auth = OAuthHandler(config.ckey, config.csecret)
 auth.set_access_token(config.atoken, config.asecret)
 api = tweepy.API(auth)
 
-def scrape():
+def scrape(Setup):
     #http://stackoverflow.com/a/23996991
-    max_tweets = 1000
     searched_tweets = []
     last_id = -1
-    while len(searched_tweets) < max_tweets:
-        count = max_tweets - len(searched_tweets)
+    while len(searched_tweets) < Setup.lim:
+        count = Setup.lim - len(searched_tweets)
         try:
-            new_tweets = api.search(q=['a','b','c'], count=count, max_id=str(last_id - 1))
-
+            new_tweets = api.search(q=Setup.term,result_type=Setup.result_type,until=Setup.until, count=count, max_id=str(last_id - 1))
             if not new_tweets:
                 break
             searched_tweets.extend(new_tweets)
@@ -22,9 +21,7 @@ def scrape():
             for i, k in enumerate(searched_tweets):
                 print(i, k)
         except tweepy.TweepError as e:
-            # depending on TweepError.code, one may want to retry or wait
-            # to keep things simple, we will give up on an error
+            print(e)
             break
-scrape()
 
-#QUERY USES https://dev.twitter.com/rest/public/search
+#USES https://dev.twitter.com/rest/public/search
