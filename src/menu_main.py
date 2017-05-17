@@ -21,7 +21,7 @@ def menu_main():
     }
     while True:
         i = get_menu("MAIN",["Stream Tweets.",
-                      "Historical Tweets.",
+                      "Historic Tweets.",
                       "Perform Sentiment Analysis.",
                       "Perform Image Analysis.",
                       "Export as CSV.",
@@ -32,7 +32,6 @@ def menu_main():
             menu[i]()
         except KeyError:
             pass
-
 
 if __name__ == "__main__":
     try:

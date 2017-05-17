@@ -34,5 +34,3 @@ def scrape(Setup):
         except Exception as e:
             print(e)
             break
-
-#USES https://dev.twitter.com/rest/public/search
