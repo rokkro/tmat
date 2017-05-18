@@ -1,9 +1,12 @@
-import mongo
-from twitter.tweet_setup import Setup
-from twitter.streaming import stream
-from twitter.historic import scrape
-from display import get_menu, Color
-
+try:
+    import mongo
+    from twitter.tweet_setup import Setup
+    from twitter.streaming import stream
+    from twitter.historic import scrape
+    from display import get_menu, Color
+except ImportError as e:
+    print("Error:", e)
+    quit()
 
 def sub_search(s):
     print(Color.BOLD, end='')

@@ -1,6 +1,9 @@
-import config, string
-from difflib import SequenceMatcher
-
+try:
+    import config, string
+    from difflib import SequenceMatcher
+except ImportError as e:
+    print("Error:", e)
+    quit()
 
 def duplicate_find(coll,json_data,sim):
     cursor = coll.find({'user.screen_name': json_data['user']['screen_name']})
