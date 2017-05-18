@@ -1,8 +1,12 @@
-from twitter import tweet_filter
-from display import Color
-import config, tweepy
-from tweepy import api
-from tweepy import OAuthHandler
+try:
+    from twitter import tweet_filter
+    from display import Color
+    import config, tweepy
+    from tweepy import api
+    from tweepy import OAuthHandler
+except ImportError as e:
+    print("Error:", e)
+    quit()
 
 auth = OAuthHandler(config.ckey, config.csecret)
 auth.set_access_token(config.atoken, config.asecret)

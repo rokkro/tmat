@@ -1,5 +1,8 @@
-import mongo, datetime
-
+try:
+    import mongo, datetime
+except ImportError as e:
+    print("Error:", e)
+    quit()
 
 class Setup:  # settings and setup for tweet scraping
     def __init__(self,streaming=False):
