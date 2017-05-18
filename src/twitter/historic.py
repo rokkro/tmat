@@ -14,6 +14,7 @@ def scrape(Setup):
     last_id = -1
     successful = 0
     print("Retrieving tweets...")
+    print(Color.END,end='')
     while successful < Setup.lim:
         count = Setup.lim - successful  #len(searched_tweets)
         try:
@@ -29,7 +30,6 @@ def scrape(Setup):
                         Setup.tweet_coll.insert_one(data._json)
                         successful+=1
             searched_tweets[:] = []
-            print(Color.END,end='')
             print("\rTweets:", successful,
                   "[{0:50s}] {1:.1f}% ".format('#' * int((successful / int(Setup.lim)) * 50),
                                                (successful / int(Setup.lim)) * 100), end="", flush=True)
