@@ -1,7 +1,7 @@
 try:
     from twitter import tweet_filter
     from display import Color
-    import config, tweepy
+    import config, tweepy, time
     from tweepy import api
     from tweepy import OAuthHandler
 except ImportError as e:
@@ -43,6 +43,10 @@ def scrape(Setup):
             if error == 215:
                 print("Authentication failed. Check your keys and verify your system clock is accurate.")
                 return
+            if error == 88:
+                time.sleep(5)
+                #print("Rate limit reached.")
+                continue
             if error == 130 or error == 131:
                 print("An error occurred on Twitter's end. Please try again...")
                 return
