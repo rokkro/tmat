@@ -4,15 +4,14 @@ Install mongoDB and run with `mongod --dbpath=/path/to/db` (Find `mongod.exe` in
   
 Requires Python 3.x, tested on 3.5/3.6.
    
-1. Twitter tweet streaming [x]
-2. Set up MongoDB system [x]
-3. Check tweet duplicates [x] 
+1. Twitter tweet streaming. [x]
+2. Set up MongoDB system. [x]
+3. Check tweet duplicates. [x]
 4. Sentiment analaysis (<a href="https://github.com/cjhutto/vaderSentiment">Vader Sentiment</a>) [x]
 5. Associate characteristics using Kairos to tweets + users. [x]
 6. Export to .csv spreadsheets. [x]
-7. Historical tweet gathering 
+7. Historical tweet gathering. [x]
 
-(8. Remember to put a relevant commit message for all updates lol)
 
 ## Notes:
   #### MongoDB
