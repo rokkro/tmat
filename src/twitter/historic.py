@@ -10,7 +10,7 @@ except ImportError as e:
 
 auth = OAuthHandler(config.ckey, config.csecret)
 auth.set_access_token(config.atoken, config.asecret)
-api = tweepy.API(auth)
+api = tweepy.API(auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
 
 def scrape(Setup):
     #http://stackoverflow.com/a/23996991
@@ -34,6 +34,7 @@ def scrape(Setup):
                         Setup.tweet_coll.insert_one(data._json)
                         successful+=1
             searched_tweets[:] = []
+            print(api.last_response)
             print("\rTweets:", successful,
                   "[{0:50s}] {1:.1f}% ".format('#' * int((successful / int(Setup.lim)) * 50),
                                                (successful / int(Setup.lim)) * 100), end="", flush=True)
@@ -44,8 +45,7 @@ def scrape(Setup):
                 print("Authentication failed. Check your keys and verify your system clock is accurate.")
                 return
             if error == 88:
-                time.sleep(5)
-                #print("Rate limit reached.")
+                #print("Rate limit exceeded.")
                 continue
             if error == 130 or error == 131:
                 print("An error occurred on Twitter's end. Please try again...")
