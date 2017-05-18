@@ -23,7 +23,11 @@ def sub_search(s):
 
 def sub_lim(s):
     print(Color.BOLD, end='')
-    inpt = get_menu('',None, "*Enter number of tweets to retrieve. Leave blank for unlimited.\n>>>")
+    if s.streaming:
+        print("*Enter number of tweets to retrieve. Leave blank for unlimited.",end='')
+    else:
+        print("*Enter number of tweets to retrieve.",end='')
+    inpt = get_menu('',None, "\n>>>")
     if inpt == 'r':
         return
     if inpt == '':
