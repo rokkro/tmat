@@ -18,8 +18,8 @@ def scrape(Setup):
     last_id = -1
     successful = 0
     print("Retrieving tweets...")
-    print(Color.END,end='')
     while successful < Setup.lim:
+        print(Color.END, end='')
         count = Setup.lim - successful  #len(searched_tweets)
         try:
             new_tweets = api.search(q=Setup.term,result_type=Setup.result_type,until=Setup.until, count=count, max_id=str(last_id - 1))
@@ -37,6 +37,14 @@ def scrape(Setup):
             print("\rTweets:", successful,
                   "[{0:50s}] {1:.1f}% ".format('#' * int((successful / int(Setup.lim)) * 50),
                                                (successful / int(Setup.lim)) * 100), end="", flush=True)
-        except Exception as e:
+        except tweepy.TweepError as e:
+            print(Color.YELLOW,end='')
+            error = e.args[0][0]['code']
+            if error == 215:
+                print("Authentication failed. Check your keys and verify your system clock is accurate.")
+                return
+            if error == 130 or error == 131:
+                print("An error occurred on Twitter's end. Please try again...")
+                return
             print("Error:",e)
             continue
