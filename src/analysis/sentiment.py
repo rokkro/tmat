@@ -2,7 +2,6 @@
 
 try:
     import warnings
-
     warnings.filterwarnings("ignore")  # stop useless warning
     import mongo, config
     from display_menu import Color

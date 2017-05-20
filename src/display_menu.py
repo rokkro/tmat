@@ -1,4 +1,7 @@
-import mongo
+try:
+    import mongo
+except ImportError as e:
+    print("Error",e)
 
 class Color:
     YELLOW = '\033[93m'
