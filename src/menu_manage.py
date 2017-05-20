@@ -1,5 +1,7 @@
-from display_menu import Color, get_coll, get_menu, get_db, header
-
+try:
+    from display_menu import Color, get_coll, get_menu, get_db
+except ImportError as e:
+    print("Error",e)
 
 def menu_manage():
     while True:

@@ -1,7 +1,10 @@
-from analysis import menu_analysis
-from twitter import menu_twitter
-from display_menu import Color, get_menu
-import menu_manage, mongo, export, config
+try:
+    from analysis import menu_analysis
+    from twitter import menu_twitter
+    from display_menu import Color, get_menu
+    import menu_manage, mongo, export, config
+except ImportError as e:
+    print("Error",e)
 
 def menu_main():
     def sub_connect():

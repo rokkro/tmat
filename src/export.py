@@ -1,5 +1,8 @@
-from display_menu import get_coll, Color
-from csv import writer
+try:
+    from display_menu import get_coll, Color
+    from csv import writer
+except ImportError as e:
+    print("Error",e)
 
 def write_data(fname,coll):
     headers = [

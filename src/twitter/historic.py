@@ -1,7 +1,7 @@
 try:
     from twitter import tweet_filter
     from display_menu import Color
-    import config, tweepy, time
+    import config, tweepy
     from tweepy import api
     from tweepy import OAuthHandler
 except ImportError as e:
