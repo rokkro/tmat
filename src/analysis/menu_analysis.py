@@ -1,9 +1,8 @@
-from display import get_menu, get_coll
+from display_menu import get_menu, get_coll
 from analysis import sentiment, image
 
 
 def menu_sentiment():
-    print("\n")
     inpt = get_menu("SENTIMENT",["Run initial setup.", "Choose a collection to analyze."],
                     "*Enter an option number or [r] - return.\n>>>", 2)
     if inpt == 'r':
