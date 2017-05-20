@@ -36,7 +36,7 @@ def get_menu(head,menu, inpt_msg, items=None):
 
 def get_db():
     if not mongo.connected:
-        print("You must be connected to MongoDB!")
+        print(Color.YELLOW + "You must be connected to MongoDB!" + Color.END)
         return
 
     header("DATABASES")

@@ -2,7 +2,7 @@ try:
     import config
     from twitter import tweet_filter
     import requests, tweepy, json
-    from display import Color
+    from display_menu import Color
     from tweepy import Stream
     from tweepy.streaming import StreamListener
     from tweepy import OAuthHandler

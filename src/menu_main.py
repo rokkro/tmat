@@ -1,7 +1,7 @@
 from analysis import menu_analysis
 from twitter import menu_twitter
-from display import Color, get_menu
-import menu_list, mongo, export, config
+from display_menu import Color, get_menu
+import menu_manage, mongo, export, config
 
 def menu_main():
     def sub_connect():
@@ -15,8 +15,8 @@ def menu_main():
         2: menu_twitter.menu_hist,
         3: menu_analysis.menu_sentiment,
         4: menu_analysis.menu_image,
-        5: export.setup,
-        6: menu_list.menu_manage,
+        5: export.menu_export,
+        6: menu_manage.menu_manage,
         7: sub_connect
     }
     while True:

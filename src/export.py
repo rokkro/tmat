@@ -1,4 +1,4 @@
-from display import get_coll, Color
+from display_menu import get_coll, Color
 from csv import writer
 
 def write_data(fname,coll):
@@ -110,7 +110,7 @@ def write_data(fname,coll):
             data[:] = []
         print(Color.YELLOW + fname + " created in the current directory!" + Color.END)
 
-def setup():
+def menu_export():
     coll = get_coll()
     if coll == None:
         return

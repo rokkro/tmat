@@ -1,6 +1,6 @@
 try:
     from twitter import tweet_filter
-    from display import Color
+    from display_menu import Color
     import config, tweepy, time
     from tweepy import api
     from tweepy import OAuthHandler
