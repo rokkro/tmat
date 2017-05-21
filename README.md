@@ -75,7 +75,7 @@ Requires Python 3.x, tested on 3.5/3.6.
 9.  Occasionally, the Kairos API will return facial detection data, but not emotion data.
 10. The older the collection, the more dead profile pic links.
 
-  #### CSV Export":
+  #### CSV Export:
 1.  Column headings are manually defined within the `headers` list in `export.py`.
 2.  The values are serached for within the current document. If they exist, the values are directly inserted into the `data` list. If they do not exist, a blank is inserted.
 3.  Before being added to `data`, the emotion values are compared with one another for the highest value. Whatever the highest value refers to is inserted into the list. The same is done with the ethnicity values provided by the Kairos API. 
