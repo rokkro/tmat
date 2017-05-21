@@ -14,16 +14,16 @@ Requires Python 3.x, tested on 3.5/3.6.
 
 
 ## Notes:
-  #### Menus
+  #### Menus:
 1.  Menus are designed to make it simple to use this program. They will, however, generate an unholy amount of console ouput.
 2.  Run `menu_main.py` for complete access to all the menus/functions.
 
-  #### Config.py
+  #### Config.py:
 1.  Enter your Twitter API and Kairos API keys into `config.py`.
 2.  `verbose` set to `True` outputs far more console output, letting you see what's going on.
 3.  `startup_connect` determines whether MongoDB attempts to connect on the program's startup.
 
-  #### MongoDB
+  #### MongoDB:
 1.  Tweets are placed in MongoDB databases. These databases contain collections, and these collections contain documents.
 2.  A document will contain the Twitter API data, the Kairos API data, the Vader Sentiment data, and anything else that is inserted.
       A document is basically a JSON file, but in binary format - a <a href="https://docs.mongodb.com/manual/core/document/">BSON</a>.
@@ -63,7 +63,7 @@ Requires Python 3.x, tested on 3.5/3.6.
       In addition, the compound value is calculated: see the Vader Sentiment link above for an explanation.
 3.  These values are inserted in each tweet document in the specified collection under `sentiment` : (`pos`,`neg`,`neu`, and `compound`).
 
-  #### Facial Analysis with Kairos
+  #### Facial Analysis with Kairos:
 1.  The Kairos facial detection and emotion/age/gender APIs are used.
 2.  The profile image URL is taken from the current document in the collection, and is tested if it exists.
 3.  The current doc is checked for `default_profile_image` being false, and if the URL does not contain a 'default' picture URL.
@@ -75,7 +75,7 @@ Requires Python 3.x, tested on 3.5/3.6.
 9.  Occasionally, the Kairos API will return facial detection data, but not emotion data.
 10. The older the collection, the more dead profile pic links.
 
-  #### CSV Export
+  #### CSV Export":
 1.  Column headings are manually defined within the `headers` list in `export.py`.
 2.  The values are serached for within the current document. If they exist, the values are directly inserted into the `data` list. If they do not exist, a blank is inserted.
 3.  Before being added to `data`, the emotion values are compared with one another for the highest value. Whatever the highest value refers to is inserted into the list. The same is done with the ethnicity values provided by the Kairos API. 
