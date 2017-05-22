@@ -22,7 +22,7 @@ def scrape(Setup):
         print(Color.END, end='')
         count = Setup.lim - successful  #len(searched_tweets)
         try:
-            new_tweets = api.search(q=Setup.term,result_type=Setup.result_type,until=Setup.until, count=count, max_id=str(last_id - 1))
+            new_tweets = api.search(q=Setup.term,result_type=Setup.result_type,until=Setup.before, count=count, max_id=str(last_id - 1))
             if not new_tweets:
                 break
             searched_tweets.extend(new_tweets)
