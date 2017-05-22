@@ -37,8 +37,8 @@ def social_filter(json_data):  # removes certain tweets
         return False
     return True  # does NOT affect tweet streaming. Whether or not tweet saved
 
-def date_filter(json_data,after):
 
+def date_filter(json_data,after):
     date = json_data["created_at"]
     current = datetime.datetime.strptime(date,'%a %b %d %H:%M:%S +%f %Y')
     valid = datetime.datetime(year=current.year,month=current.month,day=current.day,hour=0,minute=0,second=0,microsecond=0)
