@@ -18,33 +18,58 @@ class Setup:  # settings and setup for tweet scraping
         self.users = []
         self.result_type = "mixed"
         self.until = None
+        self.after = None
 
     def get_dt(self):
         return datetime.datetime.now()
 
     def set_date(self, inpt):
-        inpt = inpt.split('-')
-        for i, k in enumerate(inpt):
+        self.until = None
+        self.after = None
+
+        def date_parse(text):
+            id = text[0]
+            del text[0]
+            for i, k in enumerate(text):
+                try:
+                    text[i] = int(text[i])
+                except ValueError as e:
+                    print("Invalid Date!",e)
+                    return
             try:
-                inpt[i] = int(inpt[i])
-            except ValueError:
-                print("Invalid Date!")
+                valid_inpt = datetime.datetime(year=text[0], month=text[1], day=text[2])
+                dt = self.get_dt()
+                today = datetime.datetime(year=dt.year,month=dt.month,day=dt.day,hour=0,minute=0,second=0,microsecond=0)
+                oldest = dt - datetime.timedelta(days=7, minutes=dt.minute, hours=dt.hour, seconds=dt.second,
+                                                 microseconds=dt.microsecond)
+                if valid_inpt < oldest:
+                    print("Date is older than " + str(oldest) + ".")
+                    return
+                if valid_inpt > (today + datetime.timedelta(days=1)):
+                    print("Date is in the future!")
+                    return
+                if id == 'A' or id == 'a':
+                    self.after = valid_inpt.date()
+                elif id == 'B' or id == 'b':
+                    self.until = valid_inpt.date()
+            except (ValueError, IndexError) as e:
+                print("Invalid Date:", e)
                 return
-        try:
-            valid = datetime.datetime(year=inpt[0], month=inpt[1], day=inpt[2])
-            dt = self.get_dt()
-            oldest = dt - datetime.timedelta(days=7,minutes=dt.minute,hours=dt.hour,seconds=dt.second,microseconds=dt.microsecond)
-            if valid < oldest:
-                print("Date is older than " + str(oldest) + ".")
-                return
-            if valid > dt:
-                print("Date is in the future!")
-                return
-            self.until = valid.date()
-            print("Date set to " + str(self.until) + ".")
-        except (ValueError, IndexError):
-            print("Invalid Date.")
-            return
+
+        inpt = inpt.split("||")
+        first = inpt[0].split('-')
+        if len(inpt) >= 2:
+            second = inpt[1].split('-')
+            date_parse(second)
+        date_parse(first)
+        if (self.until is not None and self.after is not None) and (self.until < self.after or self.until == self.after):
+                print("'Before' date cannot be less than/equal to 'after' date.\n'Before' date removed.")
+                self.until = None
+        elif self.until is not None or self.after is not None:
+            print("Date set" + ((" to on or after " + str(self.after)) if self.after is not None else "") + (
+            (" to before " + str(self.until)) if self.until is not None else "") + ".")
+        else:
+            print("Date set to None.")
 
     def set_search(self,inpt):
         tmp = []  # stores user input to filter out invalid responses

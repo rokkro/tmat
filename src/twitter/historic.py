@@ -28,11 +28,11 @@ def scrape(Setup):
             searched_tweets.extend(new_tweets)
             last_id = new_tweets[-1].id
             for iter, data in enumerate(searched_tweets):
-                if tweet_filter.json_filter(data._json):
-                    if not tweet_filter.duplicate_find(Setup.tweet_coll, data._json,
-                                                       Setup.sim):  # if no duplicates found, add tweet to db
-                        Setup.tweet_coll.insert_one(data._json)
-                        successful+=1
+                if tweet_filter.social_filter(data._json):
+                    if tweet_filter.duplicate_find(Setup.tweet_coll, data._json,Setup.sim):  # if no duplicates found, add tweet to db
+                        if Setup.after is None or tweet_filter.date_filter(data._json,Setup.after):
+                            Setup.tweet_coll.insert_one(data._json)
+                            successful+=1
             searched_tweets[:] = []
             print("\rTweets:", successful,
                   "[{0:50s}] {1:.1f}% ".format('#' * int((successful / int(Setup.lim)) * 50),

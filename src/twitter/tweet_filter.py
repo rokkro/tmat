@@ -1,5 +1,5 @@
 try:
-    import config, string
+    import config, string, datetime
     from difflib import SequenceMatcher
 except ImportError as e:
     print("Error:", e)
@@ -17,7 +17,7 @@ def duplicate_find(coll,json_data,sim):
                 print(" FIRST: " + c['text'] + " SECOND: " + json_data['text'])
                 print("\nDuplicate tweet from " + "@" + json_data['user']['screen_name'] + " ignored.")
             cursor.close()
-            return True
+            return False
         elif SequenceMatcher(None, coll_tweet, json_tweet).ratio() > sim:
             if config.verbose:
                 print("\n" + str(SequenceMatcher(None, coll_tweet, json_tweet).ratio() * 100) + "% similar existing"
@@ -25,14 +25,23 @@ def duplicate_find(coll,json_data,sim):
                       json_data['user']['screen_name'] + " ignored.")
                 print(" FIRST: " + c['text'] + " SECOND: " + json_data['text'])
             cursor.close()
-            return True
+            return False
 
     cursor.close()
-    return False  # if no duplicates found
+    return True  # if no duplicates found
 
 
-def json_filter(json_data):  # removes certain tweets
+def social_filter(json_data):  # removes certain tweets
     if "created_at" not in json_data or "retweeted_status" in json_data or \
                     "quoted_status" in json_data or json_data["in_reply_to_user_id"] != None:
         return False
     return True  # does NOT affect tweet streaming. Whether or not tweet saved
+
+def date_filter(json_data,after):
+
+    date = json_data["created_at"]
+    current = datetime.datetime.strptime(date,'%a %b %d %H:%M:%S +%f %Y')
+    valid = datetime.datetime(year=current.year,month=current.month,day=current.day,hour=0,minute=0,second=0,microsecond=0)
+    if valid.date() < after:
+        return False
+    return True
