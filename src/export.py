@@ -1,5 +1,5 @@
 try:
-    from display_menu import get_coll, Color
+    from display_menu import get_coll, Color, dashes
     from csv import writer
 except ImportError as e:
     print("Error",e)
@@ -117,7 +117,7 @@ def menu_export():
     coll = get_coll()
     if coll == None:
         return
-
+    dashes()
     fname = input(Color.BOLD + "*Enter a filename. A .csv extension will be added.\n"
                                "Leave blank to cancel.\n>>>" + Color.END).replace(" ", "")
     if fname == '':
@@ -125,7 +125,7 @@ def menu_export():
         return
     if ".csv" not in fname:
         fname = fname + ".csv"
-
+    dashes()
     try:
         write_data(fname,coll)
     except PermissionError:

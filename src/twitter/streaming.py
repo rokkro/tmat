@@ -30,8 +30,8 @@ class Listener(StreamListener):
             raise KeyboardInterrupt  # easy way to return to menus
 
         json_data = json.loads(data)
-        if tweet_filter.json_filter(json_data):
-            if not tweet_filter.duplicate_find(self.coll,json_data,self.sim):  # if no duplicates found, add tweet to db
+        if tweet_filter.social_filter(json_data):
+            if tweet_filter.duplicate_find(self.coll,json_data,self.sim):  # if no duplicates found, add tweet to db
                 self.count += 1
                 self.coll.insert_one(json_data)
             print(Color.END,end="")

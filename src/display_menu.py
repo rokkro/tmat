@@ -12,7 +12,7 @@ class Color:
 def header(text):
     print(Color.CYAN  + Color.BOLD + ('-' * int((40 - len(text)) / 2)) + Color.BOLD +
           text + Color.CYAN + Color.BOLD + ('-' * int((40 - len(text)) / 2)) + Color.END)
-def footer():
+def dashes():
     print(Color.CYAN + Color.BOLD + '-' * 40 + Color.END)
 
 def get_menu(head,menu, inpt_msg, items=None):
@@ -21,7 +21,7 @@ def get_menu(head,menu, inpt_msg, items=None):
             header(head)
             for num, i in enumerate(menu):
                 print("[" + Color.YELLOW + str(num + 1) + Color.END + "] - " + i)
-            footer()
+            dashes()
         i = input(Color.BOLD + inpt_msg + Color.END).replace(" ", "")
         if i == 'q':
             quit()
@@ -48,7 +48,7 @@ def get_db():
     for j, k in enumerate(mongo.get_dbnames(), 1):  # start at 1
         print("[" + Color.YELLOW + str(j) + Color.END + "] - '" + k + "' (" + str(
             len(mongo.get_collections(k))) + ")")  # print databases
-    footer()
+    dashes()
     inpt = get_menu("",None, "*Select a db to view collections or [r] - return.\n>>>", len(mongo.get_dbnames()))
     if inpt == 'r' or inpt == '':
         return None
@@ -71,7 +71,7 @@ def get_coll():
               ("(TEMP)" if tmp.count() > 0 else ""))
         tmp.close()
         doc_count.close()
-    footer()
+    dashes()
     inpt = get_menu("",None, "*Select a collection or [r] - return.\n>>>", len(coll))
 
     if inpt == 'r' or inpt == '':

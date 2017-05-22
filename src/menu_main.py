@@ -1,13 +1,14 @@
 try:
     from analysis import menu_analysis
     from twitter import menu_twitter
-    from display_menu import Color, get_menu
+    from display_menu import Color, get_menu, dashes
     import menu_manage, mongo, export, config
 except ImportError as e:
     print("Error",e)
 
 def menu_main():
     def sub_connect():
+        dashes()
         print(Color.YELLOW, end='')
         mongo.mongo_connection()
         print(Color.END, end='')
