@@ -75,7 +75,7 @@ Modules: `tweepy`,`nltk`,`requests`,`pymongo`. Install with `pip`/`pip3`.
 5.  If the API does not find a face, then the next document repeats this process (overwriting `ta-image.jpg` with each new image).
 6.  If a face is found, the image is then uploaded and run through the Kairos emotion API. 
 7.  Data from the detection and emotion API are inserted into the current document under `face` : (`detection` and `emotion`)
-8.  When the final image is processed, `ta-image.jpg` is deleted. If an error occurs the image is deleted.
+8.  When the final image is processed, `ta-image.jpg` is deleted. If an error occurs, the image is deleted.
 9.  Occasionally, the Kairos API will return facial detection data, but not emotion data.
 10. The older the collection, the more dead profile pic links.
 
