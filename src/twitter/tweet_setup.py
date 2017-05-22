@@ -17,14 +17,14 @@ class Setup:  # settings and setup for tweet scraping
         self.term = []
         self.users = []
         self.result_type = "mixed"
-        self.until = None
+        self.before = None
         self.after = None
 
     def get_dt(self):
         return datetime.datetime.now()
 
     def set_date(self, inpt):
-        self.until = None
+        self.before = None
         self.after = None
 
         def date_parse(text):
@@ -51,7 +51,7 @@ class Setup:  # settings and setup for tweet scraping
                 if id == 'A' or id == 'a':
                     self.after = valid_inpt.date()
                 elif id == 'B' or id == 'b':
-                    self.until = valid_inpt.date()
+                    self.before = valid_inpt.date()
             except (ValueError, IndexError) as e:
                 print("Invalid Date:", e)
                 return
@@ -62,12 +62,12 @@ class Setup:  # settings and setup for tweet scraping
             second = inpt[1].split('-')
             date_parse(second)
         date_parse(first)
-        if (self.until is not None and self.after is not None) and (self.until < self.after or self.until == self.after):
+        if (self.before is not None and self.after is not None) and (self.before < self.after or self.before == self.after):
                 print("'Before' date cannot be less than/equal to 'after' date.\n'Before' date removed.")
-                self.until = None
-        elif self.until is not None or self.after is not None:
+                self.before = None
+        elif self.before is not None or self.after is not None:
             print("Date set" + ((" to on or after " + str(self.after)) if self.after is not None else "") + (
-            (" to before " + str(self.until)) if self.until is not None else "") + ".")
+            (" to before " + str(self.before)) if self.before is not None else "") + ".")
         else:
             print("Date set to None.")
 

@@ -230,9 +230,9 @@ def menu_hist():
                          "Tweet Similarity Threshold = " + str(s.sim),
                          "Result Type = " + s.result_type,
                          "Date Range = " + ((("On/After " + str(s.after) if s.after is not None else "") +
-                                             ((", " if s.after is not None and s.until is not None else "") +
-                                              ("Before " + str(s.until)) if s.until is not None else ""))
-                                            if s.after is not None or s.until is not None else "None"),
+                                             ((", " if s.after is not None and s.before is not None else "") +
+                                              ("Before " + str(s.before)) if s.before is not None else ""))
+                                            if s.after is not None or s.before is not None else "None"),
                          "MongoDB Connected = " + Color.YELLOW + str(mongo.connected) + Color.END],
                         "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>", 9)
 
