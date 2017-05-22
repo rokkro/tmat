@@ -1,4 +1,4 @@
-To use: insert correct Twitter (tweet streaming) and/or Kairos (image analysis) API keys into the `config.py` file, then run `menu_main.py` for the menu interface.
+To use: insert correct Twitter (tweet retrieval) and/or Kairos (image analysis) API keys into the `config.py` file, then run `menu_main.py` for the menu interface.
 
 Install mongoDB and run with `mongod --dbpath=/path/to/db` (Find `mongod.exe` in Program Files on Windows).
 Use something like Robomongo for a nice visual view of the data.
