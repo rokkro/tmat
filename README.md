@@ -5,7 +5,7 @@ Use something like Robomongo for a nice visual view of the data.
   
 Requires Python 3.x, tested on 3.5/3.6.
 
-Modules: `tweepy`,`nltk`,`requests`,`pymongo`
+Modules: `tweepy`,`nltk`,`requests`,`pymongo`. Install with `pip`/`pip3`.
 
 
 1. Twitter tweet streaming. [x]
