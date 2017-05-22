@@ -1,9 +1,12 @@
-To use: insert correct Twitter (tweet streaming) and/or Kairos (image analysis) API keys into the `config.py` file, then run `menu_main.py`, which is a menu interface.
+To use: insert correct Twitter (tweet streaming) and/or Kairos (image analysis) API keys into the `config.py` file, then run `menu_main.py` for the menu interface.
 
 Install mongoDB and run with `mongod --dbpath=/path/to/db` (Find `mongod.exe` in Program Files on Windows).
+Use something like Robomongo for a nice visual view of the data.
   
 Requires Python 3.x, tested on 3.5/3.6.
-   
+Modules: `tweepy`,`nltk`,`requests`,`pymongo`
+
+
 1. Twitter tweet streaming. [x]
 2. Set up MongoDB system. [x]
 3. Check tweet duplicates. [x]
@@ -15,7 +18,7 @@ Requires Python 3.x, tested on 3.5/3.6.
 
 ## Notes:
   #### Menus:
-1.  Menus are designed to make it simple to use this program. They will, however, generate an unholy amount of console ouput.
+1.  Menus are designed to make it simple to use this program. They will, however, generate an unholy amount of console ouput from navigation.
 2.  Run `menu_main.py` for complete access to all the menus/functions.
 
   #### Config.py:
