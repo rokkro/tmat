@@ -48,7 +48,7 @@ Requires Python 3.x, tested on 3.5/3.6.
   #### Historic Tweet Gathering:
 1.  Much of the same applies from the "Tweet Streaming" section. Tweepy is used to gather tweets.
 2.  Gathers tweets with the specified search term. <a href="https://dev.twitter.com/rest/public/search">Operators</a> may be used.
-3.  An 'until' date may be specified up to 7 days (as far back as the Twitter API allows). This setting gathers tweets until the set date. More testing is needed to verify, but it seems to gather tweets before the date entered (<), not on and before (<=).
+3.  A 'before' date may be specified up to 7 days (as far back as the Twitter API allows). This setting gathers tweets until the set date. More testing is needed to verify, but it seems to gather tweets before the date entered (<). An 'on/after' date can be set in the same menu. This is used to filter out tweets as they are recieved with their `created_at` date attribute. The 'on/after' date works in a (>=) way. You can use these two date types together to set up a way to get tweets within a time period, in a format like: `A-YYYY-MM-DD || B-YYYY-MM-DD`. One, both, or neither dates can be entered.
 4.  A <a href="https://dev.twitter.com/rest/reference/get/search/tweets">result type</a> can be set to set the types of tweets gathered: 'popular' only returns the most popular tweets, 'recent' only returns the most recent, and 'mixed' (the default) returns a combination of real time and popular tweets.
 5. Note that changing the result type (and date) may result in fewer returned tweets since, say, there are only so many popular tweets from the search.
 6. Tweets are filtered out in exactly the same way as explained with Tweet Streaming: by RT, quote, reply, and using the duplicate checking methods.
