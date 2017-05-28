@@ -59,6 +59,7 @@ Licensed under the GNU GPL 3.0.
 6. Tweets are filtered out in exactly the same way as explained with Tweet Streaming: by RT, quote, reply, and using the duplicate checking methods.
 7. Tweets are gathered <a href="https://dev.twitter.com/rest/public/timelines">100 at a time</a>, until the specific limit requires fewer tweets to be gathered. See the link(s) for an idea how Twitter returns these tweets. The `max_id` is found to help the API determine where and when to continue tweet retrieval/where it left off. These tweets are then filtered using the above methods, and the successful tweets are counted and inserted into the database.
 8. The API rate limit will be hit after so many tweets are retrieved. Tweepy automatically will pause/sleep until it can continue.
+9. The 7 day tweet limit doesn't seem to be exact for some reason. I have recieved tweets 8 to 9 days old.
 
   #### Sentiment Analysis with Vader Sentiment:
 1.  The NLTK Python module is used with <a href="https://github.com/cjhutto/vaderSentiment">Vader Sentiment</a>.
