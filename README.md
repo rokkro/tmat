@@ -1,11 +1,11 @@
-To use: insert correct Twitter (tweet retrieval) and/or Kairos (image analysis) API keys into the `config.py` file, then run `menu_main.py` for the menu interface.
+To use: insert correct Twitter (tweet retrieval) and/or <a href="http://kairos.com/">Kairos</a> (image analysis) API keys into the `config.py` file, then run `menu_main.py` for the menu interface.
 
 Install mongoDB and run with `mongod --dbpath=/path/to/db` (Find `mongod.exe` in Program Files on Windows).
 Use something like Robomongo for a nice visual view of the data.
   
-Requires Python 3.x, tested on 3.5/3.6.
+Requires Python 3.x, tested on 3.5/3.6. Run with `python \path\to\menu_main.py` or `python3 /path/to/menu_main.py` (Linux + Mac OS).
 
-Modules: `tweepy`,`nltk`,`requests`,`pymongo`. Install with `pip`/`pip3`.
+Modules: `tweepy`,`nltk`,`requests`,`pymongo`. Install with `pip install` or `pip3 install` (Linux + Mac OS).
 
 
 1. Twitter tweet streaming. [x]
@@ -56,7 +56,7 @@ Modules: `tweepy`,`nltk`,`requests`,`pymongo`. Install with `pip`/`pip3`.
 4.  A <a href="https://dev.twitter.com/rest/reference/get/search/tweets">result type</a> can be set to set the types of tweets gathered: 'popular' only returns the most popular tweets, 'recent' only returns the most recent, and 'mixed' (the default) returns a combination of real time and popular tweets.
 5. Note that changing the result type (and date) may result in fewer returned tweets since, say, there are only so many popular tweets from the search.
 6. Tweets are filtered out in exactly the same way as explained with Tweet Streaming: by RT, quote, reply, and using the duplicate checking methods.
-7. Tweets are gathered <a href="https://dev.twitter.com/rest/public/timelines">100 at a time</a>, until the specific limit requires fewer tweets to be gathered. See the link(s) for an idea how Twitter returns these tweets. The `max_id` is found the help the API determine where and when to continue tweet retrieval/where it left off. These tweets are then filtered using the above methods, and the successful tweets are counted and inserted into the database.
+7. Tweets are gathered <a href="https://dev.twitter.com/rest/public/timelines">100 at a time</a>, until the specific limit requires fewer tweets to be gathered. See the link(s) for an idea how Twitter returns these tweets. The `max_id` is found to help the API determine where and when to continue tweet retrieval/where it left off. These tweets are then filtered using the above methods, and the successful tweets are counted and inserted into the database.
 8. The API rate limit will be hit after so many tweets are retrieved. Tweepy automatically will pause/sleep until it can continue.
 
   #### Sentiment Analysis with Vader Sentiment:
