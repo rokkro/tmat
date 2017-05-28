@@ -16,8 +16,9 @@ Modules: `tweepy`,`nltk`,`requests`,`pymongo`. Install with `pip install` or `pi
 6. Export to .csv spreadsheets. [x]
 7. Historical tweet gathering. [x]
 
+Licensed under the GNU GPL 3.0.
 
-## Notes:
+## Info:
   #### Menus:
 1.  Menus are designed to make it easy to use this program. They will, however, generate an unholy amount of console ouput from navigation.
 2.  Run `menu_main.py` for complete access to all the menus/functions.
