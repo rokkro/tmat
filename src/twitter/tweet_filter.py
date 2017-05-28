@@ -43,5 +43,7 @@ def date_filter(json_data,after):
     current = datetime.datetime.strptime(date,'%a %b %d %H:%M:%S +%f %Y')
     valid = datetime.datetime(year=current.year,month=current.month,day=current.day,hour=0,minute=0,second=0,microsecond=0)
     if valid.date() < after:
+        if config.verbose:
+            print("JSON DATE:", valid.date(), "INPUT DATE:", after)
         return False
     return True
