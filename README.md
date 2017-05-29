@@ -1,3 +1,10 @@
+<p align="center">
+<img src="https://cdn3.iconfinder.com/data/icons/free-social-icons/67/twitter_circle_gray-128.png">
+</p>
+
+
+#  Twitter Multiple Analysis Tool
+
 To use: insert correct <a href="https://dev.twitter.com/">Twitter</a> (tweet retrieval) and/or <a href="http://kairos.com/">Kairos</a> (image analysis) API keys into the `config.py` file, then run `menu_main.py` for the menu interface.
 
 Install mongoDB and run with `mongod --dbpath=/path/to/db` (Find `mongod.exe` in Program Files on Windows).
