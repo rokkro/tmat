@@ -27,7 +27,7 @@ Licensed under the GNU GPL 3.0.
 
 ## Info:
   #### Menus:
-1.  Menus are designed to make it easy to use this program. They will, however, generate an unholy amount of console ouput from navigation.
+1.  Menus are basic textual interfaces designed to make it easy to use this program. They will, however, generate an unholy amount of console ouput from navigation.
 2.  Run `menu_main.py` for complete access to all the menus/functions.
 
   #### Config.py:
