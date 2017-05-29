@@ -41,9 +41,7 @@ Licensed under the GNU GPL 3.0.
  1.  Tweepy is used as the Python module to interface with the Twitter API.
  2.  Retrieves new tweets created while the program is running.
  3.  Filters out retweets, quoted retweets, replies, and incomplete tweets(does not contain "created_at" date in JSON data).
- 4.  Finds duplicates in same collection by removing punctuation and spaces from tweet to be checked, 
-      then getting all tweets from the same Twitter user. All of their tweets have punct. and spaces removed. Exact duplicates, and 
-      similar tweets(defined by the similarity threshold, and compared using the Python `SequenceMatcher`) are ignored.
+ 4.  Duplicates are found by removing punctuation and spaces from the new tweet and the current tweet to be tested. Using Python's `SequenceMatcher` and the user defined similarity threshold, the tweet's text is compared to all other tweets in the current collection. If a duplicate is found, the two tweets are compared. The tweet with the most favorites is kept. If they have the same number of favorites, such as when tweet streaming, the older tweet is kept.  
  5. Tweet data from the Twitter API is inserted into the specified MongoDB database and collection, in a JSON-like format.
  6. Incomplete Read error occurs when the API needs to "catch up" to the latest tweets. Some tweets are skipped when this occurs.
       Adding more filters (language, follower, etc.) supposedly increases the frequency of this error.
