@@ -1,14 +1,14 @@
 try:
     from analysis import menu_analysis
     from twitter import menu_twitter
-    from display_menu import Color, get_menu, dashes
+    from menu import Color, get_menu, divider
     import menu_manage, mongo, export, config
 except ImportError as e:
     print("Error",e)
 
 def menu_main():
     def sub_connect():
-        dashes()
+        divider()
         print(Color.YELLOW, end='')
         mongo.mongo_connection()
         print(Color.END, end='')
@@ -17,7 +17,7 @@ def menu_main():
     menu = {
         1: menu_twitter.menu_stream,
         2: menu_twitter.menu_hist,
-        3: menu_analysis.menu_sentiment,
+        3: menu_analysis.menu_text,
         4: menu_analysis.menu_image,
         5: export.menu_export,
         6: menu_manage.menu_manage,
@@ -26,7 +26,7 @@ def menu_main():
     while True:
         i = get_menu("MAIN",["Stream Tweets.",
                       "Historic Tweets.",
-                      "Perform Sentiment Analysis.",
+                      "Perform Text Analysis.",
                       "Perform Image Analysis.",
                       "Export as CSV.",
                       "Manage Collections.",

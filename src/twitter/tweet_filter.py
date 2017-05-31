@@ -31,10 +31,13 @@ def duplicate_tests(coll_tweet, json_tweet):
 
 def duplicate_find(coll, json_tweet, sim):
     # coll_tweet is already saved in the db, json_tweet is the new one
-    cursor = coll.find({'$text': {'$search': json_tweet['text']}}, {'score': {'$meta': 'textScore'}})
+    #cursor = coll.find({'$text': {'$search': json_tweet['text']}}, {'score': {'$meta': 'textScore'}})
     #utilize text index set to the 'text' field in tweet_setup.py to get data
-    cursor.sort([('score', {'$meta': 'textScore'})]) #sort by similarity. Not necessary I guess.
+    #cursor.sort([('score', {'$meta': 'textScore'})]) #sort by similarity. Not necessary I guess.
+    cursor = coll.find({})
     for coll_tweet in cursor:  # searching for all tweets' text, removing spaces and punct.
+        if 'text' not in coll_tweet:
+            continue
         coll_stripped = strip_all(coll_tweet['text'])
         json_stripped = strip_all(json_tweet['text'])
         sim_ratio = SequenceMatcher(None, coll_stripped, json_stripped).ratio()
@@ -51,7 +54,7 @@ def duplicate_find(coll, json_tweet, sim):
                 return True
             if config.verbose:
                 print("\n" + str(sim_ratio * 100) + "% similar existing. Tweet from " + "@" +
-                      json_tweet['user']['screen_name'] + " ignored. MongoDB textScore:",coll_tweet['score'])
+                      json_tweet['user']['screen_name'] + " ignored.") #MongoDB textScore:",coll_tweet['score'])
                 print(" FIRST: " + coll_tweet['text'] + " SECOND: " + json_tweet['text'])
             cursor.close()
             return False #do not insert the new tweet into the db since it's a duplicate

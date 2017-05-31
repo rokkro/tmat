@@ -1,5 +1,5 @@
 try:
-    from display_menu import Color
+    from menu import Color
     import config, requests, base64, os
     from json import JSONDecodeError
 except ImportError as e:

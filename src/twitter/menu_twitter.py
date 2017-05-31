@@ -3,7 +3,7 @@ try:
     from twitter.tweet_setup import Setup
     from twitter.streaming import stream
     from twitter.historic import scrape
-    from display_menu import get_menu, Color,dashes
+    from menu import get_menu, Color,divider
 except ImportError as e:
     print("Error:", e)
     quit()
@@ -16,7 +16,7 @@ def sub_search(s):
         print(Color.BOLD + "*Enter search term(s), use https://dev.twitter.com/rest/public/search for operators.")
     inpt = input("*Leave blank to clear, [r] - return.\n>>>" + Color.END).strip()
     print(Color.END,end='')
-    dashes()
+    divider()
     if inpt == 'r':
         return
     s.set_search(inpt)
@@ -31,7 +31,7 @@ def sub_lim(s):
     else:
         print("*Enter number of tweets to retrieve.",end='')
     inpt = get_menu('',None, "\n>>>")
-    dashes()
+    divider()
     if inpt == 'r':
         return
     if inpt == '':
@@ -60,7 +60,7 @@ def sub_db(s):
         inpt = ''.join(e for e in inpt if e.isalnum())
         if inpt == '' or inpt == s.db_name or inpt == 'admin' or inpt == 'local':
             break
-        dashes()
+        divider()
         print(Color.YELLOW + "Database changed from '" + s.db_name + "' to '" + inpt + "'.")
         s.db_name = inpt
         if mongo.connected:
@@ -83,7 +83,7 @@ def sub_coll(s):
             s.coll_name = inpt.replace('[dt]', str(s.get_dt())).strip()
         else:
             s.coll_name = inpt
-        dashes()
+        divider()
         print(Color.YELLOW + "Collection changed to '" + s.coll_name + "'.")
         if mongo.connected:
             if s.coll_name in mongo.get_collections(s.db_name):
@@ -100,7 +100,7 @@ def sub_simil(s):
                                   "tweets with > similarity. Leave blank to cancel.\n>>>" + Color.END)
         if inpt == '' or inpt == s.sim:
             break
-        dashes()
+        divider()
         try:
             inpt = float(inpt)
             if inpt <= 1.0 and inpt >= 0:
@@ -123,7 +123,7 @@ def sub_lang(s):
                               "https://dev.twitter.com/web/overview/languages\n>>>").replace(" ", '').split(',')
     if inpt == '':
         return
-    dashes()
+    divider()
     tmp = []
     for i in inpt:
         if i in langs and i not in tmp:
@@ -140,7 +140,7 @@ def sub_follow(s):
                            "return/cancel.\n>>>" + Color.END).strip()
     if inpt == 'r':
         return
-    dashes()
+    divider()
     s.set_follow(inpt)
     print(Color.END, end='')
     print(Color.YELLOW + "Follow list changed to " + (
@@ -153,7 +153,7 @@ def sub_mongo(s):
     print(Color.END, end='')
 
 def menu_stream():
-    dashes()
+    divider()
     s = Setup(True)
     sub_search(s)
     while True:
@@ -191,7 +191,7 @@ def menu_stream():
             8: sub_follow,
             9: sub_mongo
         }
-        dashes()
+        divider()
         menu[inpt](s)
 def sub_result(s):
     inpt = input(Color.BOLD + "*Enter a result type: 'mixed','recent', or 'popular'.\n>>>" + Color.END).strip()
@@ -210,16 +210,16 @@ def sub_date(s):
         return
     elif inpt == "r":
         return
-    dashes()
+    divider()
     print(Color.YELLOW,end="")
     s.set_date(inpt)
     print(Color.END,end="")
 
 def menu_hist():
-    dashes()
+    divider()
     s = Setup()
     sub_search(s)
-    dashes()
+    divider()
     sub_lim(s)
     while True:
         inpt = get_menu("HISTORIC",["Search = " + (str(s.term).strip('[]') if s.term else "None"),
@@ -257,5 +257,5 @@ def menu_hist():
             8: sub_date,
             9: sub_mongo
         }
-        dashes()
+        divider()
         menu[inpt](s)

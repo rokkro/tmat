@@ -4,7 +4,7 @@ try:
     import warnings
     warnings.filterwarnings("ignore")  # stop useless warning
     import mongo, config
-    from display_menu import Color
+    from menu import Color
     import nltk
     from nltk.sentiment.util import mark_negation, extract_unigram_feats
     from nltk.sentiment.vader import SentimentIntensityAnalyzer

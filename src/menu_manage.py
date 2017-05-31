@@ -1,5 +1,5 @@
 try:
-    from display_menu import Color, get_coll, get_menu, get_db,dashes
+    from menu import Color, get_coll, get_menu, get_db,divider
 except ImportError as e:
     print("Error",e)
 
@@ -32,7 +32,7 @@ def menu_manage():
                 coll, db = get_db()  # gets collection list and chosen db
             except Exception:
                 return
-            dashes()
+            divider()
             print(Color.YELLOW + "The following collections will be DELETED:" + Color.END)
 
             for j, k in enumerate(coll, 1):  # loops through all collections
@@ -63,7 +63,7 @@ def menu_manage():
                 return
             inpt = input(Color.YELLOW + Color.BOLD + "Are you sure you want to delete this collection and "
                                                      "all documents within? [y/n]" + Color.END + Color.BOLD + "\n>>>" + Color.END)
-            dashes()
+            divider()
             if inpt == 'y':
                 coll.drop()
                 print(Color.YELLOW + "Collection deleted." + Color.END)
@@ -74,7 +74,7 @@ def menu_manage():
             coll = get_coll()
             if coll is None:
                 return
-            dashes()
+            divider()
             c_true = coll.find({"t_temp": True})
             c_false = coll.find({"t_temp": False})
             if c_true.count() > 0:  # we will assume we want to flip any t_temp = trues
