@@ -18,20 +18,18 @@ def menu_main():
         1: menu_twitter.menu_stream,
         2: menu_twitter.menu_hist,
         3: menu_analysis.menu_text,
-        4: menu_analysis.menu_image,
-        5: export.menu_export,
-        6: menu_manage.menu_manage,
-        7: sub_connect
+        4: export.menu_export,
+        5: menu_manage.menu_manage,
+        6: sub_connect
     }
     while True:
         i = get_menu("MAIN",["Stream Tweets.",
                       "Historic Tweets.",
-                      "Perform Text Analysis.",
-                      "Perform Image Analysis.",
+                      "Analyze Tweets.",
                       "Export as CSV.",
                       "Manage Collections.",
                       "MongoDB Connected = " + Color.YELLOW + str(mongo.connected) + Color.END],
-                     "*Enter option number or [q] - quit.\n>>>", 7)
+                     "*Enter option number or [q] - quit.\n>>>", 6)
         try:
             menu[i]()
         except KeyError:
