@@ -50,7 +50,7 @@ def analyze(coll):
                 "readability": {
                     "flesch_ease": t_stat.flesch_reading_ease(tokenized),
                     "flesch_grade": t_stat.flesch_kincaid_grade(tokenized),
-                    "summary": t_stat.text_standard(tokenized)
+                    "standard": t_stat.text_standard(tokenized)
                 }
             }})
         cursor.close()

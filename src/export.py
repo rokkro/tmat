@@ -10,7 +10,7 @@ def write_data(fname,coll):
         'Attention', 'Blinking', 'User Country', 'User City',
         'User Verified', 'User Followers', 'User Following',
         'Tweet Date', 'Tweet Content', 'Tweet Language', 'Tweet Favorites', 'Tweet Retweets',
-        'Sentiment Pos', 'Sentiment Neu', 'Sentiment Neg', 'Sentiment Comp', 'Flesch Ease', 'Flesh Grade', 'Readability Summary',
+        'Sentiment Pos', 'Sentiment Neu', 'Sentiment Neg', 'Sentiment Comp', 'Flesch Ease', 'Flesh Grade', 'Readability Standard',
         'User Emotion', 'User Ethnicity', 'Eye Gap',
     ]
     data = []
@@ -83,7 +83,7 @@ def write_data(fname,coll):
             set_value(doc,[['sentiment'],['compound']])
             set_value(doc,[['readability'],['flesch_ease']])
             set_value(doc,[['readability'],['flesch_grade']])
-            set_value(doc,[['readability'],['summary']])
+            set_value(doc,[['readability'],['standard']])
 
             emotions = {
                 "anger": set_value(doc,[['face'], ['emotion'], ['frames'], [0], ['people'], [0], ['emotions'], ['anger']],False),
