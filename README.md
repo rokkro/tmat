@@ -5,15 +5,6 @@
 
 #  Twitter Multiple Analysis Tool
 
-To use: insert correct <a href="https://dev.twitter.com/">Twitter</a> (tweet retrieval) and/or <a href="http://kairos.com/">Kairos</a> (image analysis) API keys into the `config.py` file, then run `menu_main.py` for the menu interface.
-
-Install mongoDB and run with `mongod --dbpath=/path/to/db` (Find `mongod.exe` in Program Files on Windows).
-Use something like Robomongo for a nice visual view of the data.
-  
-Requires Python 3.x, tested on 3.5/3.6. Run with `python \path\to\menu_main.py` or `python3 /path/to/menu_main.py` (Linux + Mac OS).
-
-Modules: `tweepy`,`nltk`,`requests`,`pymongo`, and `textstat`. Install with `pip install` or `pip3 install` (Linux + Mac OS).
-
 **What can it do?**
 * Twitter tweet streaming.
 * Twitter tweet scraping (approx. <=7 days old tweets).
@@ -27,14 +18,23 @@ Modules: `tweepy`,`nltk`,`requests`,`pymongo`, and `textstat`. Install with `pip
 * Simple database, collection, and document management.
 * Be used with a simple textual interface.
 
-Licensed under the GNU GPL 3.0.
+## Setup:
+
+***To use***: insert correct <a href="https://dev.twitter.com/">Twitter</a> (tweet retrieval) and/or <a href="http://kairos.com/">Kairos</a> (image analysis) API keys into the `config.py` file, then run `menu_main.py` for the menu interface.
+
+Install mongoDB and run with `mongod --dbpath=/path/to/db` (Find `mongod.exe` in Program Files on Windows).
+Use something like Robomongo for a nice visual view of the data.
+  
+Requires Python 3.x, tested on 3.5/3.6. Run with `python \path\to\menu_main.py` or `python3 /path/to/menu_main.py` (Linux + Mac OS).
+
+***Modules***: `tweepy`,`nltk`,`requests`,`pymongo`, and `textstat`. Install with `pip install` or `pip3 install` (Linux + Mac OS).
 ## Details:
   #### Menus:
 1.  Menus are basic textual interfaces designed to make it easy to use this program. They will, however, generate an unholy amount of console ouput from navigation.
 2.  Run `menu_main.py` for complete access to all the menus/functions.
 
   #### Config.py:
-1.  Enter your Twitter API and Kairos API keys into `config.py`.
+1.  Enter your Twitter API and Kairos API keys into `config.py`, within the quotation marks.
 2.  `verbose` set to `True` outputs far more console output, letting you see what's going on.
 3.  `startup_connect` determines whether `pymongo` attempts to connect to `mongod` on the program's startup.
 
@@ -106,3 +106,5 @@ Licensed under the GNU GPL 3.0.
   #### References:
   >Hutto, C.J. & Gilbert, E.E. (2014). VADER: A Parsimonious Rule-based Model for Sentiment Analysis of Social Media Text. Eighth International Conference on Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
   
+***Licensed under the GNU GPL 3.0.***
+
