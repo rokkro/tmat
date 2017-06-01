@@ -20,7 +20,7 @@
 
 ## Setup:
 
-***To Install***: Install mongoDB and run with `mongod --dbpath=/path/to/db` (Find `mongod.exe` in Program Files on Windows). Clone this repo and extract the files. Make sure you've got Python 3.x installed (tested on 3.5/3.6).
+***To Install***: Install mongoDB and run with `mongod --dbpath=/path/to/db` (Find `mongod.exe` under `Program Files` on Windows). Clone this repo and extract the files. Make sure you've got Python 3.x (tested on 3.5/3.6) installed.
 
 ***Modules Needed***: `tweepy` (tweet collection), `nltk` (text analysis), `requests` (image analysis), `pymongo` (mongoDB), and `textstat` (readability analysis). Install with `pip install` or `pip3 install` (Linux + Mac OS).
 
