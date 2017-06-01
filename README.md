@@ -12,7 +12,7 @@ Use something like Robomongo for a nice visual view of the data.
   
 Requires Python 3.x, tested on 3.5/3.6. Run with `python \path\to\menu_main.py` or `python3 /path/to/menu_main.py` (Linux + Mac OS).
 
-Modules: `tweepy`,`nltk`,`requests`,`pymongo`, `textstat`. Install with `pip install` or `pip3 install` (Linux + Mac OS).
+Modules: `tweepy`,`nltk`,`requests`,`pymongo`, and `textstat`. Install with `pip install` or `pip3 install` (Linux + Mac OS).
 
 **What can it do?**
 * Twitter tweet streaming.
