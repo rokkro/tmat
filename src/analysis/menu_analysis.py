@@ -5,7 +5,7 @@ from analysis import sentiment, image, readability
 def menu_text():
     while True:
         inpt = get_menu("ANALYSIS",["Setup Text Analysis.", "Run Sentiment Analysis.", "Run Readability Analysis.", "Run Image Analysis."],
-                        "*Enter an option number or [r] - return.\n>>>", 4)
+                        "*Enter an option number or [r] - return.\n>>>")
         if inpt == 'r':
             return
 

@@ -29,7 +29,7 @@ def menu_main():
                       "Export as CSV.",
                       "Manage Collections.",
                       "MongoDB Connected = " + Color.YELLOW + str(mongo.connected) + Color.END],
-                     "*Enter option number or [q] - quit.\n>>>", 6)
+                     "*Enter option number or [q] - quit.\n>>>")
         try:
             menu[i]()
         except KeyError:

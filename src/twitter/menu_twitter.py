@@ -166,7 +166,7 @@ def menu_stream():
                          "Languages = " + str(s.lang).strip('[]'),
                          "Follow UID(s) = " + (str(s.users).strip('[]') if s.users else "None"),
                          "MongoDB Connected = " + Color.YELLOW + str(mongo.connected) + Color.END],
-                        "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>", 9)
+                        "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
         if inpt == '' and mongo.connected and (s.term or s.users):
             print(Color.YELLOW)
@@ -234,7 +234,7 @@ def menu_hist():
                                               ("Before " + str(s.before)) if s.before is not None else ""))
                                             if s.after is not None or s.before is not None else "None"),
                          "MongoDB Connected = " + Color.YELLOW + str(mongo.connected) + Color.END],
-                        "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>", 9)
+                        "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
         if inpt == '' and mongo.connected and s.term and s.lim:
             print(Color.YELLOW)

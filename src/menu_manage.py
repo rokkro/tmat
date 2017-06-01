@@ -9,7 +9,7 @@ def menu_manage():
                          "Purge Temporary Collections in a DB.",
                          "Delete Specific Collections.",
                          "Mark/Un-mark a Collection as Temporary."],
-                        "*Enter an option or [r] - return.\n>>>", 4)
+                        "*Enter an option or [r] - return.\n>>>")
 
         if inpt == 'r':
             return
