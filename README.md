@@ -34,7 +34,7 @@ Requires Python 3.x, tested on 3.5/3.6. Run with `python \path\to\menu_main.py` 
 2.  Run `menu_main.py` for complete access to all the menus/functions.
 
   #### Config.py:
-1.  Enter your Twitter API and Kairos API keys into `config.py`.
+1.  Enter your Twitter API and Kairos API keys into `config.py`, within the quotation marks.
 2.  `verbose` set to `True` outputs far more console output, letting you see what's going on.
 3.  `startup_connect` determines whether `pymongo` attempts to connect to `mongod` on the program's startup.
 
