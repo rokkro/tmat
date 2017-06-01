@@ -7,7 +7,7 @@
 
 **What can it do?**
 * Twitter tweet streaming.
-* Twitter tweet scraping (approx. <=7 days old tweets).
+* Twitter tweet scraping (tweets approx. <=7 days old).
 * Give access to plenty of search settings.
 * Utilize MongoDB collections to store tweets.
 * Filter out similar and duplicate tweets from the same collection.
