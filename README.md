@@ -7,7 +7,7 @@
 
 **What can it do?**
 * Twitter tweet streaming.
-* Twitter tweet scraping (approx. <=7 days old tweets).
+* Twitter tweet scraping (tweets approx. <=7 days old).
 * Give access to plenty of search settings.
 * Utilize MongoDB collections to store tweets.
 * Filter out similar and duplicate tweets from the same collection.
@@ -20,14 +20,12 @@
 
 ## Setup:
 
-***To use***: insert correct <a href="https://dev.twitter.com/">Twitter</a> (tweet retrieval) and/or <a href="http://kairos.com/">Kairos</a> (image analysis) API keys into the `config.py` file, then run `menu_main.py` for the menu interface.
+***To Install***: Install mongoDB and run with `mongod --dbpath=/path/to/db` (Find `mongod.exe` under `Program Files` on Windows). Clone this repo and extract the files. Make sure you've got Python 3.x (tested on 3.5/3.6) installed.
 
-Install mongoDB and run with `mongod --dbpath=/path/to/db` (Find `mongod.exe` in Program Files on Windows).
-Use something like Robomongo for a nice visual view of the data.
-  
-Requires Python 3.x, tested on 3.5/3.6. Run with `python \path\to\menu_main.py` or `python3 /path/to/menu_main.py` (Linux + Mac OS).
+***Modules Needed***: `tweepy` (tweet collection), `nltk` (text analysis), `requests` (image analysis), `pymongo` (mongoDB), and `textstat` (readability analysis). Install with `pip install` or `pip3 install` (Linux + Mac OS).
 
-***Modules***: `tweepy`,`nltk`,`requests`,`pymongo`, and `textstat`. Install with `pip install` or `pip3 install` (Linux + Mac OS).
+***To use***: insert correct <a href="https://dev.twitter.com/">Twitter</a> (tweet retrieval) and/or <a href="http://kairos.com/">Kairos</a> (image analysis) API keys into the `config.py` file, then run `menu_main.py` for the menu interface. Run with `python \path\to\menu_main.py` or `python3 /path/to/menu_main.py` (Linux + Mac OS). Use something like RoboMongo if you want a good visual view of your databases.
+
 ## Details:
   #### Menus:
 1.  Menus are basic textual interfaces designed to make it easy to use this program. They will, however, generate an unholy amount of console ouput from navigation.
@@ -75,7 +73,7 @@ Requires Python 3.x, tested on 3.5/3.6. Run with `python \path\to\menu_main.py` 
       tweet content.
 2.  Four values are found from analysis: the positivity, negativity, and neutrality of the tweet. 
       In addition, the compound value is calculated: see the Vader Sentiment link above for an explanation.
-3.  These values are inserted in each tweet document in the specified collection under `sentiment` : (`pos`,`neg`,`neu`, and `compound`).
+3.  These values are inserted in each tweet document in the specified collection under `sentiment` : {`pos`, `neg`, `neu`, `compound`}.
 
   #### Facial Analysis with Kairos:
 1.  The Kairos facial detection and emotion/age/gender APIs are used.
@@ -84,7 +82,7 @@ Requires Python 3.x, tested on 3.5/3.6. Run with `python \path\to\menu_main.py` 
 4.  The current image is individually downloaded as `ta-image.jpg`, then is uploaded to the Kairos detect API.
 5.  If the API does not find a face, then the next document repeats this process (overwriting `ta-image.jpg` with each new image).
 6.  If a face is found, the image is then uploaded and run through the Kairos emotion API. 
-7.  Data from the detection and emotion API are inserted into the current document under `face` : (`detection` and `emotion`)
+7.  Data from the detection and emotion API are inserted into the current document under `face` : {`detection`, `emotion`}
 8.  When the final image is processed, `ta-image.jpg` is deleted. If an error occurs, the image is deleted.
 9.  Occasionally, the Kairos API will return facial detection data, but not emotion data.
 10. The older the collection, the more dead profile pic links.
@@ -98,7 +96,7 @@ Requires Python 3.x, tested on 3.5/3.6. Run with `python \path\to\menu_main.py` 
 
   #### Readability:
  1. Uses the module <a href="https://github.com/shivam5992/textstat">textstat</a> to simplify finding the various readability values.
- 2. Finds and inserts 3 values: `readability`: (`flesch_ease`, `flesch_grade`, and `standard`).
+ 2. Finds and inserts 3 values: `readability`: {`flesch_ease`, `flesch_grade`, `standard`}.
  3. Overrides `textstat`'s `sentence_count` function to utilize NLTK's `TweetTokenizer` to remove @users and reduce word length with over 3 letters (such as "waaaaaay" to "waaay"). Additionally, a regex removes any urls, and any '#' symbols are removed. NLTK's `sent_tokenize` is used to split up sentences.
  4. The `standard` value is the 'best grade level' from the results of many readability tests, see the link above for details.
  5. These scores may be negative or too high if the tweet content is too short.
