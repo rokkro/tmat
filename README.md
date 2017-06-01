@@ -14,17 +14,18 @@ Requires Python 3.x, tested on 3.5/3.6. Run with `python \path\to\menu_main.py` 
 
 Modules: `tweepy`,`nltk`,`requests`,`pymongo`, `textstat`. Install with `pip install` or `pip3 install` (Linux + Mac OS).
 
-**What does it do?**
+**What can it do?**
 * Twitter tweet streaming.
 * Twitter tweet scraping (approx. <=7 days old tweets).
-* Utilizes MongoDB to store tweets.
-* Filter out similar and duplicate tweets.
-* Performs sentiment analaysis using NLTK and <a href="https://github.com/cjhutto/vaderSentiment">Vader Sentiment</a>
-* Score the tweet's readability using the Flesch-Kincaid readability tests and others.
-* Uses <a href="http://kairos.com/">Kairos</a> to detect emotion, age, gender, and other characteristics of profile pictures.
-* Export data to .csv spreadsheets.
+* Give access to plenty of search settings.
+* Utilize MongoDB collections to store tweets.
+* Filter out similar and duplicate tweets from the same collection.
+* Perform sentiment analaysis using NLTK and <a href="https://github.com/cjhutto/vaderSentiment">Vader Sentiment</a>.
+* Score tweets' readability using the Flesch-Kincaid readability tests and others.
+* Use the <a href="http://kairos.com/">Kairos</a> API to detect emotion, age, gender, and other characteristics of profile pictures.
+* Export organized data to .csv spreadsheets.
 * Simple database, collection, and document management.
-* Is easily usable within a console textual interface.
+* Be used with an easy textual interface.
 
 Licensed under the GNU GPL 3.0.
 ## Details:
