@@ -24,7 +24,7 @@ Modules: `tweepy`,`nltk`,`requests`,`pymongo`, `textstat`. Install with `pip ins
 * Uses <a href="http://kairos.com/">Kairos</a> to detect emotion, age, gender, and other characteristics of profile pictures.
 * Export data to .csv spreadsheets.
 * Simple database, collection, and document management.
-* Is Easily usable within a console textual interface.
+* Is easily usable within a console textual interface.
 
 Licensed under the GNU GPL 3.0.
 ## Details:
