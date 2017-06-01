@@ -1,5 +1,4 @@
 try:
-    from menu import Color
     import config, requests, base64, os
     from json import JSONDecodeError
 except ImportError as e:
@@ -43,7 +42,7 @@ def detect_api(img):
 def analyze(coll, limit):
     success = 0
     count = 1
-    print(Color.YELLOW + "Running Image analysis..." + Color.END)
+    print("Running Image analysis...")
     cursor = coll.find({}, no_cursor_timeout=True)  # finds all documents in collection
     for index, item in enumerate(cursor):  # loop through those
         try:
@@ -99,7 +98,7 @@ def analyze(coll, limit):
             remove_image()
             continue
 
-    print(Color.YELLOW + "\nFinished: " + str(success) + " of " + (str(count - 1) if limit is not None
-        else str(cursor.count())) + " successfully processed and inserted!" + Color.END)
+    print("\nFinished: " + str(success) + " of " + (str(count - 1) if limit is not None
+        else str(cursor.count())) + " successfully processed and inserted!")
     cursor.close()
     remove_image()

@@ -1,6 +1,5 @@
 try:
     import config
-    from menu import Color
     from textstat import textstat
     from nltk.tokenize import TweetTokenizer, sent_tokenize
     import re
@@ -37,29 +36,33 @@ def analyze(coll):
         t_stat = ts()
         cursor = coll.find({})
         for doc in cursor:
-            if "text" not in doc:  # if the current doc doesnt have 'text' field, move on
+            try:
+                if "text" not in doc:  # if the current doc doesnt have 'text' field, move on
+                    continue
+                tokenized = tweet_tokenize(doc['text'])
+                if not len(tokenized):
+                    continue
+                if config.verbose:
+                    print(doc['text'],"SUMMARIZED",t_stat.text_standard(tokenized))
+                    print("FLESCH EASE",t_stat.flesch_reading_ease(tokenized))
+                    print("FLESCH GRADE",t_stat.flesch_kincaid_grade(tokenized))
+                coll.update_one({'_id': doc.get('_id')}, {'$set': {
+                    "readability": {
+                        "flesch_ease": t_stat.flesch_reading_ease(tokenized),
+                        "flesch_grade": t_stat.flesch_kincaid_grade(tokenized),
+                        "standard": t_stat.text_standard(tokenized)
+                    }
+                }})
+            except Exception as e:
                 continue
-            tokenized = tweet_tokenize(doc['text'])
-            if not len(tokenized):
-                continue
-            if config.verbose:
-                print(doc['text'],"SUMMARIZED",t_stat.text_standard(tokenized))
-                print("FLESCH EASE",t_stat.flesch_reading_ease(tokenized))
-                print("FLESCH GRADE",t_stat.flesch_kincaid_grade(tokenized))
-            coll.update_one({'_id': doc.get('_id')}, {'$set': {
-                "readability": {
-                    "flesch_ease": t_stat.flesch_reading_ease(tokenized),
-                    "flesch_grade": t_stat.flesch_kincaid_grade(tokenized),
-                    "standard": t_stat.text_standard(tokenized)
-                }
-            }})
         cursor.close()
-        print(Color.YELLOW + "Readability values have been attached to each tweet document in the collection." + Color.END)
+        print("Readability values have been attached to each tweet document in the collection.")
     except (NameError, LookupError) as e:
         print("Error: Make sure you have 'textstat' installed", e)
         return
-    except Exception as e:
-        print(e)
 
 
-
+'''
+Error(ASyPW): Number of words are zero, cannot divide
+unsupported operand type(s) for *: 'float' and 'NoneType'
+'''
