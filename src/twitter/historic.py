@@ -1,6 +1,5 @@
 try:
     from twitter import tweet_filter
-    from menu import Color
     import config, tweepy
     from tweepy import api
     from tweepy import OAuthHandler
@@ -17,9 +16,7 @@ def scrape(Setup):
     searched_tweets = []
     last_id = -1
     successful = 0
-    print("Retrieving tweets...")
     while successful < Setup.lim:
-        print(Color.END, end='')
         count = Setup.lim - successful  #len(searched_tweets)
         try:
             new_tweets = api.search(q=Setup.term,result_type=Setup.result_type,until=Setup.before, count=count, max_id=str(last_id - 1))
@@ -36,9 +33,8 @@ def scrape(Setup):
             searched_tweets[:] = []
             print("\rTweets:", successful,
                   "[{0:50s}] {1:.1f}% ".format('#' * int((successful / int(Setup.lim)) * 50),
-                                               (successful / int(Setup.lim)) * 100), end="", flush=True)
+                                               (successful / int(Setup.lim)) * 100), end='',flush=True)
         except tweepy.TweepError as e:
-            print(Color.YELLOW,end='')
             error = e.args[0][0]['code']
             if error == 215:
                 print("Authentication failed. Check your keys and verify your system clock is accurate.")

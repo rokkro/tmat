@@ -2,7 +2,6 @@ try:
     import config
     from twitter import tweet_filter
     import tweepy, json
-    from menu import Color
     from tweepy import Stream
     from tweepy.streaming import StreamListener
     from tweepy import OAuthHandler
@@ -24,8 +23,7 @@ class Listener(StreamListener):
 
     def on_data(self, data):
         if self.lim is not None and self.count >= self.lim:
-            print(Color.YELLOW,end="")
-            print("\n" + str(self.count) + " tweets successfully inserted!")
+            #print("\n" + str(self.count) + " tweets successfully inserted!")
             raise KeyboardInterrupt  # easy way to return to menus
 
         json_data = json.loads(data)
@@ -33,13 +31,12 @@ class Listener(StreamListener):
             if tweet_filter.duplicate_find(self.coll,json_data,self.sim):  # if no duplicates found, add tweet to db
                 self.count += 1
                 self.coll.insert_one(json_data)
-            print(Color.END,end="")
             if self.lim is not None:
                 print("\rTweets:", self.count,
                       "[{0:50s}] {1:.1f}% ".format('#' * int((self.count / int(self.lim)) * 50),
-                                                   (self.count / int(self.lim)) * 100), end="", flush=True)
+                                                   (self.count / int(self.lim)) * 100), end='',flush=True)
             else:
-                print("\rTweets:", self.count, end="", flush=True)
+                print("\rTweets:", self.count, end='',flush=True)
             return True
 
     def on_error(self, status):
@@ -59,7 +56,6 @@ def stream(Setup):
     while True:  # start streaming
         try:
             listener = Listener(Setup.lim, Setup.tweet_coll, Setup.sim)
-            print("Waiting for new tweets...")
             twitter_stream = Stream(auth, listener)
             twitter_stream.filter(track=Setup.term, languages=Setup.lang, follow=Setup.users)  # location search is not a filter
         except KeyboardInterrupt:

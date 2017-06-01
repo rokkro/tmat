@@ -169,10 +169,13 @@ def menu_stream():
                         "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
         if inpt == '' and mongo.connected and (s.term or s.users):
-            print(Color.YELLOW)
+            divider()
+            print(Color.YELLOW,end='')
+            print("Waiting for new tweets...")
             s.init_db()
+            print(Color.END,end='')
             stream(s)
-            print(Color.END)
+            print("\n",end='')
             break
         elif inpt == '':
             print(Color.YELLOW + "MongoDB must be connected and a search or UID must have been entered." + Color.END)
@@ -237,10 +240,13 @@ def menu_hist():
                         "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
         if inpt == '' and mongo.connected and s.term and s.lim:
-            print(Color.YELLOW)
+            divider()
+            print(Color.YELLOW,end='')
             s.init_db()
+            print("Retrieving tweets...")
+            print(Color.END,end='')
             scrape(s)
-            print(Color.END)
+            print("\n",end='')
             break
         elif inpt == '':
             print(Color.YELLOW + "MongoDB must be connected, and both a search and limit must have been entered." + Color.END)

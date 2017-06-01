@@ -1,5 +1,4 @@
 try:
-    from menu import get_coll, Color, divider
     from csv import writer
 except ImportError as e:
     print("Error",e)
@@ -115,9 +114,10 @@ def write_data(fname,coll):
 
             w.writerow(data)
             data[:] = []
-        print(Color.YELLOW + fname + " created in the current directory!" + Color.END)
+        print(fname + " created in the current directory!")
 
 def menu_export():
+    from menu import get_coll, Color, divider
     coll = get_coll()
     if coll == None:
         return
@@ -131,7 +131,9 @@ def menu_export():
         fname = fname + ".csv"
     divider()
     try:
+        print(Color.YELLOW,end='')
         write_data(fname,coll)
+        print(Color.END,end='')
     except PermissionError:
         print(Color.YELLOW + "Permission Error: Check if the specified file is open in another program\nand if you have "
                              "permission to create files here." + Color.END)
