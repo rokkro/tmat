@@ -99,5 +99,5 @@ Licensed under the GNU GPL 3.0.
  2. Finds and inserts 3 values: `readability`: (`flesch_ease`, `flesch_grade`, and `standard`).
  3. Overrides `textstat`'s `sentence_count` function to utilize NLTK's `TweetTokenizer` to remove @users and reduce word length with over 3 letters (such as "waaaaaay" to "waaay"). Additionally, a regex removes any urls, and any '#' symbols are removed. NLTK's `sent_tokenize` is used to split up sentences.
  4. The `standard` value is the 'best grade level' from the results of many readability tests, see the link above for details.
- 5. These scores may be too low, depending on how many characters/words/syllables there are (reccommended over 100 I think).
+ 5. These scores may be negative or too high if the tweet content is too short.
  
