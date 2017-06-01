@@ -18,8 +18,6 @@
 * Simple database, collection, and document management.
 * Be used with a simple textual interface.
 
-Licensed under the GNU GPL 3.0.
-
 ## Setup:
 
 ***To use***: insert correct <a href="https://dev.twitter.com/">Twitter</a> (tweet retrieval) and/or <a href="http://kairos.com/">Kairos</a> (image analysis) API keys into the `config.py` file, then run `menu_main.py` for the menu interface.
@@ -108,3 +106,5 @@ Requires Python 3.x, tested on 3.5/3.6. Run with `python \path\to\menu_main.py` 
   #### References:
   >Hutto, C.J. & Gilbert, E.E. (2014). VADER: A Parsimonious Rule-based Model for Sentiment Analysis of Social Media Text. Eighth International Conference on Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
   
+Licensed under the GNU GPL 3.0.
+
