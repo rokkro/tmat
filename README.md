@@ -101,3 +101,6 @@ Licensed under the GNU GPL 3.0.
  4. The `standard` value is the 'best grade level' from the results of many readability tests, see the link above for details.
  5. These scores may be negative or too high if the tweet content is too short.
  
+  #### References:
+  >Hutto, C.J. & Gilbert, E.E. (2014). VADER: A Parsimonious Rule-based Model for Sentiment Analysis of Social Media Text. Eighth International Conference on Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
+  
