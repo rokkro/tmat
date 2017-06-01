@@ -39,9 +39,8 @@ def detect_api(img):
     response = requests.post(url, json={'image': image_base64(img)}, headers=auth_headers)
     return response.json()
 
-
 # https://dev.twitter.com/basics/user-profile-images-and-banners
-def insert_data(coll, limit):
+def analyze(coll, limit):
     success = 0
     count = 1
     print(Color.YELLOW + "Running Image analysis..." + Color.END)

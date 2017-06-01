@@ -37,8 +37,6 @@ def scrape(Setup):
             print("\rTweets:", successful,
                   "[{0:50s}] {1:.1f}% ".format('#' * int((successful / int(Setup.lim)) * 50),
                                                (successful / int(Setup.lim)) * 100), end="", flush=True)
-        except Exception as e:
-            print(e)
         except tweepy.TweepError as e:
             print(Color.YELLOW,end='')
             error = e.args[0][0]['code']

@@ -10,7 +10,7 @@ def write_data(fname,coll):
         'Attention', 'Blinking', 'User Country', 'User City',
         'User Verified', 'User Followers', 'User Following',
         'Tweet Date', 'Tweet Content', 'Tweet Language', 'Tweet Favorites', 'Tweet Retweets',
-        'Sentiment Pos', 'Sentiment Neu', 'Sentiment Neg', 'Sentiment Comp', 'Flesch Ease', 'Flesh Grade', 'Readability Standard',
+        'Sentiment Pos', 'Sentiment Neu', 'Sentiment Neg', 'Sentiment Comp', 'Flesch Ease', 'Flesch Grade', 'Readability Standard',
         'User Emotion', 'User Ethnicity', 'Eye Gap',
     ]
     data = []

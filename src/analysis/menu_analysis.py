@@ -26,12 +26,11 @@ def menu_text():
             if coll is None:
                 return
             divider()
-            limit = get_menu("", None,
-                             "Enter the number of tweets to analyze.\nLeave blank for all in the collection.\n>>>")
+            limit = get_menu("", None,"Enter the number of tweets to analyze.\nLeave blank for all in the collection.\n>>>")
             if limit == 'r':
                 return
             divider()
-            image.insert_data(coll, limit)
+            image.analyze(coll, limit)
 
         menu = {
             1: sentiment.initialize,

@@ -107,7 +107,6 @@ class Setup:  # settings and setup for tweet scraping
             print("Initializing DB and Collection...")
             db = mongo.client[self.db_name]  # initialize db
             self.tweet_coll = db[self.coll_name]  # initialize collection
-            #self.tweet_coll.create_index([('text','text')])
 
             c_true = self.tweet_coll.find({"t_temp": True})
             c_false = self.tweet_coll.find({"t_temp": False})
@@ -121,7 +120,7 @@ class Setup:  # settings and setup for tweet scraping
                 })
             c_true.close()
             c_false.close()
-        except BaseException as e:
+        except Exception as e:
             print("Error:", e)
             return
 

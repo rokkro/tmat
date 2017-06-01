@@ -31,9 +31,6 @@ def duplicate_tests(coll_tweet, json_tweet):
 
 def duplicate_find(coll, json_tweet, sim):
     # coll_tweet is already saved in the db, json_tweet is the new one
-    #cursor = coll.find({'$text': {'$search': json_tweet['text']}}, {'score': {'$meta': 'textScore'}})
-    #utilize text index set to the 'text' field in tweet_setup.py to get data
-    #cursor.sort([('score', {'$meta': 'textScore'})]) #sort by similarity. Not necessary I guess.
     cursor = coll.find({})
     for coll_tweet in cursor:  # searching for all tweets' text, removing spaces and punct.
         if 'text' not in coll_tweet:
