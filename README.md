@@ -20,14 +20,12 @@
 
 ## Setup:
 
-***To use***: insert correct <a href="https://dev.twitter.com/">Twitter</a> (tweet retrieval) and/or <a href="http://kairos.com/">Kairos</a> (image analysis) API keys into the `config.py` file, then run `menu_main.py` for the menu interface.
+***To Install***: Install mongoDB and run with `mongod --dbpath=/path/to/db` (Find `mongod.exe` in Program Files on Windows). Clone this repo and extract the files. Make sure you've got Python 3.x installed (tested on 3.5/3.6).
 
-Install mongoDB and run with `mongod --dbpath=/path/to/db` (Find `mongod.exe` in Program Files on Windows).
-Use something like Robomongo for a nice visual view of the data.
-  
-Requires Python 3.x, tested on 3.5/3.6. Run with `python \path\to\menu_main.py` or `python3 /path/to/menu_main.py` (Linux + Mac OS).
+***Modules Needed***: `tweepy` (tweet collection),`nltk` (text analysis),`requests` (image analysis),`pymongo` (mongoDB), and `textstat` (readability analysis). Install with `pip install` or `pip3 install` (Linux + Mac OS).
 
-***Modules***: `tweepy`,`nltk`,`requests`,`pymongo`, and `textstat`. Install with `pip install` or `pip3 install` (Linux + Mac OS).
+***To use***: insert correct <a href="https://dev.twitter.com/">Twitter</a> (tweet retrieval) and/or <a href="http://kairos.com/">Kairos</a> (image analysis) API keys into the `config.py` file, then run `menu_main.py` for the menu interface. Run with `python \path\to\menu_main.py` or `python3 /path/to/menu_main.py` (Linux + Mac OS). Use something like RoboMongo if you want a good visual view of your databases.
+
 ## Details:
   #### Menus:
 1.  Menus are basic textual interfaces designed to make it easy to use this program. They will, however, generate an unholy amount of console ouput from navigation.
