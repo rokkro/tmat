@@ -1,12 +1,11 @@
 try:
     import config
     from twitter import tweet_filter
-    import requests, tweepy, json
+    import tweepy, json
     from menu import Color
     from tweepy import Stream
     from tweepy.streaming import StreamListener
     from tweepy import OAuthHandler
-    from http.client import IncompleteRead
 except ImportError as e:
     print("Error:", e)
     quit()
@@ -64,11 +63,6 @@ def stream(Setup):
             twitter_stream = Stream(auth, listener)
             twitter_stream.filter(track=Setup.term, languages=Setup.lang, follow=Setup.users)  # location search is not a filter
         except KeyboardInterrupt:
-            return
-        except IncompleteRead:
-            print("Incomplete Read - Skipping to newer tweets.\n")
-        except requests.exceptions.ConnectionError:
-            print("Connection Failed - Check your internet.")
             return
         except Exception as e:
             if Setup.lim is not None:

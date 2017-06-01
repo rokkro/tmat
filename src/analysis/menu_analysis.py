@@ -1,6 +1,8 @@
-from menu import get_menu, get_coll, divider
-from analysis import sentiment, image, readability
-
+try:
+    from menu import get_menu, get_coll, divider
+    from analysis import sentiment, image, readability
+except ImportError as e:
+    print("Error:",e)
 
 def menu_text():
     while True:
