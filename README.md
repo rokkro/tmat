@@ -27,7 +27,7 @@ Modules: `tweepy`,`nltk`,`requests`,`pymongo`, `textstat`. Install with `pip ins
 * Is Easily usable within a console textual interface.
 
 Licensed under the GNU GPL 3.0.
-## Info:
+## Details:
   #### Menus:
 1.  Menus are basic textual interfaces designed to make it easy to use this program. They will, however, generate an unholy amount of console ouput from navigation.
 2.  Run `menu_main.py` for complete access to all the menus/functions.
