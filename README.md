@@ -73,7 +73,7 @@
       tweet content.
 2.  Four values are found from analysis: the positivity, negativity, and neutrality of the tweet. 
       In addition, the compound value is calculated: see the Vader Sentiment link above for an explanation.
-3.  These values are inserted in each tweet document in the specified collection under `sentiment` : (`pos`,`neg`,`neu`, and `compound`).
+3.  These values are inserted in each tweet document in the specified collection under `sentiment` : {`pos`, `neg`, `neu`, `compound`}.
 
   #### Facial Analysis with Kairos:
 1.  The Kairos facial detection and emotion/age/gender APIs are used.
@@ -82,7 +82,7 @@
 4.  The current image is individually downloaded as `ta-image.jpg`, then is uploaded to the Kairos detect API.
 5.  If the API does not find a face, then the next document repeats this process (overwriting `ta-image.jpg` with each new image).
 6.  If a face is found, the image is then uploaded and run through the Kairos emotion API. 
-7.  Data from the detection and emotion API are inserted into the current document under `face` : (`detection` and `emotion`)
+7.  Data from the detection and emotion API are inserted into the current document under `face` : {`detection`, `emotion`}
 8.  When the final image is processed, `ta-image.jpg` is deleted. If an error occurs, the image is deleted.
 9.  Occasionally, the Kairos API will return facial detection data, but not emotion data.
 10. The older the collection, the more dead profile pic links.
@@ -96,7 +96,7 @@
 
   #### Readability:
  1. Uses the module <a href="https://github.com/shivam5992/textstat">textstat</a> to simplify finding the various readability values.
- 2. Finds and inserts 3 values: `readability`: (`flesch_ease`, `flesch_grade`, and `standard`).
+ 2. Finds and inserts 3 values: `readability`: {`flesch_ease`, `flesch_grade`, `standard`}.
  3. Overrides `textstat`'s `sentence_count` function to utilize NLTK's `TweetTokenizer` to remove @users and reduce word length with over 3 letters (such as "waaaaaay" to "waaay"). Additionally, a regex removes any urls, and any '#' symbols are removed. NLTK's `sent_tokenize` is used to split up sentences.
  4. The `standard` value is the 'best grade level' from the results of many readability tests, see the link above for details.
  5. These scores may be negative or too high if the tweet content is too short.
