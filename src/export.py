@@ -121,6 +121,8 @@ def menu_export():
         from menu import get_coll, Color, divider
     except ImportError as e:
         print("Error:",e)
+        return
+
     coll = get_coll()
     if coll == None:
         return
