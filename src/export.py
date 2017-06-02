@@ -117,7 +117,10 @@ def write_data(fname,coll):
         print(fname + " created in the current directory!")
 
 def menu_export():
-    from menu import get_coll, Color, divider
+    try:
+        from menu import get_coll, Color, divider
+    except ImportError as e:
+        print("Error:",e)
     coll = get_coll()
     if coll == None:
         return
