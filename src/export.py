@@ -110,7 +110,8 @@ def write_data(fname,coll):
                 "rightCenterX":set_value(doc,[['face'], ['detection'], ['images'], [0], ['faces'], [0], ['rightEyeCenterX']],False),
             }
             diff = get_difference(eyegap)
-            data.append(diff)
+            if diff!=0:
+                data.append(diff)
 
             w.writerow(data)
             data[:] = []

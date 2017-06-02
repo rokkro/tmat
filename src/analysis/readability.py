@@ -40,12 +40,17 @@ def analyze(coll):
                 if "text" not in doc:  # if the current doc doesnt have 'text' field, move on
                     continue
                 tokenized = tweet_tokenize(doc['text'])
-                if not len(tokenized):
+                if len(tokenized) <=1:
                     continue
+                flesch_ease = t_stat.flesch_reading_ease(tokenized)
+                if flesch_ease > 100:
+                    continue
+                flesch_grade = t_stat.flesch_kincaid_grade(tokenized)
+                text_standard = t_stat.text_standard(tokenized)
                 if config.verbose:
-                    print(doc['text'],"SUMMARIZED",t_stat.text_standard(tokenized))
-                    print("FLESCH EASE",t_stat.flesch_reading_ease(tokenized))
-                    print("FLESCH GRADE",t_stat.flesch_kincaid_grade(tokenized))
+                    print(doc['text'],"SUMMARIZED",text_standard)
+                    print("FLESCH EASE",flesch_ease)
+                    print("FLESCH GRADE",flesch_grade)
                 coll.update_one({'_id': doc.get('_id')}, {'$set': {
                     "readability": {
                         "flesch_ease": t_stat.flesch_reading_ease(tokenized),
@@ -54,15 +59,10 @@ def analyze(coll):
                     }
                 }})
             except Exception as e:
+                #print("ERROR:",tokenized,doc['text'])
                 continue
         cursor.close()
         print("Readability values have been attached to each tweet document in the collection.")
     except (NameError, LookupError) as e:
         print("Error: Make sure you have 'textstat' installed", e)
         return
-
-
-'''
-Error(ASyPW): Number of words are zero, cannot divide
-unsupported operand type(s) for *: 'float' and 'NoneType'
-'''

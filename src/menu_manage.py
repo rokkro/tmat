@@ -8,7 +8,9 @@ def menu_manage():
         inpt = get_menu("MANAGE COLLECTIONS",["View Databases, Collections, and Documents.",
                          "Purge Temporary Collections in a DB.",
                          "Delete Specific Collections.",
-                         "Mark/Un-mark a Collection as Temporary."],
+                         "Mark/Un-mark a Collection as Temporary.","Remove Sentiment Values.",
+                        "Remove Readability Values.",
+                        "Remove Facial Analysis Values."],
                         "*Enter an option or [r] - return.\n>>>")
 
         if inpt == 'r':
@@ -91,13 +93,40 @@ def menu_manage():
             c_true.close()
             c_false.close()
 
+        def sub_strip_sentiment():
+            coll = get_coll()
+            if coll is None:
+                return
+            divider()
+            coll.update({},{"$unset":{"sentiment":1}},multi=True)
+            print(Color.YELLOW + "Sentiment values have been removed." + Color.END)
+
+        def sub_strip_read():
+            coll = get_coll()
+            if coll is None:
+                return
+            divider()
+            coll.update({},{"$unset":{"readability":1}},multi=True)
+            print(Color.YELLOW + "Readability values have been removed." + Color.END)
+
+        def sub_strip_facial_analysis():
+            coll = get_coll()
+            if coll is None:
+                return
+            divider()
+            coll.update({},{"$unset":{"face":1}},multi=True)
+            print(Color.YELLOW + "Facial analysis values have been removed." + Color.END)
+
         menu = {
             1: sub_list,
             2: sub_tmp,
             3: sub_del,
             4: sub_mark,
+            5: sub_strip_sentiment,
+            6: sub_strip_read,
+            7: sub_strip_facial_analysis
         }
         try:
             menu[inpt]()
-        except BaseException as e:
+        except Exception as e:
             print("Error:", e)
