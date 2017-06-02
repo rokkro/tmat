@@ -109,7 +109,7 @@ def menu_manage():
             coll.update({},{"$unset":{"readability":1}},multi=True)
             print(Color.YELLOW + "Readability values have been removed." + Color.END)
 
-        def sub_strip_facial_analysis():
+        def sub_strip_facial():
             coll = get_coll()
             if coll is None:
                 return
@@ -124,7 +124,7 @@ def menu_manage():
             4: sub_mark,
             5: sub_strip_sentiment,
             6: sub_strip_read,
-            7: sub_strip_facial_analysis
+            7: sub_strip_facial
         }
         try:
             menu[inpt]()
