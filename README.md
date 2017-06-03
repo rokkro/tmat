@@ -104,7 +104,7 @@
  2. Finds and inserts 3 values: `readability`: {`flesch_ease`, `flesch_grade`, `standard`}.
  3. Overrides `textstat`'s `sentence_count` function to utilize NLTK's `TweetTokenizer` to remove @users and reduce word length with over 3 letters (such as "waaaaaay" to "waaay"). Additionally, a regex removes any urls, and any '#' symbols are removed. NLTK's `sent_tokenize` is used to split up sentences.
  4. The `standard` value is the 'best grade level' from the results of many readability tests, see the link above for details.
- 5. These scores may be negative or too high if the tweet content is too short.
+ 5. These scores can be negative or too high if the tweet content is too short, therefore, they are not inserted into the db in these cases.
  ---
   #### References:
   >Hutto, C.J. & Gilbert, E.E. (2014). VADER: A Parsimonious Rule-based Model for Sentiment Analysis of Social Media Text. Eighth International Conference on Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
