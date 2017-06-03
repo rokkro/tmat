@@ -17,7 +17,7 @@ def scrape(Setup):
     last_id = -1
     successful = 0
     while successful < Setup.lim:
-        count = Setup.lim - successful  #len(searched_tweets)
+        count = Setup.lim - successful
         try:
             new_tweets = api.search(q=Setup.term,result_type=Setup.result_type,until=Setup.before, count=count, max_id=str(last_id - 1))
             if not new_tweets:
@@ -26,7 +26,7 @@ def scrape(Setup):
             last_id = new_tweets[-1].id
             for iter, data in enumerate(searched_tweets):
                 if tweet_filter.social_filter(data._json):
-                    if tweet_filter.duplicate_find(Setup.tweet_coll, data._json,Setup.sim):  # if no duplicates found, add tweet to db
+                    if tweet_filter.duplicate_find(Setup.tweet_coll, data._json):  # if no duplicates found, add tweet to db
                         if Setup.after is None or tweet_filter.date_filter(data._json,Setup.after):
                             Setup.tweet_coll.insert_one(data._json)
                             successful+=1
@@ -44,3 +44,5 @@ def scrape(Setup):
                 return
             print("Error:",e)
             continue
+        except Exception as e:
+            print("Error:",e)

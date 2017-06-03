@@ -94,26 +94,6 @@ def sub_coll(s):
         break
 
 
-def sub_simil(s):
-    while True:
-        inpt = input(Color.BOLD + "*Enter a new value: 0.0 to 1.0. Higher value = filter out "
-                                  "tweets with > similarity. Leave blank to cancel.\n>>>" + Color.END)
-        if inpt == '' or inpt == s.sim:
-            break
-        divider()
-        try:
-            inpt = float(inpt)
-            if inpt <= 1.0 and inpt >= 0:
-                s.sim = inpt
-            else:
-                raise ValueError
-            print(Color.YELLOW + "Similarity threshold set to " + str(s.sim) + "." + Color.END)
-            break
-        except ValueError:
-            print("Invalid Input.")
-            continue
-
-
 def sub_lang(s):
     langs = ['en', 'ar', 'bn', 'cs', 'da', 'de', 'el', 'es', 'fa', 'fi', 'fil', 'fr', 'he', 'hi', 'hu', 'id',
              'it',
@@ -162,7 +142,6 @@ def menu_stream():
                          "Temporary Collection = " + str(s.temp),
                          "Database Name = '" + s.db_name + "'",
                          "Collection Name = '" + s.coll_name + "'",
-                         "Tweet Similarity Threshold = " + str(s.sim),
                          "Languages = " + str(s.lang).strip('[]'),
                          "Follow UID(s) = " + (str(s.users).strip('[]') if s.users else "None"),
                          "MongoDB Connected = " + Color.YELLOW + str(mongo.connected) + Color.END],
@@ -189,10 +168,9 @@ def menu_stream():
             3: sub_tmp,
             4: sub_db,
             5: sub_coll,
-            6: sub_simil,
-            7: sub_lang,
-            8: sub_follow,
-            9: sub_mongo
+            6: sub_lang,
+            7: sub_follow,
+            8: sub_mongo
         }
         divider()
         menu[inpt](s)
@@ -230,7 +208,6 @@ def menu_hist():
                          "Temporary Collection = " + str(s.temp),
                          "Database Name = '" + s.db_name + "'",
                          "Collection Name = '" + s.coll_name + "'",
-                         "Tweet Similarity Threshold = " + str(s.sim),
                          "Result Type = " + s.result_type,
                          "Date Range = " + ((("On/After " + str(s.after) if s.after is not None else "") +
                                              ((", " if s.after is not None and s.before is not None else "") +
@@ -258,10 +235,9 @@ def menu_hist():
             3: sub_tmp,
             4: sub_db,
             5: sub_coll,
-            6: sub_simil,
-            7: sub_result,
-            8: sub_date,
-            9: sub_mongo
+            6: sub_result,
+            7: sub_date,
+            8: sub_mongo
         }
         divider()
         menu[inpt](s)
