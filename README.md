@@ -35,6 +35,8 @@
 1.  Enter your Twitter API and Kairos API keys into `config.py`, within the quotation marks.
 2.  `verbose` set to `True` outputs far more console output, letting you see what's going on.
 3.  `startup_connect` determines whether `pymongo` attempts to connect to `mongod` on the program's startup.
+4.  `tweet_similarity_threshold` sets how similar tweets must be before they are filtered out. (1=exact copies, 0=not similar)
+5.  `tweet_duplicate_limit` is how many tweets are compared to the incoming tweet for duplicates. This value does not need to be high, as MongoDB sorts the most similar tweets first. Usually a duplicate is found with the first or second tweets because of this. Note that once a duplicate is found, the duplicate checking process is stopped.
 
   #### MongoDB:
 1.  Tweets are placed in MongoDB databases. These databases contain collections, and these collections contain documents.
@@ -45,15 +47,18 @@
 4.  MongoDB must be running to use most of the functions of this program.
 5.  I don't reccomend you modify, delete, or insert into the `local` or `admin` collections unless you know what you're doing.
 
+  #### Tweet Duplicates and Filtering:
+ 1. Filters out retweets, quoted retweets, replies, and incomplete tweets(does not contain "created_at" date in JSON data).
+ 2. MongoDB's cursor sorting feature is used with its "textscore" comparison values to sort the most likely duplicates first. This eliminates the need to search the entire unordered collection for a match. Instead, the max tweets searched is defined by the `tweet_duplicate_limit` in `config.py`. 
+ 3. Most of the time, the first tweet compared will be a duplicate.
+ 4. Duplicates are found by removing punctuation and spaces from the new tweet and the current tweet to be tested. Using Python's `SequenceMatcher` and the `tweet_similarity_threshold` in `config.py`, the tweet's text is compared to all other tweets in the current collection. If a duplicate is found, the two tweets are compared. The tweet with the most favorites is kept. If they have the same number of favorites, such as when tweet streaming, the older tweet is kept. 
+ 
   #### Tweet Streaming:
  1.  Tweepy is used as the Python module to interface with the Twitter API.
  2.  Retrieves new tweets created while the program is running.
- 3.  Filters out retweets, quoted retweets, replies, and incomplete tweets(does not contain "created_at" date in JSON data).
- 4.  Duplicates are found by removing punctuation and spaces from the new tweet and the current tweet to be tested. Using Python's `SequenceMatcher` and the user defined similarity threshold, the tweet's text is compared to all other tweets in the current collection. If a duplicate is found, the two tweets are compared. The tweet with the most favorites is kept. If they have the same number of favorites, such as when tweet streaming, the older tweet is kept.  
- 5. Tweet data from the Twitter API is inserted into the specified MongoDB database and collection, in a JSON-like format.
- 6. Incomplete Read error occurs when the API needs to "catch up" to the latest tweets. Some tweets are skipped when this occurs.
-      Adding more filters (language, follower, etc.) supposedly increases the frequency of this error.
- 7. Queries using both the follower and search term options, will retrieve ANY new tweets from the specified user, and ANY  new tweets
+ 3. Tweet data from the Twitter API is inserted into the specified MongoDB database and collection, in a JSON-like format.
+ 4. Incomplete Read error occurs when the API needs to "catch up" to the latest tweets. Some tweets are skipped when this occurs. Adding more search filters (language, follower, etc.) supposedly increases the frequency of this error.
+ 5. Queries using both the follower and search term options, will retrieve ANY new tweets from the specified user, and ANY  new tweets
     from any user who tweets the specified search term.
     
   #### Historic Tweet Gathering:
