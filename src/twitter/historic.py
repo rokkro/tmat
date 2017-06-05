@@ -35,14 +35,7 @@ def scrape(Setup):
                   "[{0:50s}] {1:.1f}% ".format('#' * int((successful / int(Setup.lim)) * 50),
                                                (successful / int(Setup.lim)) * 100), end='',flush=True)
         except tweepy.TweepError as e:
-            error = e.args[0][0]['code']
-            if error == 215:
-                print("Authentication failed. Check your keys and verify your system clock is accurate.")
-                return
-            if error == 130 or error == 131:
-                print("An error occurred on Twitter's end. Please try again...")
-                return
-            print("Error:",e)
-            continue
+            print("Error:",e.args[0])
+            return
         except Exception as e:
             print("Error:",e)
