@@ -21,7 +21,7 @@ def sub_search(s):
         return
     s.set_search(inpt)
     print(Color.END, end='')
-    print(Color.YELLOW + "Search set to " + (
+    print(Color.PURPLE + "Search set to " + (
         str(s.term).strip('[]') if s.term else "None") + "." + Color.END)
 
 def sub_lim(s):
@@ -39,11 +39,11 @@ def sub_lim(s):
     else:
         s.lim = inpt
     print(Color.END, end='')
-    print(Color.YELLOW + "Limit set to " + str(s.lim) + "." + Color.END)
+    print(Color.PURPLE + "Limit set to " + str(s.lim) + "." + Color.END)
 
 
 def sub_tmp(s):
-    print(Color.YELLOW, end='')
+    print(Color.PURPLE, end='')
     if not s.temp:
         print("Collection will be marked as Temporary.")
         s.temp = True
@@ -61,7 +61,7 @@ def sub_db(s):
         if inpt == '' or inpt == s.db_name or inpt == 'admin' or inpt == 'local':
             break
         divider()
-        print(Color.YELLOW + "Database changed from '" + s.db_name + "' to '" + inpt + "'.")
+        print(Color.PURPLE + "Database changed from '" + s.db_name + "' to '" + inpt + "'.")
         s.db_name = inpt
         if mongo.connected:
             if inpt in mongo.get_dbnames():
@@ -84,7 +84,7 @@ def sub_coll(s):
         else:
             s.coll_name = inpt
         divider()
-        print(Color.YELLOW + "Collection changed to '" + s.coll_name + "'.")
+        print(Color.PURPLE + "Collection changed to '" + s.coll_name + "'.")
         if mongo.connected:
             if s.coll_name in mongo.get_collections(s.db_name):
                 print("'" + s.coll_name + "' already exists. New tweets will be added to existing.")
@@ -109,7 +109,7 @@ def sub_lang(s):
         if i in langs and i not in tmp:
             tmp.append(i)
     if len(tmp) >= 1:
-        print(Color.YELLOW + "Accepted languages: " + str(tmp).strip("[]") + "." + Color.END)
+        print(Color.PURPLE + "Accepted languages: " + str(tmp).strip("[]") + "." + Color.END)
         s.lang = tmp
 
 
@@ -123,12 +123,12 @@ def sub_follow(s):
     divider()
     s.set_follow(inpt)
     print(Color.END, end='')
-    print(Color.YELLOW + "Follow list changed to " + (
+    print(Color.PURPLE + "Follow list changed to " + (
         str(s.users).strip('[]') if s.users else "None") + "." + Color.END)
 
 
 def sub_mongo(s):
-    print(Color.YELLOW, end='')
+    print(Color.PURPLE, end='')
     mongo.mongo_connection()
     print(Color.END, end='')
 
@@ -137,19 +137,19 @@ def menu_stream():
     s = Setup(True)
     sub_search(s)
     while True:
-        inpt = get_menu("STREAMING",["Search = " + (str(s.term).strip('[]') if s.term else "None"),
+        inpt = get_menu("STREAMING", ["Search = " + (str(s.term).strip('[]') if s.term else "None"),
                          "Limit = " + str(s.lim),
                          "Temporary Collection = " + str(s.temp),
                          "Database Name = '" + s.db_name + "'",
                          "Collection Name = '" + s.coll_name + "'",
                          "Languages = " + str(s.lang).strip('[]'),
                          "Follow UID(s) = " + (str(s.users).strip('[]') if s.users else "None"),
-                         "MongoDB Connected = " + Color.YELLOW + str(mongo.connected) + Color.END],
+                         "MongoDB Connected = " + Color.PURPLE + str(mongo.connected) + Color.END],
                         "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
         if inpt == '' and mongo.connected and (s.term or s.users):
             divider()
-            print(Color.YELLOW,end='')
+            print(Color.PURPLE, end='')
             print("Waiting for new tweets...")
             s.init_db()
             print(Color.END,end='')
@@ -157,7 +157,7 @@ def menu_stream():
             print("\n",end='')
             break
         elif inpt == '':
-            print(Color.YELLOW + "MongoDB must be connected and a search or UID must have been entered." + Color.END)
+            print(Color.PURPLE + "MongoDB must be connected and a search or UID must have been entered." + Color.END)
             continue
         elif inpt == 'r':
             return
@@ -177,7 +177,7 @@ def menu_stream():
 def sub_result(s):
     inpt = input(Color.BOLD + "*Enter a result type: 'mixed','recent', or 'popular'.\n>>>" + Color.END).strip()
     s.set_result_type(inpt)
-    print(Color.YELLOW + "Result type set to " + s.result_type + "." + Color.END)
+    print(Color.PURPLE + "Result type set to " + s.result_type + "." + Color.END)
 
 def sub_date(s):
     inpt = input(
@@ -192,7 +192,7 @@ def sub_date(s):
     elif inpt == "r":
         return
     divider()
-    print(Color.YELLOW,end="")
+    print(Color.PURPLE, end="")
     s.set_date(inpt)
     print(Color.END,end="")
 
@@ -203,22 +203,22 @@ def menu_hist():
     divider()
     sub_lim(s)
     while True:
-        inpt = get_menu("HISTORIC",["Search = " + (str(s.term).strip('[]') if s.term else "None"),
+        inpt = get_menu("HISTORIC", ["Search = " + (str(s.term).strip('[]') if s.term else "None"),
                          "Limit = " + str(s.lim),
                          "Temporary Collection = " + str(s.temp),
                          "Database Name = '" + s.db_name + "'",
                          "Collection Name = '" + s.coll_name + "'",
-                         "Result Type = " + s.result_type,
+                                     "Result Type = " + s.result_type,
                          "Date Range = " + ((("On/After " + str(s.after) if s.after is not None else "") +
                                              ((", " if s.after is not None and s.before is not None else "") +
                                               ("Before " + str(s.before)) if s.before is not None else ""))
                                             if s.after is not None or s.before is not None else "None"),
-                         "MongoDB Connected = " + Color.YELLOW + str(mongo.connected) + Color.END],
+                         "MongoDB Connected = " + Color.PURPLE + str(mongo.connected) + Color.END],
                         "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
         if inpt == '' and mongo.connected and s.term and s.lim:
             divider()
-            print(Color.YELLOW,end='')
+            print(Color.PURPLE, end='')
             s.init_db()
             print("Retrieving tweets...")
             print(Color.END,end='')
@@ -226,7 +226,7 @@ def menu_hist():
             print("\n",end='')
             break
         elif inpt == '':
-            print(Color.YELLOW + "MongoDB must be connected, and both a search and limit must have been entered." + Color.END)
+            print(Color.PURPLE + "MongoDB must be connected, and both a search and limit must have been entered." + Color.END)
             continue
 
         menu = {

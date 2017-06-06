@@ -131,16 +131,16 @@ def menu_export():
     fname = input(Color.BOLD + "*Enter a filename. A .csv extension will be added.\n"
                                "Leave blank to cancel.\n>>>" + Color.END).replace(" ", "")
     if fname == '':
-        print(Color.YELLOW + "Export Cancelled." + Color.END)
+        print(Color.PURPLE + "Export Cancelled." + Color.END)
         return
     if ".csv" not in fname:
         fname = fname + ".csv"
     divider()
     try:
-        print(Color.YELLOW,end='')
+        print(Color.PURPLE, end='')
         write_data(fname,coll)
         print(Color.END,end='')
     except PermissionError:
-        print(Color.YELLOW + "Permission Error: Check if the specified file is open in another program\nand if you have "
+        print(Color.PURPLE + "Permission Error: Check if the specified file is open in another program\nand if you have "
                              "permission to create files here." + Color.END)
         return

@@ -11,7 +11,7 @@ def menu_text():
         if inpt == 'r':
             return
         def sub_init():
-            print(Color.YELLOW,end='')
+            print(Color.PURPLE, end='')
             sentiment.initialize()
             print(Color.END,end='')
 
@@ -19,7 +19,7 @@ def menu_text():
             i = get_coll()
             if i is None:
                 return
-            print(Color.YELLOW,end='')
+            print(Color.PURPLE, end='')
             sentiment.analyze(i)
             print(Color.END,end='')
 
@@ -27,7 +27,7 @@ def menu_text():
             i = get_coll()
             if i is None:
                 return
-            print(Color.YELLOW,end='')
+            print(Color.PURPLE, end='')
             readability.analyze(i)
             print(Color.END, end='')
 
@@ -40,7 +40,7 @@ def menu_text():
             if limit == 'r':
                 return
             divider()
-            print(Color.YELLOW,end='')
+            print(Color.PURPLE, end='')
             image.analyze(coll, limit)
             print(Color.END,end='')
 

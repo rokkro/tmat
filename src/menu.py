@@ -4,8 +4,8 @@ except ImportError as e:
     print("Error",e)
 
 class Color:
-    YELLOW = '\033[93m'
-    CYAN = '\033[96m'
+    PURPLE = "\033[95m"
+    CYAN = '\033[36m'
     BOLD = '\033[1m'
     END = '\033[0m'
 
@@ -21,7 +21,7 @@ def get_menu(head, menu, input_menu):
         if menu is not None:
             header(head)
             for num, i in enumerate(menu):
-                print("[" + Color.YELLOW + str(num + 1) + Color.END + "] - " + i)
+                print("[" + Color.PURPLE + str(num + 1) + Color.END + "] - " + i)
             divider()
         i = input(Color.BOLD + input_menu + Color.END).replace(" ", "")
         if i == 'q':
@@ -39,10 +39,10 @@ def get_menu(head, menu, input_menu):
 
 def get_db():
     if not mongo.connected:
-        print(Color.YELLOW + "You must be connected to MongoDB!" + Color.END)
+        print(Color.PURPLE + "You must be connected to MongoDB!" + Color.END)
         return
 
-    print(Color.YELLOW + "Do not select 'admin' or 'local' databases." + Color.END)
+    print(Color.PURPLE + "Do not select 'admin' or 'local' databases." + Color.END)
     db_list = []
     for j, k in enumerate(mongo.get_dbnames(), 1):  # start at 1
         db_list.append( k + "' (" + str(len(mongo.get_collections(k))) + ")")  # print databases

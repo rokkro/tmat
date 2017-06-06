@@ -9,7 +9,7 @@ except ImportError as e:
 def menu_main():
     def sub_connect():
         divider()
-        print(Color.YELLOW, end='')
+        print(Color.PURPLE, end='')
         mongo.mongo_connection()
         print(Color.END, end='')
     if config.startup_connect:
@@ -23,12 +23,12 @@ def menu_main():
         6: sub_connect
     }
     while True:
-        i = get_menu("MAIN",["Stream Tweets.",
+        i = get_menu("MAIN", ["Stream Tweets.",
                       "Historic Tweets.",
                       "Analyze Tweets.",
                       "Export as CSV.",
                       "Manage Collections.",
-                      "MongoDB Connected = " + Color.YELLOW + str(mongo.connected) + Color.END],
+                      "MongoDB Connected = " + Color.PURPLE + str(mongo.connected) + Color.END],
                      "*Enter option number or [q] - quit.\n>>>")
         try:
             menu[i]()

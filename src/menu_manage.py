@@ -35,7 +35,7 @@ def menu_manage():
             except Exception:
                 return
             divider()
-            print(Color.YELLOW + "The following collections will be DELETED:" + Color.END)
+            print(Color.PURPLE + "The following collections will be DELETED:" + Color.END)
 
             for j, k in enumerate(coll, 1):  # loops through all collections
                 doc_count = db[coll[j - 1]].find({}) # take the current collection, and find all the documents
@@ -47,30 +47,30 @@ def menu_manage():
                 cursor.close()
 
             if not deletable: #if it's empty
-                print(Color.YELLOW + "No temporary collections in this db." + Color.END)
+                print(Color.PURPLE + "No temporary collections in this db." + Color.END)
                 return
-            inpt = input(Color.YELLOW + Color.BOLD + "Are you sure you want to delete these collections and "
+            inpt = input(Color.PURPLE + Color.BOLD + "Are you sure you want to delete these collections and "
                                                      "all documents within? [y/n]" + Color.END + Color.BOLD + "\n>>>" + Color.END)
             if inpt == 'y':
                 for i in deletable:
                     i.drop()
-                print(Color.YELLOW + "Temporary collections deleted." + Color.END)
+                print(Color.PURPLE + "Temporary collections deleted." + Color.END)
             else:
-                print(Color.YELLOW + "Deletion cancelled." + Color.END)
+                print(Color.PURPLE + "Deletion cancelled." + Color.END)
 
         def sub_del():
-            print(Color.YELLOW + "Select a collection to delete." + Color.END)
+            print(Color.PURPLE + "Select a collection to delete." + Color.END)
             coll = get_coll()
             if coll is None:
                 return
-            inpt = input(Color.YELLOW + Color.BOLD + "Are you sure you want to delete this collection and "
+            inpt = input(Color.PURPLE + Color.BOLD + "Are you sure you want to delete this collection and "
                                                      "all documents within? [y/n]" + Color.END + Color.BOLD + "\n>>>" + Color.END)
             divider()
             if inpt == 'y':
                 coll.drop()
-                print(Color.YELLOW + "Collection deleted." + Color.END)
+                print(Color.PURPLE + "Collection deleted." + Color.END)
             else:
-                print(Color.YELLOW + "Deletion canceled." + Color.END)
+                print(Color.PURPLE + "Deletion canceled." + Color.END)
 
         def sub_mark():  # be careful if you manually added in other "t_temp" keys
             coll = get_coll()
@@ -81,15 +81,15 @@ def menu_manage():
             c_false = coll.find({"t_temp": False})
             if c_true.count() > 0:  # we will assume we want to flip any t_temp = trues
                 coll.update_many({"t_temp": True}, {'$set': {"t_temp": False}})
-                print(Color.YELLOW + "Collection marked as permanent." + Color.END)
+                print(Color.PURPLE + "Collection marked as permanent." + Color.END)
             elif c_false.count() > 0:
                 coll.update_many({"t_temp": False}, {'$set': {"t_temp": True}})
-                print(Color.YELLOW + "Collection marked as temporary." + Color.END)
+                print(Color.PURPLE + "Collection marked as temporary." + Color.END)
             else:
                 coll.insert_one({  # This creates a coll even if no tweets found.
                     "t_temp": True
                 })
-                print(Color.YELLOW + "Collection marked as temporary." + Color.END)
+                print(Color.PURPLE + "Collection marked as temporary." + Color.END)
             c_true.close()
             c_false.close()
 
@@ -99,7 +99,7 @@ def menu_manage():
                 return
             divider()
             coll.update({},{"$unset":{"sentiment":1}},multi=True)
-            print(Color.YELLOW + "Sentiment values have been removed." + Color.END)
+            print(Color.PURPLE + "Sentiment values have been removed." + Color.END)
 
         def sub_strip_read():
             coll = get_coll()
@@ -107,7 +107,7 @@ def menu_manage():
                 return
             divider()
             coll.update({},{"$unset":{"readability":1}},multi=True)
-            print(Color.YELLOW + "Readability values have been removed." + Color.END)
+            print(Color.PURPLE + "Readability values have been removed." + Color.END)
 
         def sub_strip_facial():
             coll = get_coll()
@@ -115,7 +115,7 @@ def menu_manage():
                 return
             divider()
             coll.update({},{"$unset":{"face":1}},multi=True)
-            print(Color.YELLOW + "Facial analysis values have been removed." + Color.END)
+            print(Color.PURPLE + "Facial analysis values have been removed." + Color.END)
 
         menu = {
             1: sub_list,
