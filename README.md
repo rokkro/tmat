@@ -52,6 +52,7 @@
  2. MongoDB's cursor sorting feature is used with its "textscore" comparison values to sort the most likely duplicates first. This eliminates the need to search the entire unordered collection for a match. Instead, the max tweets searched is defined by the `tweet_duplicate_limit` in `config.py`. 
  3. Most of the time, the first tweet compared will be a duplicate.
  4. Duplicates are found by removing punctuation and spaces from the new tweet and the current tweet to be tested. Using Python's `SequenceMatcher` and the `tweet_similarity_threshold` in `config.py`, the tweet's text is compared to all other tweets in the current collection. If a duplicate is found, the two tweets are compared. The tweet with the most favorites is kept. If they have the same number of favorites, such as when tweet streaming, the older tweet is kept. 
+ 5. The more tweets collected, the longer duplicate checking takes. This is likely due to the slowly increasing time it takes for MongoDB to sort the tweets.
  
   #### Tweet Streaming:
  1.  Tweepy is used as the Python module to interface with the Twitter API.
@@ -105,6 +106,7 @@
  3. Overrides `textstat`'s `sentence_count` function to utilize NLTK's `TweetTokenizer` to remove @users and reduce word length with over 3 letters (such as "waaaaaay" to "waaay"). Additionally, a regex removes any urls, and any '#' symbols are removed. NLTK's `sent_tokenize` is used to split up sentences.
  4. The `standard` value is the 'best grade level' from the results of many readability tests, see the link above for details.
  5. These scores can be negative or too high if the tweet content is too short, therefore, they are not inserted into the db in these cases.
+ 6. On occasion, `textstat` may generate an error message (such as a division by zero message). Just ignore it. The rest of the collection is still processed.
  ---
   #### References:
   >Hutto, C.J. & Gilbert, E.E. (2014). VADER: A Parsimonious Rule-based Model for Sentiment Analysis of Social Media Text. Eighth International Conference on Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
