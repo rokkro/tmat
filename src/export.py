@@ -119,28 +119,28 @@ def write_data(fname,coll):
 
 def menu_export():
     try:
-        from menu import get_coll, Color, divider
+        from menu import Menu
     except ImportError as e:
         print("Error:",e)
         return
-
-    coll = get_coll()
+    menu = Menu()
+    coll = menu.get_coll()
     if coll == None:
         return
-    divider()
-    fname = input(Color.BOLD + "*Enter a filename. A .csv extension will be added.\n"
-                               "Leave blank to cancel.\n>>>" + Color.END).replace(" ", "")
+    menu.divider()
+    fname = input(menu.BOLD + "*Enter a filename. A .csv extension will be added.\n"
+                               "Leave blank to cancel.\n>>>" + menu.END).replace(" ", "")
     if fname == '':
-        print(Color.PURPLE + "Export Cancelled." + Color.END)
+        print(menu.PURPLE + "Export Cancelled." + menu.END)
         return
     if ".csv" not in fname:
         fname = fname + ".csv"
-    divider()
+    menu.divider()
     try:
-        print(Color.PURPLE, end='')
+        print(menu.PURPLE, end='')
         write_data(fname,coll)
-        print(Color.END,end='')
+        print(menu.END,end='')
     except PermissionError:
-        print(Color.PURPLE + "Permission Error: Check if the specified file is open in another program\nand if you have "
-                             "permission to create files here." + Color.END)
+        print(menu.PURPLE + "Permission Error: Check if the specified file is open in another program\nand if you have "
+                             "permission to create files here." + menu.END)
         return
