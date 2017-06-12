@@ -15,17 +15,17 @@ class MenuMain(Menu):
             3: menu_analysis.MenuText,
             4: export.menu_export,
             5: menu_manage.MenuManage,
-            6: self.sub_connect
+            6: self.mongo_connect
         }
         if config.startup_connect:
-            self.sub_connect()
+            self.mongo_connect()
         while True:
             i = self.get_menu("MAIN", ["Stream Tweets.",
                "Historic Tweets.",
                "Analyze Tweets.",
                "Export as CSV.",
                "Manage Collections.",
-               "MongoDB Connected = " + self.PURPLE + str(mongo.connected) + self.END],
+               "MongoDB Connected = " + self.purple + str(mongo.connected) + self.end],
                 "*Enter option number or [q] - quit.\n>>>")
             try:
                 menu[i]()

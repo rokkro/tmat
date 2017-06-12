@@ -22,25 +22,25 @@ class MenuText(Menu):
             menu[inpt]()
 
     def sub_init(self):
-        print(self.PURPLE, end='')
+        print(self.purple, end='')
         sentiment.initialize()
-        print(self.END,end='')
+        print(self.end, end='')
 
     def sub_analysis(self):
         i = self.get_coll()
         if i is None:
             return
-        print(self.PURPLE, end='')
+        print(self.purple, end='')
         sentiment.analyze(i)
-        print(self.END,end='')
+        print(self.end, end='')
 
     def sub_readability(self):
         i = self.get_coll()
         if i is None:
             return
-        print(self.PURPLE, end='')
+        print(self.purple, end='')
         readability.analyze(i)
-        print(self.END, end='')
+        print(self.end, end='')
 
     def sub_image(self):
         coll = self.get_coll()
@@ -51,9 +51,9 @@ class MenuText(Menu):
         if limit == 'r':
             return
         self.divider()
-        print(self.PURPLE, end='')
+        print(self.purple, end='')
         image.analyze(coll, limit)
-        print(self.END,end='')
+        print(self.end, end='')
 
 
 if __name__ == '__main__':

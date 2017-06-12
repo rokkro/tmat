@@ -7,9 +7,9 @@ except ImportError as e:
     print("Error:",e)
 
 def tweet_tokenize(text):
-    '''
+    """
     Strip out Tweet URLs, handles, shorten elongated words.
-    '''
+    """
     try:
         tknzr = TweetTokenizer(strip_handles=True, reduce_len=True)
     except (NameError, LookupError) as e:
@@ -19,10 +19,10 @@ def tweet_tokenize(text):
     return ' '.join(tknzr.tokenize(no_url)) #str
 
 class ts(textstat.textstatistics):
-    '''
+    """
     Overriding the sentence_count function to work better on tweets,
     Treat the period recognition better.
-    '''
+    """
     def sentence_count(self, text):
         ignoreCount=0
         sentences = sent_tokenize(text)

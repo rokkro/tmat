@@ -4,26 +4,26 @@ except ImportError as e:
     print("Error",e)
 class Menu:
     def __init__(self):
-        self.PURPLE = "\033[95m"
-        self.CYAN = '\033[36m'
-        self.BOLD = '\033[1m'
-        self.END = '\033[0m'
+        self.purple = "\033[95m"
+        self.cyan = '\033[36m'
+        self.bold = '\033[1m'
+        self.end = '\033[0m'
     
     def header(self,text):
-        print(self.CYAN  + self.BOLD + ('-' * int((40 - len(text)) / 2)) + self.BOLD +
-              text + self.CYAN + self.BOLD + ('-' * int((40 - len(text)) / 2)) + self.END)
+        print(self.cyan + self.bold + ('-' * int((40 - len(text)) / 2)) + self.bold +
+              text + self.cyan + self.bold + ('-' * int((40 - len(text)) / 2)) + self.end)
     
     def divider(self):
-        print(self.CYAN + self.BOLD + '-' * 40 + self.END)
+        print(self.cyan + self.bold + '-' * 40 + self.end)
     
     def get_menu(self,head, menu, input_menu):
         while True:
             if menu is not None:
                 self.header(head)
                 for num, i in enumerate(menu):
-                    print("[" + self.PURPLE + str(num + 1) + self.END + "] - " + i)
+                    print("[" + self.purple + str(num + 1) + self.end + "] - " + i)
                 self.divider()
-            i = input(self.BOLD + input_menu + self.END).replace(" ", "")
+            i = input(self.bold + input_menu + self.end).replace(" ", "")
             if i == 'q':
                 quit()
             elif i == 'r' or i == '':
@@ -39,10 +39,10 @@ class Menu:
     
     def get_db(self):
         if not mongo.connected:
-            print(self.PURPLE + "You must be connected to MongoDB!" + self.END)
+            print(self.purple + "You must be connected to MongoDB!" + self.end)
             return
     
-        print(self.PURPLE + "Do not select 'admin' or 'local' databases." + self.END)
+        print(self.purple + "Do not select 'admin' or 'local' databases." + self.end)
         db_list = []
         for j, k in enumerate(mongo.get_dbnames(), 1):  # start at 1
             db_list.append( k + "' (" + str(len(mongo.get_collections(k))) + ")")  # print databases
@@ -73,8 +73,8 @@ class Menu:
             return
         return db[coll[inpt - 1]]
 
-    def sub_connect(self):
+    def mongo_connect(self):
         self.divider()
-        print(self.PURPLE, end='')
+        print(self.purple, end='')
         mongo.mongo_connection()
-        print(self.END, end='')
+        print(self.end, end='')

@@ -19,7 +19,7 @@ def duplicate_tests(coll_tweet, json_tweet):
     if config.verbose:
         print("COLL FAVES:",coll_tweet['favorite_count'],"NEW TWEET FAVES:",json_tweet['favorite_count'])
         print("COLL DATE:", coll_tweet['created_at'], "NEW TWEET DATE:", json_tweet['created_at'])
-    if  cfaves > jfaves :
+    if cfaves > jfaves:
         return False
     elif cfaves == jfaves:
         if format_date(coll_tweet['created_at']) <= format_date(json_tweet['created_at']):
