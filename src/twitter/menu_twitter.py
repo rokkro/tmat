@@ -16,13 +16,13 @@ class MenuTwitter(Menu):
 
     def menu_stream(self):
         while True:
-            inpt = self.get_menu("STREAMING", ["Search = " + (str(self.setup.term).strip('[]') if self.setup.term else "None"),
+            inpt = self.get_menu("STREAMING", ["Search = " + (str(self.setup.term).strip('[]') if self.setup.term else self.purple + "None" + self.end),
                                                "Limit = " + str(self.setup.lim),
                                                "Temporary Collection = " + str(self.setup.temp),
                                           "Database Name = '" + self.setup.db_name + "'",
                                           "Collection Name = '" + self.setup.coll_name + "'",
                                           "Languages = " + str(self.setup.lang).strip('[]'),
-                                          "Follow UID(s) = " + (str(self.setup.users).strip('[]') if self.setup.users else "None"),
+                                          "Follow UID(s) = " + (str(self.setup.users).strip('[]') if self.setup.users else self.purple + "None" + self.end),
                                           "MongoDB Connected = " + self.purple + str(mongo.connected) + self.end],
                             "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
@@ -56,8 +56,8 @@ class MenuTwitter(Menu):
 
     def menu_hist(self):
         while True:
-            inpt = self.get_menu("HISTORIC", ["Search = " + (str(self.setup.term).strip('[]') if self.setup.term else "None"),
-                                              "Limit = " + str(self.setup.lim),
+            inpt = self.get_menu("HISTORIC", ["Search = " + (str(self.setup.term).strip('[]') if self.setup.term else self.purple + "None" + self.end),
+                                              "Limit = " + ((self.purple + str(self.setup.lim) + self.end) if self.setup.lim is None else str(self.setup.lim)),
                                               "Temporary Collection = " + str(self.setup.temp),
                                               "Database Name = '" + self.setup.db_name + "'",
                                               "Collection Name = '" + self.setup.coll_name + "'",
