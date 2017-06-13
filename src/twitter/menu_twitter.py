@@ -103,7 +103,7 @@ class MenuTwitter(Menu):
             print(self.bold + "*Enter search term(s), separate multiple queries with '||'.")
         else:
             print(self.bold + "*Enter search term(s), use https://dev.twitter.com/rest/public/search for operators.")
-        inpt = input("*Leave blank to clear, [r] - return.\n>>>" + self.end).strip()
+        inpt = input("*Leave blank to clear, [" + self.cyan + "r" + self.end + "] - return.\n>>>" + self.end).strip()
         print(self.end, end='')
         self.divider()
         if inpt == 'r':
@@ -207,8 +207,8 @@ class MenuTwitter(Menu):
     def sub_follow(self):
         print(self.bold, end='')
         print("Use http://gettwitterid.com to get a UID from a username. Must be a numeric value.")
-        inpt = input(self.bold + "*Enter UID(s), separate with '||'. Leave blank for no user tracking, [r] - "
-                               "return/cancel.\n>>>" + self.end).strip()
+        inpt = input(self.bold + "*Enter UID(s), separate with '||'. Leave blank for no user tracking, [" + self.cyan +
+                     "r" + self.end + "] - return/cancel.\n>>>" + self.end).strip()
         if inpt == 'r':
             return
         self.divider()
@@ -226,7 +226,7 @@ class MenuTwitter(Menu):
         inpt = input(
             self.bold + "*Enter cut off date(s). Must be: B/A-YYYY-MM-DD and no older than 7 days.\n"
                          "*B=Before (<), A=After (>=). Use '||' to separate.\n*Ex: 'b-2017-5-22||a-2017-5-20'. "
-                         "Leave blank to clear, [r] - cancel.\n>>>" + self.end)
+                         "Leave blank to clear, [" + self.cyan + "r" + self.end + "] - cancel.\n>>>" + self.end)
         inpt = inpt.strip().replace(" ", "")
         if inpt == "":
             self.setup.until = None

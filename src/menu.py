@@ -23,7 +23,7 @@ class Menu:
                 for num, i in enumerate(menu):
                     print("[" + self.purple + str(num + 1) + self.end + "] - " + i)
                 self.divider()
-            i = input(self.bold + input_menu + self.end).replace(" ", "")
+            i = input(self.bold + input_menu.replace("[","[" + self.cyan).replace("]",self.end + "]") + self.end).replace(" ", "")
             if i == 'q':
                 quit()
             elif i == 'r' or i == '':
