@@ -62,7 +62,7 @@ def analyze(coll):
                 #print("ERROR:",tokenized,doc['text'])
                 continue
         cursor.close()
-        print("Readability values have been attached to each tweet document in the collection.\nDisregard any error messages that may have occured.")
+        print("Readability values have been attached to each tweet document in the collection.")
     except (NameError, LookupError) as e:
         print("Error: Make sure you have 'textstat' installed:", e)
         return
