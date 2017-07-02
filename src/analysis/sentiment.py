@@ -4,7 +4,6 @@ try:
     import warnings
     warnings.filterwarnings("ignore")  # stop useless warning
     import mongo, config
-    from display_menu import Color
     import nltk
     from nltk.sentiment.util import mark_negation, extract_unigram_feats
     from nltk.sentiment.vader import SentimentIntensityAnalyzer
@@ -17,7 +16,7 @@ except ImportError as e:
 
 
 def initialize():
-    print(Color.YELLOW + "Running NLTK Setup..." + Color.END)
+    print("Running NLTK Setup...")
     try:
         nltk.download('subjectivity')
         nltk.download('vader_lexicon')
@@ -49,7 +48,7 @@ def initialize():
 
     for key, value in sorted(sentim_analyzer.evaluate(test_set).items()):
         print('{0}: {1}'.format(key, value))
-    print(Color.YELLOW + "Setup Finished!" + Color.END)
+    print("Setup Finished!")
 
 
 def analyze(coll):
@@ -85,4 +84,4 @@ def analyze(coll):
         }})
         sentences[:] = []  # empty list
     cursor.close()
-    print(Color.YELLOW + "Sentiment values have been attached to each tweet document in the collection." + Color.END)
+    print("Sentiment values have been attached to each tweet document in the collection.")

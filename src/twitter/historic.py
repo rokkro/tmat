@@ -1,6 +1,5 @@
 try:
     from twitter import tweet_filter
-    from display_menu import Color
     import config, tweepy
     from tweepy import api
     from tweepy import OAuthHandler
@@ -17,10 +16,8 @@ def scrape(Setup):
     searched_tweets = []
     last_id = -1
     successful = 0
-    print("Retrieving tweets...")
     while successful < Setup.lim:
-        print(Color.END, end='')
-        count = Setup.lim - successful  #len(searched_tweets)
+        count = Setup.lim - successful
         try:
             new_tweets = api.search(q=Setup.term,result_type=Setup.result_type,until=Setup.before, count=count, max_id=str(last_id - 1))
             if not new_tweets:
@@ -29,22 +26,16 @@ def scrape(Setup):
             last_id = new_tweets[-1].id
             for iter, data in enumerate(searched_tweets):
                 if tweet_filter.social_filter(data._json):
-                    if tweet_filter.duplicate_find(Setup.tweet_coll, data._json,Setup.sim):  # if no duplicates found, add tweet to db
+                    if tweet_filter.duplicate_find(Setup.tweet_coll, data._json):  # if no duplicates found, add tweet to db
                         if Setup.after is None or tweet_filter.date_filter(data._json,Setup.after):
                             Setup.tweet_coll.insert_one(data._json)
                             successful+=1
             searched_tweets[:] = []
             print("\rTweets:", successful,
                   "[{0:50s}] {1:.1f}% ".format('#' * int((successful / int(Setup.lim)) * 50),
-                                               (successful / int(Setup.lim)) * 100), end="", flush=True)
+                                               (successful / int(Setup.lim)) * 100), end='',flush=True)
         except tweepy.TweepError as e:
-            print(Color.YELLOW,end='')
-            error = e.args[0][0]['code']
-            if error == 215:
-                print("Authentication failed. Check your keys and verify your system clock is accurate.")
-                return
-            if error == 130 or error == 131:
-                print("An error occurred on Twitter's end. Please try again...")
-                return
+            print("Error:",e.args[0])
+            return
+        except Exception as e:
             print("Error:",e)
-            continue

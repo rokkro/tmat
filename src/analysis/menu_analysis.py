@@ -1,34 +1,62 @@
-from display_menu import get_menu, get_coll, dashes
-from analysis import sentiment, image
+try:
+    from menu import Menu
+    from analysis import sentiment, image, readability
+except ImportError as e:
+    print("Error:",e)
 
 
-def menu_sentiment():
-    while True:
-        inpt = get_menu("SENTIMENT",["Run initial setup.", "Choose a collection to analyze."],
-                        "*Enter an option number or [r] - return.\n>>>", 2)
-        if inpt == 'r':
-            return
-
-        def sub_analysis():
-            i = get_coll()
-            if i is None:
-                return
-            sentiment.analyze(i)
-
+class MenuText(Menu):
+    def __init__(self):
+        super().__init__()
         menu = {
-            1: sentiment.initialize,
-            2: sub_analysis,
+            1: self.sub_init,
+            2: self.sub_analysis,
+            3: self.sub_readability,
+            4: self.sub_image
         }
-        menu[inpt]()
+        while True:
+            inpt = self.get_menu("ANALYSIS",["Setup Text Analysis.", "Run Sentiment Analysis.", "Run Readability Analysis.", "Run Image Analysis."],
+                "*Enter an option number or [r] - return.\n>>>")
+            if inpt == 'r':
+                return
+            menu[inpt]()
+
+    def sub_init(self):
+        print(self.purple, end='')
+        sentiment.initialize()
+        print(self.end, end='')
+
+    def sub_analysis(self):
+        i = self.get_coll()
+        if i is None:
+            return
+        print(self.purple, end='')
+        sentiment.analyze(i)
+        print(self.end, end='')
+
+    def sub_readability(self):
+        i = self.get_coll()
+        if i is None:
+            return
+        print(self.purple, end='')
+        readability.analyze(i)
+        print(self.end, end='')
+
+    def sub_image(self):
+        coll = self.get_coll()
+        if coll is None:
+            return
+        self.divider()
+        limit = self.get_menu("", None,"Enter the number of tweets to analyze.\nLeave blank for all in the collection.\n>>>")
+        if limit == 'r':
+            return
+        self.divider()
+        print(self.purple, end='')
+        image.analyze(coll, limit)
+        print(self.end, end='')
 
 
-def menu_image():
-    coll = get_coll()
-    if coll is None:
-        return
-    dashes()
-    limit = get_menu("",None, "Enter the number of tweets to analyze.\nLeave blank for all in the collection.\n>>>")
-    if limit == 'r':
-        return
-    dashes()
-    image.insert_data(coll, limit)
+if __name__ == '__main__':
+    MenuText()
+
+

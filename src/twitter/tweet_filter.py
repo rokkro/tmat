@@ -1,5 +1,5 @@
 try:
-    import config, string, datetime
+    import config, datetime, string
     from difflib import SequenceMatcher
 except ImportError as e:
     print("Error:", e)
@@ -19,7 +19,7 @@ def duplicate_tests(coll_tweet, json_tweet):
     if config.verbose:
         print("COLL FAVES:",coll_tweet['favorite_count'],"NEW TWEET FAVES:",json_tweet['favorite_count'])
         print("COLL DATE:", coll_tweet['created_at'], "NEW TWEET DATE:", json_tweet['created_at'])
-    if  cfaves > jfaves :
+    if cfaves > jfaves:
         return False
     elif cfaves == jfaves:
         if format_date(coll_tweet['created_at']) <= format_date(json_tweet['created_at']):
@@ -29,17 +29,18 @@ def duplicate_tests(coll_tweet, json_tweet):
         return True
     #returning false means we keep the collection tweet
 
-def duplicate_find(coll, json_tweet, sim):
+def duplicate_find(coll, json_tweet):
     # coll_tweet is already saved in the db, json_tweet is the new one
     cursor = coll.find({'$text': {'$search': json_tweet['text']}}, {'score': {'$meta': 'textScore'}})
-    #utilize text index set to the 'text' field in tweet_setup.py to get data
-    cursor.sort([('score', {'$meta': 'textScore'})]) #sort by similarity. Not necessary I guess.
-    for coll_tweet in cursor:  # searching for all tweets' text, removing spaces and punct.
+    cursor = cursor.sort([('score', {'$meta': 'textScore'})]).limit(config.tweet_duplicate_limit) #sort all by similarity, only give us so many
+    for iterator,coll_tweet in enumerate(cursor):  # searching for all tweets' text, removing spaces and punct.
+        if 'text' not in coll_tweet:
+            continue
         coll_stripped = strip_all(coll_tweet['text'])
         json_stripped = strip_all(json_tweet['text'])
         sim_ratio = SequenceMatcher(None, coll_stripped, json_stripped).ratio()
-
-        if sim_ratio > sim:
+        if sim_ratio > config.tweet_similarity_threshold:
+            #print("\n",iterator)
             if duplicate_tests(coll_tweet, json_tweet):
                 try:
                     coll.delete_one({"_id":coll_tweet["_id"]})
@@ -51,11 +52,10 @@ def duplicate_find(coll, json_tweet, sim):
                 return True
             if config.verbose:
                 print("\n" + str(sim_ratio * 100) + "% similar existing. Tweet from " + "@" +
-                      json_tweet['user']['screen_name'] + " ignored. MongoDB textScore:",coll_tweet['score'])
+                      json_tweet['user']['screen_name'] + " ignored.MongoDB textScore:",coll_tweet['score']) #MongoDB textScore:",coll_tweet['score'])
                 print(" FIRST: " + coll_tweet['text'] + " SECOND: " + json_tweet['text'])
             cursor.close()
             return False #do not insert the new tweet into the db since it's a duplicate
-
     cursor.close()
     return True  # if no duplicates found
 

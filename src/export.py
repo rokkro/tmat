@@ -1,5 +1,4 @@
 try:
-    from display_menu import get_coll, Color, dashes
     from csv import writer
 except ImportError as e:
     print("Error",e)
@@ -10,7 +9,7 @@ def write_data(fname,coll):
         'Attention', 'Blinking', 'User Country', 'User City',
         'User Verified', 'User Followers', 'User Following',
         'Tweet Date', 'Tweet Content', 'Tweet Language', 'Tweet Favorites', 'Tweet Retweets',
-        'Sentiment Pos', 'Sentiment Neu', 'Sentiment Neg', 'Sentiment Comp',
+        'Sentiment Pos', 'Sentiment Neu', 'Sentiment Neg', 'Sentiment Comp', 'Flesch Ease', 'Flesch Grade', 'Readability Standard',
         'User Emotion', 'User Ethnicity', 'Eye Gap',
     ]
     data = []
@@ -81,6 +80,10 @@ def write_data(fname,coll):
             set_value(doc, [['sentiment'],['neu']])
             set_value(doc,[['sentiment'],['neg']])
             set_value(doc,[['sentiment'],['compound']])
+            set_value(doc,[['readability'],['flesch_ease']])
+            set_value(doc,[['readability'],['flesch_grade']])
+            set_value(doc,[['readability'],['standard']])
+
             emotions = {
                 "anger": set_value(doc,[['face'], ['emotion'], ['frames'], [0], ['people'], [0], ['emotions'], ['anger']],False),
                 "disgust": set_value(doc,[['face'], ['emotion'], ['frames'], [0], ['people'], [0], ['emotions'], ['disgust']],False),
@@ -107,28 +110,37 @@ def write_data(fname,coll):
                 "rightCenterX":set_value(doc,[['face'], ['detection'], ['images'], [0], ['faces'], [0], ['rightEyeCenterX']],False),
             }
             diff = get_difference(eyegap)
-            data.append(diff)
+            if diff!=0:
+                data.append(diff)
 
             w.writerow(data)
             data[:] = []
-        print(Color.YELLOW + fname + " created in the current directory!" + Color.END)
+        print(fname + " created in the current directory!")
 
 def menu_export():
-    coll = get_coll()
+    try:
+        from menu import Menu
+    except ImportError as e:
+        print("Error:",e)
+        return
+    menu = Menu()
+    coll = menu.get_coll()
     if coll == None:
         return
-    dashes()
-    fname = input(Color.BOLD + "*Enter a filename. A .csv extension will be added.\n"
-                               "Leave blank to cancel.\n>>>" + Color.END).replace(" ", "")
+    menu.divider()
+    fname = input(menu.bold + "*Enter a filename. A .csv extension will be added.\n"
+                               "Leave blank to cancel.\n>>>" + menu.end).replace(" ", "")
     if fname == '':
-        print(Color.YELLOW + "Export Cancelled." + Color.END)
+        print(menu.purple + "Export Cancelled." + menu.end)
         return
     if ".csv" not in fname:
         fname = fname + ".csv"
-    dashes()
+    menu.divider()
     try:
+        print(menu.purple, end='')
         write_data(fname,coll)
+        print(menu.end, end='')
     except PermissionError:
-        print(Color.YELLOW + "Permission Error: Check if the specified file is open in another program\nand if you have "
-                             "permission to create files here." + Color.END)
+        print(menu.purple + "Permission Error: Check if the specified file is open in another program\nand if you have "
+                             "permission to create files here." + menu.end)
         return
