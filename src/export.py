@@ -130,7 +130,7 @@ def menu_export():
     if coll == None:
         return
     menu.divider()
-    fname = input(menu.bold + "*Enter a filename. A .csv extension will be added.\n"
+    fname = input("*Enter a filename. A .csv extension will be added.\n"
                                "Leave blank to cancel.\n>>>" + menu.end).replace(" ", "")
     if fname == '':
         print(menu.purple + "Export Cancelled." + menu.end)

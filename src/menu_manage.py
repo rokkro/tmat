@@ -68,8 +68,8 @@ class MenuManage(Menu):
         if not deletable: #if it's empty
             print(self.purple + "No temporary collections in this db." + self.end)
             return
-        inpt = input(self.purple + self.bold + "Are you sure you want to delete these collections and "
-                                                 "all documents within? [y/n]" + self.end + self.bold + "\n>>>" + self.end)
+        inpt = input(self.purple+ "Are you sure you want to delete these collections and "
+                                                 "all documents within? [y/n]" + self.end + "\n>>>" + self.end)
         if inpt == 'y':
             for i in deletable:
                 i.drop()
@@ -82,8 +82,8 @@ class MenuManage(Menu):
         coll = self.get_coll()
         if coll is None:
             return
-        inpt = input(self.purple + self.bold + "Are you sure you want to delete this collection and "
-                                                 "all documents within? [y/n]" + self.end + self.bold + "\n>>>" + self.end)
+        inpt = input(self.purple +  "Are you sure you want to delete this collection and "
+                                                 "all documents within? [y/n]" + self.end + "\n>>>" + self.end)
         self.divider()
         if inpt == 'y':
             coll.drop()

@@ -9,15 +9,14 @@ class Menu:
         # Text colors
         self.purple = "\033[1;94m"
         self.cyan = '\033[36m'
-        self.bold = '\033[1m'
         self.end = '\033[1;0m'
     
     def header(self,text): # ---header text---
-        print(self.cyan + self.bold + ('-' * int((40 - len(text)) / 2)) + self.bold +
-              text + self.cyan + self.bold + ('-' * int((40 - len(text)) / 2)) + self.end)
+        print(self.cyan + ('-' * int((40 - len(text)) / 2)) +
+              text + self.cyan + ('-' * int((40 - len(text)) / 2)) + self.end)
     
     def divider(self): # ----------
-        print(self.cyan + self.bold + '-' * 40 + self.end)
+        print(self.cyan + '-' * 40 + self.end)
     
     def get_menu(self,head, menu, input_menu):
         # Numbered user input menu
@@ -28,7 +27,7 @@ class Menu:
                     print("[" + self.purple + str(num + 1) + self.end + "] - " + entry)
                 self.divider()
             #Stylize input menu
-            entry = input(self.bold + input_menu.replace("[", self.end +
+            entry = input( input_menu.replace("[", self.end +
                                 "[" + self.purple).replace("]",self.end + "]") + self.end).replace(" ", "")
             if entry == 'q': # input 'q' to quit
                 quit()

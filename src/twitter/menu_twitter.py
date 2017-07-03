@@ -102,11 +102,10 @@ class MenuTwitter(Menu):
 
     def sub_search(self):
         # Sub menu for search input.
-        print(self.bold, end='')
         if self.setup.streaming:
-            print(self.bold + "*Enter search term(s), separate multiple queries with '||'.")
+            print( "*Enter search term(s), separate multiple queries with '||'.")
         else:
-            print(self.bold + "*Enter search term(s), use https://dev.twitter.com/rest/public/search for operators.")
+            print("*Enter search term(s), use https://dev.twitter.com/rest/public/search for operators.")
         inpt = input("*Leave blank to clear, [" + self.cyan + "r" + self.end + "] - return.\n>>>" + self.end).strip()
         print(self.end, end='')
         self.divider()
@@ -120,7 +119,6 @@ class MenuTwitter(Menu):
 
     def sub_lim(self):
         # Sub menu for limit input.
-        print(self.bold, end='')
         if self.setup.streaming:
             print("*Enter number of tweets to retrieve. Leave blank for unlimited.",end='')
         else:
@@ -153,7 +151,7 @@ class MenuTwitter(Menu):
     def sub_db(self):
         # Sub menu for inputting DB name.
         while True:
-            inpt = input(self.bold + "Enter a new name for the database, currently '" + self.setup.db_name +
+            inpt = input("Enter a new name for the database, currently '" + self.setup.db_name +
                          "'. Leave blank to cancel.\nSpaces and special characters will be removed.\n>>>" + self.end)
             inpt = ''.join(e for e in inpt if e.isalnum())
             if inpt == '' or inpt == self.setup.db_name or inpt == 'admin' or inpt == 'local':
@@ -173,7 +171,7 @@ class MenuTwitter(Menu):
     def sub_coll(self):
         # Sub menu for inputting collection name.
         while True:
-            inpt = input(self.bold + "Enter a new name for this collection, currently '" + self.setup.coll_name +
+            inpt = input("Enter a new name for this collection, currently '" + self.setup.coll_name +
                          "'. Leave blank to cancel.\nPut '[dt]' in name to insert date + time.\n>>>" +
                          self.end).strip().replace("$", "")
             if inpt == '' or inpt == self.setup.coll_name:  # If blank or collection name is same
@@ -199,7 +197,7 @@ class MenuTwitter(Menu):
                  'it',
                  'ja', 'ko', 'msa', 'nl', 'no', 'pl', 'pt', 'ro', 'ru', 'sv', 'th', 'tr', 'uk', 'ur', 'vl', 'zh-cn',
                  'zh-tw']
-        inpt = input(self.bold + "Enter a comma separated list of language codes. "
+        inpt = input("Enter a comma separated list of language codes. "
                                   "https://dev.twitter.com/web/overview/languages\n>>>").replace(" ", '').split(',')
         if inpt == '':
             return
@@ -215,9 +213,8 @@ class MenuTwitter(Menu):
 
     def sub_follow(self):
         # Sub menu for inputting streaming follower setting.
-        print(self.bold, end='')
         print("Use http://gettwitterid.com to get a UID from a username. Must be a numeric value.")
-        inpt = input(self.bold + "*Enter UID(s), separate with '||'. Leave blank for no user tracking, [" + self.cyan +
+        inpt = input("*Enter UID(s), separate with '||'. Leave blank for no user tracking, [" + self.cyan +
                      "r" + self.end + "] - return/cancel.\n>>>" + self.end).strip()
         if inpt == 'r':
             return
@@ -229,14 +226,14 @@ class MenuTwitter(Menu):
 
     def sub_result(self):
         # Sub menu for changing historic result type, see https://dev.twitter.com/rest/reference/get/search/tweets
-        inpt = input(self.bold + "*Enter a result type: 'mixed','recent', or 'popular'.\n>>>" + self.end).strip()
+        inpt = input( "*Enter a result type: 'mixed','recent', or 'popular'.\n>>>" + self.end).strip()
         self.setup.set_result_type(inpt)
         print(self.purple + "Result type set to " + self.setup.result_type + "." + self.end)
 
     def sub_date(self):
         # Sub menu for setting 'before/after' date, see the README page for more information
         inpt = input(
-            self.bold + "*Enter cut off date(s). Must be: B/A-YYYY-MM-DD and no older than 7 days.\n"
+             "*Enter cut off date(s). Must be: B/A-YYYY-MM-DD and no older than 7 days.\n"
                          "*B=Before (<), A=After (>=). Use '||' to separate.\n*Ex: 'b-2017-5-22||a-2017-5-20'. "
                          "Leave blank to clear, [" + self.cyan + "r" + self.end + "] - cancel.\n>>>" + self.end)
         inpt = inpt.strip().replace(" ", "")
