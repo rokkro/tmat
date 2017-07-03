@@ -2,14 +2,15 @@ try:
     from pymongo import MongoClient
     from pymongo.errors import ConnectionFailure
 except ImportError as e:
-    print("Install missing modules with pip!\nError:", e)
+    print("Import Error in mongo.py:", e)
     quit()
 
-client = None
-connected = False
+client = None # Access to client
+connected = False # Connection status
 
 
 def mongo_connection():
+    # Connects/disconnects from MongoDB service
     global client, connected
     if connected:
         print("Disconnected from MongoDB.")
@@ -30,7 +31,9 @@ def mongo_connection():
 
 
 def get_dbnames():
+    # Returns List of DB names
     return client.database_names()
 
 def get_collections(db_name):
+    # Returns list of collections in the DB
     return client[db_name].collection_names()

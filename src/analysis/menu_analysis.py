@@ -2,15 +2,18 @@ try:
     from menu import Menu
     from analysis import sentiment, image, readability
 except ImportError as e:
-    print("Error:",e)
-
+    print("Import Error in menu_analysis.py:",e)
+    quit()
 
 class MenuText(Menu):
+    """
+    Menu function for the analysis submenu. 
+    """
     def __init__(self):
         super().__init__()
         menu = {
             1: self.sub_init,
-            2: self.sub_analysis,
+            2: self.sub_sentiment,
             3: self.sub_readability,
             4: self.sub_image
         }
@@ -22,11 +25,17 @@ class MenuText(Menu):
             menu[inpt]()
 
     def sub_init(self):
+        """
+        Calls NLTK initialization/download function in sentiment.py
+        """
         print(self.purple, end='')
         sentiment.initialize()
         print(self.end, end='')
 
-    def sub_analysis(self):
+    def sub_sentiment(self):
+        """
+        Gets selected collection, passes it to NLTK analysis function.
+        """
         i = self.get_coll()
         if i is None:
             return
@@ -35,6 +44,9 @@ class MenuText(Menu):
         print(self.end, end='')
 
     def sub_readability(self):
+        """
+        Gets selected collection, passes it to readability analysis function.
+        """
         i = self.get_coll()
         if i is None:
             return
@@ -43,6 +55,10 @@ class MenuText(Menu):
         print(self.end, end='')
 
     def sub_image(self):
+        """
+        Gets selected collection and an image limit
+        passes it to readability analysis function.
+        """
         coll = self.get_coll()
         if coll is None:
             return

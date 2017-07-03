@@ -5,26 +5,28 @@ try:
     from twitter.historic import scrape
     from menu import Menu
 except ImportError as e:
-    print("Error:", e)
+    print("Import Error in menu_twitter.py:", e)
     quit()
 
 
 class MenuTwitter(Menu):
     def __init__(self,streaming=False):
+        # Initialize Setup with streaming flag
         super().__init__()
         self.setup = Setup(streaming)
 
     def menu_stream(self):
+        # Ugly streaming menu code.
         while True:
             inpt = self.get_menu("STREAMING", ["Search = " + (str(self.setup.term).strip('[]') if self.setup.term else self.purple + "None" + self.end),
-                                               "Limit = " + str(self.setup.lim),
-                                               "Temporary Collection = " + str(self.setup.temp),
-                                          "Database Name = '" + self.setup.db_name + "'",
-                                          "Collection Name = '" + self.setup.coll_name + "'",
-                                          "Languages = " + str(self.setup.lang).strip('[]'),
-                                          "Follow UID(s) = " + (str(self.setup.users).strip('[]') if self.setup.users else self.purple + "None" + self.end),
-                                          "MongoDB Connected = " + self.purple + str(mongo.connected) + self.end],
-                            "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
+                "Limit = " + str(self.setup.lim),
+                "Temporary Collection = " + str(self.setup.temp),
+                "Database Name = '" + self.setup.db_name + "'",
+                "Collection Name = '" + self.setup.coll_name + "'",
+                "Languages = " + str(self.setup.lang).strip('[]'),
+                "Follow UID(s) = " + (str(self.setup.users).strip('[]') if self.setup.users else self.purple + "None" + self.end),
+                "MongoDB Connected = " + self.purple + str(mongo.connected) + self.end],
+                "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
             if inpt == '' and mongo.connected and (self.setup.term or self.setup.users):
                 self.divider()
@@ -55,19 +57,20 @@ class MenuTwitter(Menu):
             menu[inpt]()
 
     def menu_hist(self):
+        # Uglier historic menu code.
         while True:
             inpt = self.get_menu("HISTORIC", ["Search = " + (str(self.setup.term).strip('[]') if self.setup.term else self.purple + "None" + self.end),
-                                              "Limit = " + ((self.purple + str(self.setup.lim) + self.end) if self.setup.lim is None else str(self.setup.lim)),
-                                              "Temporary Collection = " + str(self.setup.temp),
-                                              "Database Name = '" + self.setup.db_name + "'",
-                                              "Collection Name = '" + self.setup.coll_name + "'",
-                                              "Result Type = " + self.setup.result_type,
-                                              "Date Range = " + (
-                                         (("On/After " + str(self.setup.after) if self.setup.after is not None else "") +
-                                          ((", " if self.setup.after is not None and self.setup.before is not None else "") +
-                                           ("Before " + str(self.setup.before)) if self.setup.before is not None else ""))
-                                         if self.setup.after is not None or self.setup.before is not None else "None"),
-                                         "MongoDB Connected = " + self.purple + str(mongo.connected) + self.end],
+                                  "Limit = " + ((self.purple + str(self.setup.lim) + self.end) if self.setup.lim is None else str(self.setup.lim)),
+                                  "Temporary Collection = " + str(self.setup.temp),
+                                  "Database Name = '" + self.setup.db_name + "'",
+                                  "Collection Name = '" + self.setup.coll_name + "'",
+                                  "Result Type = " + self.setup.result_type,
+                                  "Date Range = " + (
+                             (("On/After " + str(self.setup.after) if self.setup.after is not None else "") +
+                              ((", " if self.setup.after is not None and self.setup.before is not None else "") +
+                               ("Before " + str(self.setup.before)) if self.setup.before is not None else ""))
+                             if self.setup.after is not None or self.setup.before is not None else "None"),
+                             "MongoDB Connected = " + self.purple + str(mongo.connected) + self.end],
                             "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
             if inpt == '' and mongo.connected and self.setup.term and self.setup.lim:
@@ -98,6 +101,7 @@ class MenuTwitter(Menu):
             menu[inpt]()
 
     def sub_search(self):
+        # Sub menu for search input.
         print(self.bold, end='')
         if self.setup.streaming:
             print(self.bold + "*Enter search term(s), separate multiple queries with '||'.")
@@ -115,6 +119,7 @@ class MenuTwitter(Menu):
             str(self.setup.term).strip('[]') if self.setup.term else "None") + "." + self.end)
 
     def sub_lim(self):
+        # Sub menu for limit input.
         print(self.bold, end='')
         if self.setup.streaming:
             print("*Enter number of tweets to retrieve. Leave blank for unlimited.",end='')
@@ -134,6 +139,7 @@ class MenuTwitter(Menu):
 
 
     def sub_tmp(self):
+        # Switches Setup().temp flag for temporary status.
         print(self.purple, end='')
         if not self.setup.temp:
             print("Collection will be marked as Temporary.")
@@ -145,6 +151,7 @@ class MenuTwitter(Menu):
 
 
     def sub_db(self):
+        # Sub menu for inputting DB name.
         while True:
             inpt = input(self.bold + "Enter a new name for the database, currently '" + self.setup.db_name +
                          "'. Leave blank to cancel.\nSpaces and special characters will be removed.\n>>>" + self.end)
@@ -164,6 +171,7 @@ class MenuTwitter(Menu):
 
 
     def sub_coll(self):
+        # Sub menu for inputting collection name.
         while True:
             inpt = input(self.bold + "Enter a new name for this collection, currently '" + self.setup.coll_name +
                          "'. Leave blank to cancel.\nPut '[dt]' in name to insert date + time.\n>>>" +
@@ -186,6 +194,7 @@ class MenuTwitter(Menu):
 
 
     def sub_lang(self):
+        # Sub menu for inputting streaming language setting.
         langs = ['en', 'ar', 'bn', 'cs', 'da', 'de', 'el', 'es', 'fa', 'fi', 'fil', 'fr', 'he', 'hi', 'hu', 'id',
                  'it',
                  'ja', 'ko', 'msa', 'nl', 'no', 'pl', 'pt', 'ro', 'ru', 'sv', 'th', 'tr', 'uk', 'ur', 'vl', 'zh-cn',
@@ -205,6 +214,7 @@ class MenuTwitter(Menu):
 
 
     def sub_follow(self):
+        # Sub menu for inputting streaming follower setting.
         print(self.bold, end='')
         print("Use http://gettwitterid.com to get a UID from a username. Must be a numeric value.")
         inpt = input(self.bold + "*Enter UID(s), separate with '||'. Leave blank for no user tracking, [" + self.cyan +
@@ -218,11 +228,13 @@ class MenuTwitter(Menu):
             str(self.setup.users).strip('[]') if self.setup.users else "None") + "." + self.end)
 
     def sub_result(self):
+        # Sub menu for changing historic result type, see https://dev.twitter.com/rest/reference/get/search/tweets
         inpt = input(self.bold + "*Enter a result type: 'mixed','recent', or 'popular'.\n>>>" + self.end).strip()
         self.setup.set_result_type(inpt)
         print(self.purple + "Result type set to " + self.setup.result_type + "." + self.end)
 
     def sub_date(self):
+        # Sub menu for setting 'before/after' date, see the README page for more information
         inpt = input(
             self.bold + "*Enter cut off date(s). Must be: B/A-YYYY-MM-DD and no older than 7 days.\n"
                          "*B=Before (<), A=After (>=). Use '||' to separate.\n*Ex: 'b-2017-5-22||a-2017-5-20'. "
@@ -238,5 +250,3 @@ class MenuTwitter(Menu):
         print(self.purple, end="")
         self.setup.set_date(inpt)
         print(self.end, end="")
-
-

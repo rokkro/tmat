@@ -1,10 +1,10 @@
 try:
     from csv import writer
 except ImportError as e:
-    print("Error",e)
+    print("Import Error in export.py:",e)
 
 def write_data(fname,coll):
-    headers = [
+    headers = [ # Column headers, in order!
         'Username', 'User Age', 'Age Group', 'Glasses', 'User Gender', 'Lips', 'Glances', 'Dwell',
         'Attention', 'Blinking', 'User Country', 'User City',
         'User Verified', 'User Followers', 'User Following',
@@ -13,9 +13,10 @@ def write_data(fname,coll):
         'User Emotion', 'User Ethnicity', 'Eye Gap',
     ]
     data = []
+    # Create/Open CSV file
     with open(fname,'w',newline='',encoding='utf-8') as out_file:
         w = writer(out_file, dialect='excel')
-        w.writerow(headers)
+        w.writerow(headers) # Write headers
 
         def get_biggest(values): #find largest emotion/ethnicity value
             biggest = 0
@@ -105,7 +106,7 @@ def write_data(fname,coll):
             name, biggest = get_biggest(ethnicity)
             data.append(name)
 
-            eyegap = {
+            eyegap = { # eye gap, because why not?
                 "leftCenterX":set_value(doc,[['face'], ['detection'], ['images'], [0], ['faces'], [0], ['leftEyeCenterX']],False),
                 "rightCenterX":set_value(doc,[['face'], ['detection'], ['images'], [0], ['faces'], [0], ['rightEyeCenterX']],False),
             }
@@ -118,6 +119,7 @@ def write_data(fname,coll):
         print(fname + " created in the current directory!")
 
 def menu_export():
+    # Mini menu for collection and file name
     try:
         from menu import Menu
     except ImportError as e:

@@ -1,7 +1,7 @@
 try:
     import mongo, datetime
 except ImportError as e:
-    print("Error:", e)
+    print("Import Error in tweet_setup.py:", e)
     quit()
 
 
@@ -20,35 +20,39 @@ class Setup:  # settings and setup for tweet scraping
         self.before = None
         self.after = None
 
-    def get_dt(self):
+    def get_dt(self): # Return date/time
         return datetime.datetime.now()
 
     def set_date(self, inpt):
+        # Used with the date menu to format input date appropriately
         self.before = None
         self.after = None
 
         def date_parse(text):
-            id = text[0]
+            id = text[0] # Take out id (b/a)
             del text[0]
             for i, k in enumerate(text):
-                try:
+                try: # Type cast to ints
                     text[i] = int(text[i])
                 except ValueError as e:
                     print("Invalid Date!", e)
                     return
             try:
-                valid_inpt = datetime.datetime(year=text[0], month=text[1], day=text[2])
-                dt = self.get_dt()
+                valid_inpt = datetime.datetime(year=text[0], month=text[1], day=text[2]) # Format inputted date
+                dt = self.get_dt() # Get date/time now
                 today = datetime.datetime(year=dt.year, month=dt.month, day=dt.day, hour=0, minute=0, second=0,
-                                          microsecond=0)
+                                          microsecond=0) # Put today into this format, ignoring hours, min, secs..
                 oldest = dt - datetime.timedelta(days=7, minutes=dt.minute, hours=dt.hour, seconds=dt.second,
-                                                 microseconds=dt.microsecond)
+                                                 microseconds=dt.microsecond) # Subtract 7 days from today
+                # Checking if the date is too old, new
                 if valid_inpt < oldest:
                     print("Date is older than " + str(oldest) + ".")
                     return
                 if valid_inpt > (today + datetime.timedelta(days=1)):
                     print("Date is in the future!")
                     return
+
+                # Assign to correct var based on id
                 if id == 'A' or id == 'a':
                     self.after = valid_inpt.date()
                 elif id == 'B' or id == 'b':
@@ -57,12 +61,14 @@ class Setup:  # settings and setup for tweet scraping
                 print("Invalid Date:", e)
                 return
 
-        inpt = inpt.split("||")
-        first = inpt[0].split('-')
+        inpt = inpt.split("||") # Split up divided dates
+        first = inpt[0].split('-') # Split up first date components
         if len(inpt) >= 2:
-            second = inpt[1].split('-')
+            second = inpt[1].split('-') # Split up and parse second
             date_parse(second)
         date_parse(first)
+
+        # Date validation
         if (self.before is not None and self.after is not None) and (
                 self.before < self.after or self.before == self.after):
             print("'Before' date cannot be less than/equal to 'after' date.\n'Before' date removed.")
@@ -74,6 +80,7 @@ class Setup:  # settings and setup for tweet scraping
             print("Date set to None.")
 
     def set_search(self, inpt):
+        # Format search input
         tmp = []  # stores user input to filter out invalid responses
         self.term[:] = []
         if inpt == '':
@@ -89,6 +96,7 @@ class Setup:  # settings and setup for tweet scraping
         self.coll_name = self.term[0] + " - " + str(self.get_dt())  # set initial collection name
 
     def set_follow(self, inpt):  # https://twitter.com/intent/user?user_id=XXX
+        # Format follower input
         tmp = []
         self.users[:] = []  # clear list
         if inpt == '':  # if blank, then clear list beforehand
@@ -105,6 +113,7 @@ class Setup:  # settings and setup for tweet scraping
             self.result_type = inpt
 
     def init_db(self):
+        # Set up DB, Collection, Text Index, Temp Status
         try:
             print("Initializing DB and Collection...")
             db = mongo.client[self.db_name]  # initialize db

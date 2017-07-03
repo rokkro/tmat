@@ -1,7 +1,7 @@
 try:
     from menu import Menu
 except ImportError as e:
-    print("Error",e)
+    print("Import Error in menu_manage.py:",e)
 
 
 class MenuManage(Menu):
@@ -37,15 +37,17 @@ class MenuManage(Menu):
                 print("Error:", e)
 
     def sub_list(self):
-        i = self.get_coll()
-        if i is None:
+        # Print documents
+        inpt = self.get_coll()
+        if inpt is None:
             return
-        cursor = i.find({})
-        for j in cursor:
-            print(j)
+        cursor = inpt.find({})
+        for doc in cursor:
+            print(doc)
         cursor.close()
 
     def sub_tmp(self):
+        # Delete temp collection
         deletable = []
         try:
             coll, db = self.get_db()  # gets collection list and chosen db
@@ -54,12 +56,12 @@ class MenuManage(Menu):
         self.divider()
         print(self.purple + "The following collections will be DELETED:" + self.end)
 
-        for j, k in enumerate(coll, 1):  # loops through all collections
-            doc_count = db[coll[j - 1]].find({}) # take the current collection, and find all the documents
-            cursor = db[coll[j - 1]].find({"t_temp": True})  # searches collection for doc with t_temp = True
+        for num, item in enumerate(coll, 1):  # loops through all collections
+            doc_count = db[coll[num - 1]].find({}) # take the current collection, and find all the documents
+            cursor = db[coll[num - 1]].find({"t_temp": True})  # searches collection for doc with t_temp = True
             if cursor.count() > 0:  # if there's search results, then print the collection with t_temp = True
-                print("'" + k + "' (" + str(doc_count.count()) + ")")
-                deletable.append(db[coll[j - 1]])
+                print("'" + item + "' (" + str(doc_count.count()) + ")")
+                deletable.append(db[coll[num - 1]])
             doc_count.close()
             cursor.close()
 
@@ -76,6 +78,7 @@ class MenuManage(Menu):
             print(self.purple + "Deletion cancelled." + self.end)
 
     def sub_del(self):
+        # Delete specified collection
         coll = self.get_coll()
         if coll is None:
             return
@@ -88,7 +91,8 @@ class MenuManage(Menu):
         else:
             print(self.purple + "Deletion canceled." + self.end)
 
-    def sub_mark(self):  # be careful if you manually added in other "t_temp" keys
+    def sub_mark(self):
+        # Mark/unmark a collection as temporary
         coll = self.get_coll()
         if coll is None:
             return
@@ -110,6 +114,7 @@ class MenuManage(Menu):
         c_false.close()
 
     def sub_strip_sentiment(self):
+        # Remove sentiment values
         coll = self.get_coll()
         if coll is None:
             return
@@ -118,6 +123,7 @@ class MenuManage(Menu):
         print(self.purple + "Sentiment values have been removed." + self.end)
 
     def sub_strip_read(self):
+        # Remove reading values
         coll = self.get_coll()
         if coll is None:
             return
@@ -126,6 +132,7 @@ class MenuManage(Menu):
         print(self.purple + "Readability values have been removed." + self.end)
 
     def sub_strip_facial(self):
+        # Remove kairos values
         coll = self.get_coll()
         if coll is None:
             return

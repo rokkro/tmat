@@ -4,13 +4,13 @@ try:
     from twitter import menu_twitter
     import menu_manage, mongo, export, config
 except ImportError as e:
-    print("Error",e)
+    print("Import Error in menu_main.py:",e)
 
 class MenuMain(Menu):
     def __init__(self):
         super().__init__()
         menu = {
-            1: menu_twitter.MenuTwitter(True).menu_stream,
+            1: menu_twitter.MenuTwitter(True).menu_stream, # Pass if it's streaming or not
             2: menu_twitter.MenuTwitter(False).menu_hist,
             3: menu_analysis.MenuText,
             4: export.menu_export,

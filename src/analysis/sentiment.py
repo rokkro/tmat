@@ -1,4 +1,4 @@
-# http://www.nltk.org/howto/sentiment.html
+# Reference used: http://www.nltk.org/howto/sentiment.html
 
 try:
     import warnings
@@ -12,10 +12,13 @@ try:
     from nltk.sentiment import SentimentAnalyzer
     from nltk import tokenize
 except ImportError as e:
-    print("Error:", e)
+    print("Import Error in sentiment.py:", e)
 
 
 def initialize():
+    """
+    Download necessary components for sentiment analysis and train it.
+    """
     print("Running NLTK Setup...")
     try:
         nltk.download('subjectivity')
@@ -52,6 +55,9 @@ def initialize():
 
 
 def analyze(coll):
+    """
+    Run sentiment analysis on provided collection.
+    """
     if not mongo.connected:
         print("MongoDB must be connected to perform sentiment analysis!")
         return
@@ -70,11 +76,13 @@ def analyze(coll):
             ss = sid.polarity_scores(sentences[0])  # get polarity of text
         except LookupError as e:
             print("Error: Make sure you have run initial setup:", e)
+
         if config.verbose:
             print("Document _id:", i.get('_id'))
             print(sentences[0])
             print(ss)
-        coll.update_one({'_id': i.get('_id')}, {'$set': {
+
+        coll.update_one({'_id': i.get('_id')}, {'$set': { # DB insertion.
             "sentiment": {
                 "pos": ss['pos'],
                 "neg": ss['neg'],

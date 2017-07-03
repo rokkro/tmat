@@ -1,32 +1,37 @@
+# For reference: # https://dev.twitter.com/basics/user-profile-images-and-banners
+
 try:
     import config, requests, base64, os
     from json import JSONDecodeError
 except ImportError as e:
-    print("Error", e)
+    print("Import Error in image.py:", e)
 
-auth_headers = {
+auth_headers = { # authentication keys for the Kairos API, stored in config.py.
     'app_id': config.appid,
     'app_key': config.appkey
 }
-
+image_file = "ta-image.jpg"
 
 def remove_image():
-    if os.path.exists("ta-image.jpg"):
-        os.remove("ta-image.jpg")
+    # Deletes downloaded profile pic, if it exists.
+    if os.path.exists(image_file):
+        os.remove(image_file)
 
 
 def save_image(response):
-    with open('ta-image.jpg', 'wb') as f:  # convert response into saved image
+    # Download the response as an image file.
+    with open(image_file, 'wb') as f:  # convert response into saved image
         f.write(response.content)
-    return "ta-image.jpg"
 
 
-def image_base64(file):  # makes image usable for detect_api()
+def image_base64(file):
+    # makes image usable for detect_api()
     with open(file, 'rb') as img:
         return base64.b64encode(img.read()).decode('ascii')
 
 
 def emotion_api(img):
+    # Opens saved image, does a POST request to Kairos Emotion API, returns response.
     url = 'https://api.kairos.com/v2/media'
     with open(img, 'rb') as img:
         response = requests.post(url, files={'source': img}, data={'timeout': 60}, headers=auth_headers)
@@ -34,19 +39,19 @@ def emotion_api(img):
 
 
 def detect_api(img):
+    # Kairos 'detection' API, POST request with base64'd image.
     url = 'https://api.kairos.com/detect'
     response = requests.post(url, json={'image': image_base64(img)}, headers=auth_headers)
     return response.json()
 
-# https://dev.twitter.com/basics/user-profile-images-and-banners
 def analyze(coll, limit):
     success = 0
     count = 1
     print("Running Image analysis...")
-    cursor = coll.find({}, no_cursor_timeout=True)  # finds all documents in collection
+    cursor = coll.find({}, no_cursor_timeout=True)  # find all docs, prevent crashes with no timeout.
     for index, item in enumerate(cursor):  # loop through those
         try:
-            if index == limit:  # if hit the limit
+            if index == limit:  # Stop if limit is hit
                 break
             print("\rTweet #" + str(count), "Successful: " + str(success), end=" ", flush=True)  # counter
             count += 1  # current
@@ -60,8 +65,8 @@ def analyze(coll, limit):
             if item['user']['default_profile_image'] or 'default_profile' in profile_pic:  # filter both default pics
                 continue
 
-            img = save_image(response)
-            det = detect_api(img)
+            save_image(response)
+            det = detect_api(image_file)
 
             if 'Errors' in det:
                 error_code = det['Errors'][0]['ErrCode']
@@ -69,15 +74,15 @@ def analyze(coll, limit):
                     print("Error:", error_code, "-", det['Errors'][0]['Message'] + ". Moving onto the next...")
                 continue
 
-            emo = emotion_api(img)
+            emo = emotion_api(image_file)
 
-            if config.verbose:
+            if config.verbose: # Verbose mode output
                 print("Document _id:", item.get('_id'))
                 print(profile_pic + " " + item['user']['screen_name'])
                 print(det)
                 print(emo)
 
-            coll.update_one({'_id': item.get('_id')}, {'$set': {
+            coll.update_one({'_id': item.get('_id')}, {'$set': { # DB insertion
                 "face": {
                     "emotion": emo,
                     "detection": det

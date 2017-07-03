@@ -1,43 +1,50 @@
 try:
     import mongo
 except ImportError as e:
-    print("Error",e)
+    print("Import Error in menu.py:",e)
+
+
 class Menu:
     def __init__(self):
+        # Text colors
         self.purple = "\033[95m"
         self.cyan = '\033[36m'
         self.bold = '\033[1m'
         self.end = '\033[0m'
     
-    def header(self,text):
+    def header(self,text): # ---header text---
         print(self.cyan + self.bold + ('-' * int((40 - len(text)) / 2)) + self.bold +
               text + self.cyan + self.bold + ('-' * int((40 - len(text)) / 2)) + self.end)
     
-    def divider(self):
+    def divider(self): # ----------
         print(self.cyan + self.bold + '-' * 40 + self.end)
     
     def get_menu(self,head, menu, input_menu):
+        # Numbered user input menu
         while True:
             if menu is not None:
                 self.header(head)
-                for num, i in enumerate(menu):
-                    print("[" + self.purple + str(num + 1) + self.end + "] - " + i)
+                for num, entry in enumerate(menu): # Print entries
+                    print("[" + self.purple + str(num + 1) + self.end + "] - " + entry)
                 self.divider()
-            i = input(self.bold + input_menu.replace("[","[" + self.cyan).replace("]",self.end + "]") + self.end).replace(" ", "")
-            if i == 'q':
+            #Stylize input menu
+            entry = input(self.bold + input_menu.replace("[", self.end +
+                                "[" + self.cyan).replace("]",self.end + "]") + self.end).replace(" ", "")
+            if entry == 'q': # input 'q' to quit
                 quit()
-            elif i == 'r' or i == '':
-                return i
-            try:
-                i = int(i)
+            elif entry == 'r' or entry == '': # Returns r or space for menus to handle it.
+                return entry
+            try: # Type cast num input to int
+                entry = int(entry)
             except ValueError:
                 continue
-            if ((i > len(menu)) if menu is not None else False) or i < 1:
-                continue
-            else:
-                return i
+            if ((entry > len(menu)) if menu is not None else False) or entry < 1:
+                # (Compare entry to menu size if the menu exists, otherwise False) OR if input is < 1
+                continue # Recognize as invalid input
+            return entry # Successfully return input for menus to handle
     
     def get_db(self):
+        # Create menu to list Databases
         if not mongo.connected:
             print(self.purple + "You must be connected to MongoDB!" + self.end)
             return
@@ -56,6 +63,7 @@ class Menu:
     
     
     def get_coll(self):
+        # Create menu to list collections
         try:
             coll, db = self.get_db()
         except BaseException:
@@ -74,6 +82,7 @@ class Menu:
         return db[coll[inpt - 1]]
 
     def mongo_connect(self):
+        # Connect to MongoDB
         self.divider()
         print(self.purple, end='')
         mongo.mongo_connection()
