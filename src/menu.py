@@ -29,7 +29,7 @@ class Menu:
                 self.divider()
             #Stylize input menu
             entry = input(self.bold + input_menu.replace("[", self.end +
-                                "[" + self.cyan).replace("]",self.end + "]") + self.end).replace(" ", "")
+                                "[" + self.purple).replace("]",self.end + "]") + self.end).replace(" ", "")
             if entry == 'q': # input 'q' to quit
                 quit()
             elif entry == 'r' or entry == '': # Returns r or space for menus to handle it.
