@@ -18,14 +18,14 @@ def mongo_connection():
         client = None
         connected = False
     else:
-        print("Attempting connection to MongoDB...")
+        print("*Attempting connection to MongoDB")
         try:
-            client = MongoClient(serverSelectionTimeoutMS=30)  # localhost timeout
+            client = MongoClient(serverSelectionTimeoutMS=30)  # localhost timeout, increase if necessary
             client.server_info()  # forces connection verification
             print("Connection Succeeded!")
             connected = True
         except (ConnectionFailure, KeyboardInterrupt) as e:
-            print("Error: MongoDB not connected:", e)
+            print("*MongoDB connection failed:", e)
         except Exception as e:
             print("Error:", e)
 
