@@ -7,10 +7,10 @@ except ImportError as e:
 class Menu:
     def __init__(self):
         # Text colors
-        self.purple = "\033[95m"
+        self.purple = "\033[1;94m"
         self.cyan = '\033[36m'
         self.bold = '\033[1m'
-        self.end = '\033[0m'
+        self.end = '\033[1;0m'
     
     def header(self,text): # ---header text---
         print(self.cyan + self.bold + ('-' * int((40 - len(text)) / 2)) + self.bold +
