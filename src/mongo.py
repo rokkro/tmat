@@ -13,7 +13,7 @@ def mongo_connection():
     # Connects/disconnects from MongoDB service
     global client, connected
     if connected:
-        print("Disconnected from MongoDB.")
+        print("*Disconnected from MongoDB.")
         client.close()
         client = None
         connected = False
@@ -22,7 +22,7 @@ def mongo_connection():
         try:
             client = MongoClient(serverSelectionTimeoutMS=30)  # localhost timeout, increase if necessary
             client.server_info()  # forces connection verification
-            print("Connection Succeeded!")
+            print("*Connection Succeeded!")
             connected = True
         except (ConnectionFailure, KeyboardInterrupt) as e:
             print("*MongoDB connection failed:", e)
