@@ -24,7 +24,7 @@
 
 ***Modules Needed***: `tweepy` (tweet collection), `nltk` (text analysis), `requests` (image analysis), `pymongo` (mongoDB), and `textstat` (readability analysis). Install these with: `pip install tweepy nltk requests pymongo textstat` or `pip3 install` (Linux + Mac OS). Use `pip install --user tweepy` on systems without admin privileges.
 
-***To use***: insert correct <a href="https://dev.twitter.com/">Twitter</a> (tweet retrieval) and/or <a href="http://kairos.com/">Kairos</a> (image analysis) API keys into the `config.py` file, then run `menu_main.py` for the menu interface. Run with `python \path\to\menu_main.py` or `python3 /path/to/menu_main.py` (Linux + Mac OS). Use something like RoboMongo if you want a good visual view of your databases.
+***To use***: insert correct <a href="https://dev.twitter.com/">Twitter</a> (tweet retrieval) and/or <a href="http://kairos.com/">Kairos</a> (image analysis) API keys into the `config.py` file, then run `menu_main.py` for the menu interface. Run with `python C:\path\to\menu_main.py` or `python3 /path/to/menu_main.py` (Linux + Mac OS). Use something like RoboMongo if you want a good visual view of your databases.
 
 ## Details:
   #### Menus:
