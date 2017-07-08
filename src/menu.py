@@ -12,7 +12,7 @@ class Menu:
         self.end = '\033[1;0m'
     
     def header(self,text): # ---header text---
-        print(self.cyan + ('-' * int((40 - len(text)) / 2)) +
+        print(self.cyan + ('-' * int((40 - len(text)) / 2)) + self.end +
               text + self.cyan + ('-' * int((40 - len(text)) / 2)) + self.end)
     
     def divider(self): # ----------
