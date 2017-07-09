@@ -13,7 +13,7 @@
 * Filter out similar and duplicate tweets from the same collection.
 * Perform sentiment analaysis using NLTK and <a href="https://github.com/cjhutto/vaderSentiment">Vader Sentiment</a>.
 * Score tweets' readability using the Flesch-Kincaid readability tests and others.
-* Use the <a href="http://kairos.com/">Kairos</a> API to detect emotion, age, gender, and other characteristics of profile pictures.
+* Use the <a href="http://kairos.com/">Kairos</a> APIs to detect emotion, age, gender, and other characteristics of profile pictures.
 * Export organized data to .csv spreadsheets.
 * Simple database, collection, and document management.
 * Be used with a simple textual interface.
