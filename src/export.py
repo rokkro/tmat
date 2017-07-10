@@ -126,7 +126,7 @@ def menu_export():
         print("Error:",e)
         return
     menu = Menu()
-    coll = menu.get_coll()
+    coll = menu.get_coll_menu()
     if coll == None:
         return
     menu.divider()

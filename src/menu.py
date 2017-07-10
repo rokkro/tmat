@@ -42,7 +42,7 @@ class Menu:
                 continue # Recognize as invalid input
             return entry # Successfully return input for menus to handle
     
-    def get_db(self):
+    def get_db_menu(self):
         # Create menu to list Databases
         if not mongo.connected:
             print(self.purple + "You must be connected to MongoDB!" + self.end)
@@ -61,10 +61,10 @@ class Menu:
         return coll, db
     
     
-    def get_coll(self):
+    def get_coll_menu(self):
         # Create menu to list collections
         try:
-            coll, db = self.get_db()
+            coll, db = self.get_db_menu()
         except BaseException:
             return None
         coll_list = []

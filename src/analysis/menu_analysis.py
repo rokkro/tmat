@@ -36,7 +36,7 @@ class MenuText(Menu):
         """
         Gets selected collection, passes it to NLTK analysis function.
         """
-        i = self.get_coll()
+        i = self.get_coll_menu()
         if i is None:
             return
         print(self.purple, end='')
@@ -47,7 +47,7 @@ class MenuText(Menu):
         """
         Gets selected collection, passes it to readability analysis function.
         """
-        i = self.get_coll()
+        i = self.get_coll_menu()
         if i is None:
             return
         print(self.purple, end='')
@@ -59,7 +59,7 @@ class MenuText(Menu):
         Gets selected collection and an image limit
         passes it to readability analysis function.
         """
-        coll = self.get_coll()
+        coll = self.get_coll_menu()
         if coll is None:
             return
         self.divider()

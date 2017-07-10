@@ -38,7 +38,7 @@ class MenuManage(Menu):
 
     def sub_list(self):
         # Print documents
-        inpt = self.get_coll()
+        inpt = self.get_coll_menu()
         if inpt is None:
             return
         cursor = inpt.find({})
@@ -50,7 +50,7 @@ class MenuManage(Menu):
         # Delete temp collection
         deletable = []
         try:
-            coll, db = self.get_db()  # gets collection list and chosen db
+            coll, db = self.get_db_menu()  # gets collection list and chosen db
         except Exception:
             return
         self.divider()
@@ -79,7 +79,7 @@ class MenuManage(Menu):
 
     def sub_del(self):
         # Delete specified collection
-        coll = self.get_coll()
+        coll = self.get_coll_menu()
         if coll is None:
             return
         inpt = input(self.purple +  "Are you sure you want to delete this collection and "
@@ -93,7 +93,7 @@ class MenuManage(Menu):
 
     def sub_mark(self):
         # Mark/unmark a collection as temporary
-        coll = self.get_coll()
+        coll = self.get_coll_menu()
         if coll is None:
             return
         self.divider()
@@ -115,7 +115,7 @@ class MenuManage(Menu):
 
     def sub_strip_sentiment(self):
         # Remove sentiment values
-        coll = self.get_coll()
+        coll = self.get_coll_menu()
         if coll is None:
             return
         self.divider()
@@ -124,7 +124,7 @@ class MenuManage(Menu):
 
     def sub_strip_read(self):
         # Remove reading values
-        coll = self.get_coll()
+        coll = self.get_coll_menu()
         if coll is None:
             return
         self.divider()
@@ -133,7 +133,7 @@ class MenuManage(Menu):
 
     def sub_strip_facial(self):
         # Remove kairos values
-        coll = self.get_coll()
+        coll = self.get_coll_menu()
         if coll is None:
             return
         self.divider()
