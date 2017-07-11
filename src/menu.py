@@ -68,11 +68,17 @@ class Menu:
         except BaseException:
             return None
         coll_list = []
-        for j, k in enumerate(coll, 1):
-            tmp = db[coll[j - 1]].find({"t_temp": True})
-            doc_count = db[coll[j - 1]].find({})  # take the specified collection, and find all the documents
-            coll_list.append(k + "' (" + str(doc_count.count()) + ")" + ("(TEMP)" if tmp.count() > 0 else ""))
+        for iter, collection in enumerate(coll, 1):
+            current_coll = db[coll[iter - 1]]
+            tweet = current_coll.find({"t_type": "tweet"})
+            speech = current_coll.find({"t_type": "speech"})
+            tmp = current_coll.find({"t_temp": True})
+            doc_count = current_coll.find({})  # take the specified collection, and find all the documents
+            coll_list.append(collection + "' (" + str(doc_count.count()) + ")" + ("(TEMP)" if tmp.count() > 0 else "") +
+                             ("(SPEECH)" if speech.count() > 0 else "") + ("(TWEET)" if tweet.count() > 0 else ""))
             tmp.close()
+            tweet.close()
+            speech.close()
             doc_count.close()
         inpt = self.get_menu("COLLECTIONS",coll_list, "*Select a collection or [r] - return.\n>>>")
     
