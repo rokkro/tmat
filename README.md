@@ -46,6 +46,7 @@
       This makes it easier to delete a group of collections later using the "Manage Collections" menu later.
 4.  MongoDB must be running to use most of the functions of this program.
 5.  I don't reccomend you modify, delete, or insert into the `local` or `admin` collections unless you know what you're doing.
+6.  New collections will have a `t_type` value in the same document as `t_temp`. This is set once upon collection creation to "tweet" (as opposed to "speech", or whatever my other programs use). It is used to show a visual indicator in the collection selection menus, to help identify the collection as one containing tweets.
 
   #### Tweet Duplicates and Filtering:
  1. Filters out retweets, quoted retweets, replies, and incomplete tweets(does not contain "created_at" date in JSON data).
