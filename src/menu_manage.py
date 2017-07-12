@@ -36,7 +36,7 @@ class MenuManage(Menu):
             try:
                 menu[inpt]()
             except Exception as e:
-                print("Error:", e)
+                print("Error in menu_manage.py:", e)
 
     def sub_list(self):
         # Print documents

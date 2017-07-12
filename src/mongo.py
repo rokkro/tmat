@@ -27,7 +27,7 @@ def mongo_connection():
         except (ConnectionFailure, KeyboardInterrupt) as e:
             print("*MongoDB connection failed:", e)
         except Exception as e:
-            print("Error:", e)
+            print("Error in mongo.py:", e)
 
 
 def get_dbnames():
