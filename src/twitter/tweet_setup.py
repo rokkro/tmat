@@ -128,7 +128,7 @@ class Setup:  # settings and setup for tweet scraping
                 self.tweet_coll.update_many({"t_temp": not self.temp}, {'$set': {"t_temp": self.temp}})
             else:
                 self.tweet_coll.insert_one({  # This creates a coll even if no tweets found.
-                    "type": "tweet",
+                    "t_type": "tweet",
                     "t_temp": self.temp
                 })
             c_true.close()
