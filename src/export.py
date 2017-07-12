@@ -123,7 +123,7 @@ def menu_export():
     try:
         from menu import Menu
     except ImportError as e:
-        print("Error:",e)
+        print("Error in export.py:",e)
         return
     menu = Menu()
     coll = menu.get_coll_menu()

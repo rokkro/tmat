@@ -10,16 +10,18 @@ class MenuManage(Menu):
         menu = {
             1: self.sub_list,
             2: self.sub_tmp,
-            3: self.sub_del,
-            4: self.sub_mark,
-            5: self.sub_strip_sentiment,
-            6: self.sub_strip_read,
-            7: self.sub_strip_facial
+            3: self.sub_del_coll,
+            4: self.sub_del_db,
+            5: self.sub_mark,
+            6: self.sub_strip_sentiment,
+            7: self.sub_strip_read,
+            8: self.sub_strip_facial
         }
         while True:
             inpt = self.get_menu("MANAGE COLLECTIONS",["View Databases, Collections, and Documents.",
                              "Purge Temporary Collections in a DB.",
-                             "Delete Specific Collections.",
+                             "Delete a Collection.",
+                                "Delete a Database.",
                              "Mark/Un-mark a Collection as Temporary.","Remove Sentiment Values.",
                             "Remove Readability Values.",
                             "Remove Facial Analysis Values."],
@@ -77,7 +79,7 @@ class MenuManage(Menu):
         else:
             print(self.purple + "Deletion cancelled." + self.end)
 
-    def sub_del(self):
+    def sub_del_coll(self):
         # Delete specified collection
         coll = self.get_coll_menu()
         if coll is None:
@@ -88,6 +90,23 @@ class MenuManage(Menu):
         if inpt == 'y':
             coll.drop()
             print(self.purple + "Collection deleted." + self.end)
+        else:
+            print(self.purple + "Deletion canceled." + self.end)
+
+    def sub_del_db(self):
+        # Delete specified database
+        try:
+            client = self.get_mongo_client()
+            coll, db = self.get_db_menu()
+        except TypeError as e:
+            return
+
+        inpt = input(self.purple + "Are you sure you want to delete this database and "
+                                   "collections and documents within? [y/n]" + self.end + "\n>>>" + self.end)
+        self.divider()
+        if inpt == 'y':
+            client.drop_database(db)
+            print(self.purple + "Database deleted." + self.end)
         else:
             print(self.purple + "Deletion canceled." + self.end)
 

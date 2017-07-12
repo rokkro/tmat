@@ -44,6 +44,7 @@ class Menu:
     
     def get_db_menu(self):
         # Create menu to list Databases
+        self.mongo_connect(True)
         if not mongo.connected:
             print(self.purple + "You must be connected to MongoDB!" + self.end)
             return
@@ -65,7 +66,7 @@ class Menu:
         # Create menu to list collections
         try:
             coll, db = self.get_db_menu()
-        except BaseException:
+        except Exception:
             return None
         coll_list = []
         for iter, collection in enumerate(coll, 1):
@@ -86,9 +87,15 @@ class Menu:
             return
         return db[coll[inpt - 1]]
 
-    def mongo_connect(self):
+    def mongo_connect(self, connect_only=False):
         # Connect to MongoDB
         self.divider()
         print(self.purple, end='')
-        mongo.mongo_connection()
+        if not mongo.connected and connect_only:
+            mongo.mongo_connection()
+        elif not connect_only:
+            mongo.mongo_connection()
         print(self.end, end='')
+
+    def get_mongo_client(self):
+        return mongo.client
