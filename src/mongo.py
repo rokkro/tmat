@@ -5,35 +5,50 @@ except ImportError as e:
     print("Import Error in mongo.py:", e)
     quit()
 
-client = None # Access to client
-connected = False # Connection status
+
+_timeout = 30
+_client = None  # Access to client
+_connected = False  # Connection status
 
 
-def mongo_connection():
+def mongo_connection(connect_only=False):
     # Connects/disconnects from MongoDB service
-    global client, connected
-    if connected:
+    global _client,_connected
+    if is_connected() and not connect_only:
         print("*Disconnected from MongoDB.")
-        client.close()
-        client = None
-        connected = False
+        _client.close()
+        _client = None
+        _connected = False
     else:
         print("*Attempting connection to MongoDB")
         try:
-            client = MongoClient(serverSelectionTimeoutMS=30)  # localhost timeout, increase if necessary
-            client.server_info()  # forces connection verification
+            _client = MongoClient(serverSelectionTimeoutMS=_timeout)  # localhost timeout
+            _client.server_info()  # forces connection verification
             print("*Connection Succeeded!")
-            connected = True
+            _connected = True
         except (ConnectionFailure, KeyboardInterrupt) as e:
             print("*MongoDB connection failed:", e)
         except Exception as e:
             print("Error in mongo.py:", e)
 
 
-def get_dbnames():
+def get_db_names():
     # Returns List of DB names
-    return client.database_names()
+    return _client.database_names()
+
 
 def get_collections(db_name):
     # Returns list of collections in the DB
-    return client[db_name].collection_names()
+    return _client[db_name].collection_names()
+
+
+def get_client():
+    # Returns client
+    return _client
+
+
+def is_connected():
+    # Returns True if connected to mongod
+    if _connected:
+        return True
+    return False

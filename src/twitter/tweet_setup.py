@@ -116,7 +116,7 @@ class Setup:  # settings and setup for tweet scraping
         # Set up DB, Collection, Text Index, Temp Status
         try:
             print("Initializing DB and Collection...")
-            db = mongo.client[self.db_name]  # initialize db
+            db = mongo.get_client()[self.db_name]  # initialize db
             self.tweet_coll = db[self.coll_name]  # initialize collection
             self.tweet_coll.create_index([('text', 'text')])
 

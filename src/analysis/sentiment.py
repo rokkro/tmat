@@ -58,7 +58,7 @@ def analyze(coll):
     """
     Run sentiment analysis on provided collection.
     """
-    if not mongo.connected:
+    if not mongo.is_connected():
         print("MongoDB must be connected to perform sentiment analysis!")
         return
     sentences = []

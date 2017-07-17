@@ -22,6 +22,7 @@ class MenuText(Menu):
                 "*Enter an option number or [r] - return.\n>>>")
             if inpt == 'r':
                 return
+            print(self.purple, end='')
             menu[inpt]()
 
     def sub_init(self):

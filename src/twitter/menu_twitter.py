@@ -25,10 +25,10 @@ class MenuTwitter(Menu):
                 "Collection Name = '" + self.setup.coll_name + "'",
                 "Languages = " + str(self.setup.lang).strip('[]'),
                 "Follow UID(s) = " + (str(self.setup.users).strip('[]') if self.setup.users else self.purple + "None" + self.end),
-                "MongoDB Connected = " + self.purple + str(mongo.connected) + self.end],
+                "MongoDB Connected = " + self.purple + str(mongo.is_connected()) + self.end],
                 "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
-            if inpt == '' and mongo.connected and (self.setup.term or self.setup.users):
+            if inpt == '' and mongo.is_connected() and (self.setup.term or self.setup.users):
                 self.divider()
                 print(self.purple, end='')
                 print("Waiting for new tweets...")
@@ -51,7 +51,7 @@ class MenuTwitter(Menu):
                 5: self.sub_coll,
                 6: self.sub_lang,
                 7: self.sub_follow,
-                8: self.mongo_connect
+                8: mongo.mongo_connection
             }
             self.divider()
             menu[inpt]()
@@ -70,10 +70,10 @@ class MenuTwitter(Menu):
                               ((", " if self.setup.after is not None and self.setup.before is not None else "") +
                                ("Before " + str(self.setup.before)) if self.setup.before is not None else ""))
                              if self.setup.after is not None or self.setup.before is not None else "None"),
-                             "MongoDB Connected = " + self.purple + str(mongo.connected) + self.end],
+                             "MongoDB Connected = " + self.purple + str(mongo.is_connected()) + self.end],
                             "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
-            if inpt == '' and mongo.connected and self.setup.term and self.setup.lim:
+            if inpt == '' and mongo.is_connected() and self.setup.term and self.setup.lim:
                 self.divider()
                 print(self.purple, end='')
                 self.setup.init_db()
@@ -95,7 +95,7 @@ class MenuTwitter(Menu):
                 5: self.sub_coll,
                 6: self.sub_result,
                 7: self.sub_date,
-                8: self.mongo_connect
+                8: mongo.mongo_connection
             }
             self.divider()
             menu[inpt]()
@@ -103,10 +103,10 @@ class MenuTwitter(Menu):
     def sub_search(self):
         # Sub menu for search input.
         if self.setup.streaming:
-            print( "*Enter search term(s), separate multiple queries with '||'.")
+            print("*Enter search term(s), separate multiple queries with '||'.")
         else:
             print("*Enter search term(s), use https://dev.twitter.com/rest/public/search for operators.")
-        inpt = input("*Leave blank to clear, [" + self.cyan + "r" + self.end + "] - return.\n>>>" + self.end).strip()
+        inpt = input( self.end +"*Leave blank to clear, [" + self.cyan + "r" + self.end + "] - return.\n>>>" + self.end).strip()
         print(self.end, end='')
         self.divider()
         if inpt == 'r':
@@ -159,8 +159,8 @@ class MenuTwitter(Menu):
             self.divider()
             print(self.purple + "Database changed from '" + self.setup.db_name + "' to '" + inpt + "'.")
             self.setup.db_name = inpt
-            if mongo.connected:
-                if inpt in mongo.get_dbnames():
+            if mongo.is_connected():
+                if inpt in mongo.get_db_names():
                     print("'" + inpt + "' already exists. New tweets will be added to existing.")
                 else:
                     print("New database '" + inpt + "' will be created.")
@@ -171,7 +171,7 @@ class MenuTwitter(Menu):
     def sub_coll(self):
         # Sub menu for inputting collection name.
         while True:
-            inpt = input("Enter a new name for this collection, currently '" + self.setup.coll_name +
+            inpt = input(self.end + "Enter a new name for this collection, currently '" + self.setup.coll_name +
                          "'. Leave blank to cancel.\nPut '[dt]' in name to insert date + time.\n>>>" +
                          self.end).strip().replace("$", "")
             if inpt == '' or inpt == self.setup.coll_name:  # If blank or collection name is same
@@ -182,7 +182,7 @@ class MenuTwitter(Menu):
                 self.setup.coll_name = inpt
             self.divider()
             print(self.purple + "Collection changed to '" + self.setup.coll_name + "'.")
-            if mongo.connected:
+            if mongo.is_connected():
                 if self.setup.coll_name in mongo.get_collections(self.setup.db_name):
                     print("'" + self.setup.coll_name + "' already exists. New tweets will be added to existing.")
                 else:

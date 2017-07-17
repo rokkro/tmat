@@ -27,8 +27,8 @@ class Menu:
                     print("[" + self.purple + str(num + 1) + self.end + "] - " + entry)
                 self.divider()
             #Stylize input menu
-            entry = input( input_menu.replace("[", self.end +
-                                "[" + self.purple).replace("]",self.end + "]") + self.end).replace(" ", "")
+            entry = input(self.end + input_menu.replace("[", self.end +
+                                "[" + self.purple).replace("]",self.end + "]" + self.end)).replace(" ", "")
             if entry == 'q': # input 'q' to quit
                 quit()
             elif entry == 'r' or entry == '': # Returns r or space for menus to handle it.
@@ -44,23 +44,22 @@ class Menu:
     
     def get_db_menu(self):
         # Create menu to list Databases
-        self.mongo_connect(True)
-        if not mongo.connected:
+        mongo.mongo_connection(True)
+        if not mongo.is_connected():
             print(self.purple + "You must be connected to MongoDB!" + self.end)
             return
     
         print(self.purple + "Do not select 'admin' or 'local' databases." + self.end)
         db_list = []
-        for j, k in enumerate(mongo.get_dbnames(), 1):  # start at 1
+        for j, k in enumerate(mongo.get_db_names(), 1):  # start at 1
             db_list.append( k + "' (" + str(len(mongo.get_collections(k))) + ")")  # print databases
         inpt = self.get_menu("DATABASES",db_list, "*Select a db to view collections or [r] - return.\n>>>")
         if inpt == 'r' or inpt == '':
             return
     
-        db = mongo.client[mongo.get_dbnames()[inpt - 1]]  # set up chosen db
-        coll = mongo.get_collections(mongo.get_dbnames()[inpt - 1])  # collections list from that db
+        db = mongo.get_client()[mongo.get_db_names()[inpt - 1]]  # set up chosen db
+        coll = mongo.get_collections(mongo.get_db_names()[inpt - 1])  # collections list from that db
         return coll, db
-    
     
     def get_coll_menu(self):
         # Create menu to list collections
@@ -87,15 +86,3 @@ class Menu:
             return
         return db[coll[inpt - 1]]
 
-    def mongo_connect(self, connect_only=False):
-        # Connect to MongoDB
-        self.divider()
-        print(self.purple, end='')
-        if not mongo.connected and connect_only:
-            mongo.mongo_connection()
-        elif not connect_only:
-            mongo.mongo_connection()
-        print(self.end, end='')
-
-    def get_mongo_client(self):
-        return mongo.client

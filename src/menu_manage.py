@@ -1,5 +1,6 @@
 try:
     from menu import Menu
+    import mongo
 except ImportError as e:
     print("Import Error in menu_manage.py:",e)
 
@@ -34,6 +35,7 @@ class MenuManage(Menu):
                 continue
 
             try:
+                print(self.purple, end='')
                 menu[inpt]()
             except Exception as e:
                 print("Error in menu_manage.py:", e)
@@ -96,7 +98,7 @@ class MenuManage(Menu):
     def sub_del_db(self):
         # Delete specified database
         try:
-            client = self.get_mongo_client()
+            client = mongo.get_client()
             coll, db = self.get_db_menu()
         except TypeError as e:
             return
