@@ -1,4 +1,5 @@
 try:
+    from config import mongo_timeout
     from pymongo import MongoClient
     from pymongo.errors import ConnectionFailure
 except ImportError as e:
@@ -6,7 +7,6 @@ except ImportError as e:
     quit()
 
 
-_timeout = 30
 _client = None  # Access to client
 _connected = False  # Connection status
 
@@ -22,7 +22,7 @@ def mongo_connection(connect_only=False):
     else:
         print("*Attempting connection to MongoDB")
         try:
-            _client = MongoClient(serverSelectionTimeoutMS=_timeout)  # localhost timeout
+            _client = MongoClient(serverSelectionTimeoutMS=mongo_timeout)  # localhost timeout
             _client.server_info()  # forces connection verification
             print("*Connection Succeeded!")
             _connected = True

@@ -1,10 +1,12 @@
 try:
+    from config import export_folder
+    import os
     from csv import writer
 except ImportError as e:
     print("Import Error in export.py:", e)
 
 
-def write_data(fname, coll):
+def write_data(fpath, coll, mode):
     headers = [  # Column headers, in order!
         'Username', 'User Age', 'Age Group', 'Glasses', 'User Gender', 'Lips', 'Glances', 'Dwell',
         'Attention', 'Blinking', 'User Country', 'User City',
@@ -15,10 +17,12 @@ def write_data(fname, coll):
         'User Emotion', 'User Ethnicity', 'Eye Gap',
     ]
     data = []
+
     # Create/Open CSV file
-    with open(fname, 'w', newline='', encoding='utf-8') as out_file:
+    with open(fpath, mode, newline='', encoding='utf-8') as out_file:
         w = writer(out_file, dialect='excel')
-        w.writerow(headers)  # Write headers
+        if mode is not 'a':
+            w.writerow(headers)  # Write headers
 
         def get_biggest(values):  # find largest emotion/ethnicity value
             biggest = 0
@@ -140,7 +144,7 @@ def write_data(fname, coll):
 
             w.writerow(data)
             data[:] = []
-        print(fname + " created in the current directory!")
+        print("Finished: " + os.path.abspath(fpath))
 
 
 def menu_export():
@@ -165,7 +169,22 @@ def menu_export():
     menu.divider()
     try:
         print(menu.purple, end='')
-        write_data(fname, coll)
+        if not os.path.exists(export_folder):
+            os.makedirs(export_folder)
+        fpath = export_folder + fname
+        mode = 'w'
+        if os.path.exists(fpath):
+            inpt = input(menu.purple + "A file with the name '"+ fname + "' already exists!\n" + menu.end +
+                "Append to existing? [" + menu.cyan + "a" + menu.end + "] - append, [" + menu.cyan + "o" + menu.end +
+                         "] - overwrite, [" + menu.cyan + "r" + menu.end + "] - cancel.\n>>>").replace(" ","")
+            if inpt == 'a':
+                mode = 'a'
+            elif inpt == 'o':
+                mode = 'w'
+            else:
+                print(menu.purple + "Export cancelled." + menu.end)
+                return
+        write_data(fpath, coll,mode)
         print(menu.end, end='')
     except PermissionError:
         print(menu.purple + "Permission Error: Check if the specified file is open in another program\nand if you have "
