@@ -35,8 +35,10 @@
 1.  Enter your Twitter API and Kairos API keys into `config.py`, within the quotation marks.
 2.  `verbose` set to `True` outputs far more console output, letting you see what's going on.
 3.  `startup_connect` determines whether `pymongo` attempts to connect to `mongod` on the program's startup.
-4.  `tweet_similarity_threshold` sets how similar tweets must be before they are filtered out. (1=exact copies, 0=not similar)
-5.  `tweet_duplicate_limit` is how many tweets are compared to the incoming tweet for duplicates. This value does not need to be high, as MongoDB sorts the most similar tweets first. Usually a duplicate is found with the first or second tweets because of this. Note that once a duplicate is found, the duplicate checking process is stopped.
+4.  `export_folder` determines where csv files should be saved. Both absolute and relatives paths should work.
+5.  `mongo_timeout` sets the timeout in ms for `pymongo` attempting a connection to `mongod`. Keep low if running locally.
+6.  `tweet_similarity_threshold` sets how similar tweets must be before they are filtered out. (1=exact copies, 0=not similar)
+7.  `tweet_duplicate_limit` is how many tweets are compared to the incoming tweet for duplicates. This value does not need to be high, as MongoDB sorts the most similar tweets first. Usually a duplicate is found with the first or second tweets because of this. Note that once a duplicate is found, the duplicate checking process is stopped. Setting it to 0 will check ALL in the collection, which is a very slow process if there are no duplicates.
 
   #### MongoDB:
 1.  Tweets are placed in MongoDB databases. These databases contain collections, and these collections contain documents.
