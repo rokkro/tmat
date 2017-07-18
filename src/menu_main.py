@@ -12,9 +12,9 @@ class MenuMain(Menu):
         menu = {
             1: menu_twitter.MenuTwitter(True).menu_stream,  # Pass if it's streaming or not
             2: menu_twitter.MenuTwitter(False).menu_hist,
-            3: menu_analysis.MenuText,
+            3: menu_analysis.MenuText().menu_analysis,
             4: export.menu_export,
-            5: menu_manage.MenuManage,
+            5: menu_manage.MenuManage().menu_manage,
             6: mongo.mongo_connection
         }
         if config.startup_connect:

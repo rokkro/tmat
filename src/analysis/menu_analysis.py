@@ -11,6 +11,8 @@ class MenuText(Menu):
     """
     def __init__(self):
         super().__init__()
+
+    def menu_analysis(self):
         menu = {
             1: self.sub_init,
             2: self.sub_sentiment,
@@ -18,8 +20,10 @@ class MenuText(Menu):
             4: self.sub_image
         }
         while True:
-            inpt = self.get_menu("ANALYSIS",["Setup Text Analysis.", "Run Sentiment Analysis.", "Run Readability Analysis.", "Run Image Analysis."],
-                "*Enter an option number or [r] - return.\n>>>")
+            inpt = self.get_menu("ANALYSIS",
+                                 ["Setup Text Analysis.", "Run Sentiment Analysis.", "Run Readability Analysis.",
+                                  "Run Image Analysis."],
+                                 "*Enter an option number or [r] - return.\n>>>")
             if inpt == 'r':
                 return
             print(self.purple, end='')

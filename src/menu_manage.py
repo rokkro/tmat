@@ -8,6 +8,8 @@ except ImportError as e:
 class MenuManage(Menu):
     def __init__(self):
         super().__init__()
+
+    def menu_manage(self):
         menu = {
             1: self.sub_list,
             2: self.sub_tmp,
@@ -19,14 +21,15 @@ class MenuManage(Menu):
             8: self.sub_strip_facial
         }
         while True:
-            inpt = self.get_menu("MANAGE COLLECTIONS",["View Databases, Collections, and Documents.",
-                             "Purge Temporary Collections in a DB.",
-                             "Delete a Collection.",
-                                "Delete a Database.",
-                             "Mark/Un-mark a Collection as Temporary.","Remove Sentiment Values.",
-                            "Remove Readability Values.",
-                            "Remove Facial Analysis Values."],
-                            "*Enter an option or [r] - return.\n>>>")
+            inpt = self.get_menu("MANAGE COLLECTIONS", ["View Databases, Collections, and Documents.",
+                                                        "Purge Temporary Collections in a DB.",
+                                                        "Delete a Collection.",
+                                                        "Delete a Database.",
+                                                        "Mark/Un-mark a Collection as Temporary.",
+                                                        "Remove Sentiment Values.",
+                                                        "Remove Readability Values.",
+                                                        "Remove Facial Analysis Values."],
+                                 "*Enter an option or [r] - return.\n>>>")
 
             if inpt == 'r':
                 return
