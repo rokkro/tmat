@@ -1,5 +1,5 @@
 try:
-    from config import export_folder
+    from config import export_dir
     import os
     from csv import writer
 except ImportError as e:
@@ -169,9 +169,9 @@ def menu_export():
     menu.divider()
     try:
         print(menu.purple, end='')
-        if not os.path.exists(export_folder):
-            os.makedirs(export_folder)
-        fpath = export_folder + fname
+        if not os.path.exists(export_dir):
+            os.makedirs(export_dir)
+        fpath = export_dir + fname
         mode = 'w'
         if os.path.exists(fpath):
             inpt = input(menu.purple + "A file with the name '"+ fname + "' already exists!\n" + menu.end +

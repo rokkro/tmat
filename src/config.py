@@ -9,7 +9,7 @@ appid = ''
 appkey = ''
 
 verbose = False
-export_folder = "../output/"
+export_dir = "../output/"
 startup_connect = True
 mongo_timeout = 30
 
