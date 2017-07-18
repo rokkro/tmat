@@ -9,6 +9,8 @@ except ImportError as e:
 class MenuMain(Menu):
     def __init__(self):
         super().__init__()
+
+    def main(self):
         menu = {
             1: menu_twitter.MenuTwitter(True).menu_stream,  # Pass if it's streaming or not
             2: menu_twitter.MenuTwitter(False).menu_hist,
@@ -36,6 +38,6 @@ class MenuMain(Menu):
 
 if __name__ == "__main__":
     try:
-        MenuMain()
+        MenuMain().main()
     except KeyboardInterrupt:
         pass
