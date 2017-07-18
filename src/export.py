@@ -177,9 +177,9 @@ def menu_export():
             inpt = input(menu.purple + "A file with the name '"+ fname + "' already exists!\n" + menu.end +
                 "Append to existing? [" + menu.cyan + "a" + menu.end + "] - append, [" + menu.cyan + "o" + menu.end +
                          "] - overwrite, [" + menu.cyan + "r" + menu.end + "] - cancel.\n>>>").replace(" ","")
-            if inpt == 'a':
+            if inpt == 'a' or inpt == 'A':
                 mode = 'a'
-            elif inpt == 'o':
+            elif inpt == 'o' or inpt == 'O':
                 mode = 'w'
             else:
                 print(menu.purple + "Export cancelled." + menu.end)
