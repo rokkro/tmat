@@ -102,6 +102,7 @@
 3.  Before being added to `data`, the emotion values are compared with one another for the highest value. Whatever the highest value refers to is inserted into the list. The same is done with the ethnicity values provided by the Kairos API. 
 4.  The `rightEyeCenterX` is subtracted from `leftEyeCenterX` (or is it the other way around?) for the `eyegap`, which is then inserted into `data`.
 5.  The `data` list is then written to the CSV file as a single row (the current document). This process is repeated for every document in the collection.
+6.  By default, .csv files are exported to the 'output' directory, created at the root of the project dir. A custom dir can be set in the config file. If you wish to create a .csv file that already exists, you will have the option to append or overwrite the existing file.
 
   #### Readability:
  1. Uses the module <a href="https://github.com/shivam5992/textstat">textstat</a> to simplify finding the various readability values.
