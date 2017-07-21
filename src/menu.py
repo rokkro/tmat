@@ -21,6 +21,9 @@ class Menu:
     def get_menu(self,head, menu, input_menu):
         # Numbered user input menu
         while True:
+            if len(menu) == 0:
+                print(self.purple + "There doesn't appear to be anything here...")
+                return 'r'
             if menu is not None:
                 self.header(head)
                 for num, entry in enumerate(menu): # Print entries
