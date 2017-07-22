@@ -20,6 +20,14 @@ class Setup:  # settings and setup for tweet scraping
         self.before = None
         self.after = None
 
+    def set_result(self):
+        if self.result_type == 'mixed':
+            self.result_type = 'recent'
+        elif self.result_type == 'recent':
+            self.result_type = 'popular'
+        else:
+            self.result_type = 'mixed'
+
     def get_dt(self): # Return date/time
         return datetime.datetime.now()
 
@@ -107,10 +115,6 @@ class Setup:  # settings and setup for tweet scraping
             if tmp[i] == '' or not tmp[i].isdigit():  # if blank/not a num, dont append to search term list
                 continue
             self.users.append(tmp[i])
-
-    def set_result_type(self, inpt):
-        if inpt == 'mixed' or inpt == 'recent' or inpt == 'popular':
-            self.result_type = inpt
 
     def init_db(self):
         # Set up DB, Collection, Text Index, Temp Status

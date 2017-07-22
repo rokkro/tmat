@@ -18,16 +18,16 @@ class MenuTwitter(Menu):
     def menu_stream(self):
         # Ugly streaming menu code.
         while True:
-            strsearch = str(self.setup.term).strip('[]') if self.setup.term else self.purple + "None"
-            struid = str(self.setup.users).strip('[]') if self.setup.users else self.purple + "None"
+            str_search = str(self.setup.term).strip('[]') if self.setup.term else self.purple + "None"
+            str_uid = str(self.setup.users).strip('[]') if self.setup.users else self.purple + "None"
 
-            inpt = self.get_menu("STREAMING", ["Search = " + strsearch ,
+            inpt = self.get_menu("STREAMING", ["Search = " + str_search ,
                 "Limit = " + str(self.setup.lim),
                 "Temporary Collection = " + str(self.setup.temp),
                 "Database Name = '" + self.setup.db_name + "'",
                 "Collection Name = '" + self.setup.coll_name + "'",
                 "Languages = " + str(self.setup.lang).strip('[]'),
-                "Follow UID(s) = " + struid,
+                "Follow UID(s) = " + str_uid,
                 "MongoDB Connected = " + self.purple + str(mongo.is_connected())],
                 "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
@@ -62,21 +62,20 @@ class MenuTwitter(Menu):
     def menu_hist(self):
         # Uglier historic menu code.
         while True:
-            strsearch = str(self.setup.term).strip('[]') if self.setup.term else self.purple + "None"
-            strlim = (self.purple + "None") if self.setup.lim is None else str(self.setup.lim)
+            str_search = str(self.setup.term).strip('[]') if self.setup.term else self.purple + "None"
+            str_lim = (self.purple + "None") if self.setup.lim is None else str(self.setup.lim)
+            str_date = ((("On/After " + str(self.setup.after) if self.setup.after is not None else "") +
+                        ((", " if self.setup.after is not None and self.setup.before is not None else "") +
+                      ("Before " + str(self.setup.before)) if self.setup.before is not None else ""))
+                     if self.setup.after is not None or self.setup.before is not None else "None")
 
-
-            inpt = self.get_menu("HISTORIC", ["Search = " + strsearch,
-                                  "Limit = " + strlim,
+            inpt = self.get_menu("HISTORIC", ["Search = " + str_search,
+                                  "Limit = " + str_lim,
                                   "Temporary Collection = " + str(self.setup.temp),
                                   "Database Name = '" + self.setup.db_name + "'",
                                   "Collection Name = '" + self.setup.coll_name + "'",
                                   "Result Type = " + self.setup.result_type,
-                                  "Date Range = " + (
-                             (("On/After " + str(self.setup.after) if self.setup.after is not None else "") +
-                              ((", " if self.setup.after is not None and self.setup.before is not None else "") +
-                               ("Before " + str(self.setup.before)) if self.setup.before is not None else ""))
-                             if self.setup.after is not None or self.setup.before is not None else "None"),
+                                  "Date Range = " + str_date,
                              "MongoDB Connected = " + self.purple + str(mongo.is_connected()) + self.end],
                             "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
@@ -100,7 +99,7 @@ class MenuTwitter(Menu):
                 3: self.sub_tmp,
                 4: self.sub_db,
                 5: self.sub_coll,
-                6: self.sub_result,
+                6: self.setup.set_result,
                 7: self.sub_date,
                 8: mongo.mongo_connection
             }
@@ -230,12 +229,6 @@ class MenuTwitter(Menu):
         print(self.end, end='')
         print(self.purple + "Follow list changed to " + (
             str(self.setup.users).strip('[]') if self.setup.users else "None") + "." + self.end)
-
-    def sub_result(self):
-        # Sub menu for changing historic result type, see https://dev.twitter.com/rest/reference/get/search/tweets
-        inpt = input( "*Enter a result type: 'mixed','recent', or 'popular'.\n>>>" + self.end).strip()
-        self.setup.set_result_type(inpt)
-        print(self.purple + "Result type set to " + self.setup.result_type + "." + self.end)
 
     def sub_date(self):
         # Sub menu for setting 'before/after' date, see the README page for more information
