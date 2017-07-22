@@ -62,8 +62,8 @@ class MenuTwitter(Menu):
     def menu_hist(self):
         # Uglier historic menu code.
         while True:
-            str_search = str(self.setup.term).strip('[]') if self.setup.term else self.purple + "None"
-            str_lim = (self.purple + "None") if self.setup.lim is None else str(self.setup.lim)
+            str_search = str(self.setup.term).strip('[]') if self.setup.term else self.purple + "None" + self.end
+            str_lim = (self.purple + "None" + self.end) if self.setup.lim is None else str(self.setup.lim)
             str_date = ((("On/After " + str(self.setup.after) if self.setup.after is not None else "") +
                         ((", " if self.setup.after is not None and self.setup.before is not None else "") +
                       ("Before " + str(self.setup.before)) if self.setup.before is not None else ""))
