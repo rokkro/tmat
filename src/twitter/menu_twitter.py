@@ -99,7 +99,7 @@ class MenuTwitter(Menu):
                 3: self.sub_tmp,
                 4: self.sub_db,
                 5: self.sub_coll,
-                6: self.setup.set_result,
+                6: self.setup.set_result_type,
                 7: self.sub_date,
                 8: mongo.mongo_connection
             }
