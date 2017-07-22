@@ -18,14 +18,17 @@ class MenuTwitter(Menu):
     def menu_stream(self):
         # Ugly streaming menu code.
         while True:
-            inpt = self.get_menu("STREAMING", ["Search = " + (str(self.setup.term).strip('[]') if self.setup.term else self.purple + "None" + self.end),
+            strsearch = str(self.setup.term).strip('[]') if self.setup.term else self.purple + "None"
+            struid = str(self.setup.users).strip('[]') if self.setup.users else self.purple + "None"
+
+            inpt = self.get_menu("STREAMING", ["Search = " + strsearch ,
                 "Limit = " + str(self.setup.lim),
                 "Temporary Collection = " + str(self.setup.temp),
                 "Database Name = '" + self.setup.db_name + "'",
                 "Collection Name = '" + self.setup.coll_name + "'",
                 "Languages = " + str(self.setup.lang).strip('[]'),
-                "Follow UID(s) = " + (str(self.setup.users).strip('[]') if self.setup.users else self.purple + "None" + self.end),
-                "MongoDB Connected = " + self.purple + str(mongo.is_connected()) + self.end],
+                "Follow UID(s) = " + struid,
+                "MongoDB Connected = " + self.purple + str(mongo.is_connected())],
                 "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
             if inpt == '' and mongo.is_connected() and (self.setup.term or self.setup.users):
@@ -59,8 +62,12 @@ class MenuTwitter(Menu):
     def menu_hist(self):
         # Uglier historic menu code.
         while True:
-            inpt = self.get_menu("HISTORIC", ["Search = " + (str(self.setup.term).strip('[]') if self.setup.term else self.purple + "None" + self.end),
-                                  "Limit = " + ((self.purple + str(self.setup.lim) + self.end) if self.setup.lim is None else str(self.setup.lim)),
+            strsearch = str(self.setup.term).strip('[]') if self.setup.term else self.purple + "None"
+            strlim = (self.purple + "None") if self.setup.lim is None else str(self.setup.lim)
+
+
+            inpt = self.get_menu("HISTORIC", ["Search = " + strsearch,
+                                  "Limit = " + strlim,
                                   "Temporary Collection = " + str(self.setup.temp),
                                   "Database Name = '" + self.setup.db_name + "'",
                                   "Collection Name = '" + self.setup.coll_name + "'",
