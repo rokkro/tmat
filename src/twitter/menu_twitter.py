@@ -18,8 +18,8 @@ class MenuTwitter(Menu):
     def menu_stream(self):
         # Ugly streaming menu code.
         while True:
-            str_search = str(self.setup.term).strip('[]') if self.setup.term else self.purple + "None"
-            str_uid = str(self.setup.users).strip('[]') if self.setup.users else self.purple + "None"
+            str_search = str(self.setup.term).strip('[]') if self.setup.term else self.purple + "None" + self.end
+            str_uid = str(self.setup.users).strip('[]') if self.setup.users else self.purple + "None" + self.end
 
             inpt = self.get_menu("STREAMING", ["Search = " + str_search ,
                 "Limit = " + str(self.setup.lim),

@@ -29,7 +29,8 @@ class Setup:  # settings and setup for tweet scraping
             self.result_type = 'mixed'
         print("Result type set to " + self.result_type + ".")
 
-    def get_dt(self): # Return date/time
+    @staticmethod
+    def get_dt(): # Return date/time
         return datetime.datetime.now()
 
     def set_date(self, inpt):
