@@ -6,20 +6,28 @@ except ImportError as e:
 
 class Menu:
     def __init__(self):
+        self.notification_queue = []
         # Text colors
         self.purple = "\033[1;94m"
         self.cyan = '\033[36m'
         self.end = '\033[1;0m'
     
     def header(self,text): # ---header text---
-        print(self.cyan + ('-' * int((40 - len(text)) / 2)) + self.end +
-              text + self.cyan + ('-' * int((40 - len(text)) / 2)) + self.end)
-    
+        print(self.end + self.cyan + ('-' * int((40 - len(text)) / 2)) + self.end +
+              text + self.end + self.cyan + ('-' * int((40 - len(text)) / 2)) + self.end)
+
     def divider(self): # ----------
-        print(self.cyan + '-' * 40 + self.end)
-    
+        print(self.end + self.cyan + '-' * 40 + self.end)
+
+    def notifications(self):
+        if self.notification_queue:
+            self.divider()
+            print(self.purple +  "\n".join(self.notification_queue) + self.end)
+            self.notification_queue[:] = []
+
     def get_menu(self,head, menu, input_menu):
         # Numbered user input menu
+        self.notifications()
         while True:
             if menu is not None:
                 self.header(head)
@@ -46,10 +54,10 @@ class Menu:
         # Create menu to list Databases
         mongo.mongo_connection(True)
         if not mongo.is_connected():
-            print(self.purple + "You must be connected to MongoDB!" + self.end)
+            self.notification_queue.append("You must be connected to MongoDB!")
             return
-    
-        print(self.purple + "Do not select 'admin' or 'local' databases." + self.end)
+
+        self.notification_queue.append("Do not select 'admin' or 'local' databases.")
         db_list = []
         for j, k in enumerate(mongo.get_db_names(), 1):  # start at 1
             db_list.append( k + "' (" + str(len(mongo.get_collections(k))) + ")")  # print databases
@@ -86,3 +94,17 @@ class Menu:
             return
         return db[coll[inpt - 1]]
 
+    def mongo_connection(self,connect_only=False):
+        self.notification_queue.append(mongo.mongo_connection(connect_only))
+
+    def is_connected(self):
+        return mongo.is_connected()
+
+    def get_client(self):
+        return mongo.get_client()
+
+    def get_collections(self,db_name):
+        return mongo.get_collections(db_name)
+
+    def get_db_names(self):
+        return mongo.get_db_names()

@@ -2,7 +2,7 @@ try:
     from menu import Menu
     from analysis import menu_analysis
     from twitter import menu_twitter
-    import menu_manage, mongo, export, config
+    import menu_manage, export, config
 except ImportError as e:
     print("Import Error in menu_main.py:",e)
 
@@ -17,18 +17,17 @@ class MenuMain(Menu):
             3: menu_analysis.MenuText().menu_analysis,
             4: export.menu_export,
             5: menu_manage.MenuManage().menu_manage,
-            6: mongo.mongo_connection
+            6: self.mongo_connection
         }
         if config.startup_connect:
-            print(self.purple,end='')
-            mongo.mongo_connection()
+            self.mongo_connection()
         while True:
             i = self.get_menu("MAIN", ["Stream Tweets.",
                "Historic Tweets.",
                "Analyze Tweets.",
                "Export as CSV.",
                "Manage Collections.",
-               "MongoDB Connected = " + self.purple + str(mongo.is_connected()) + self.end],
+               "MongoDB Connected = " + self.purple + str(self.is_connected()) + self.end],
                 "*Enter option number or [q] - quit.\n>>>")
             try:
                 menu[i]()

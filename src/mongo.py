@@ -15,21 +15,20 @@ def mongo_connection(connect_only=False):
     # Connects/disconnects from MongoDB service
     global _client,_connected
     if is_connected() and not connect_only:
-        print("*Disconnected from MongoDB.")
         _client.close()
         _client = None
         _connected = False
+        return "*MongoDB Disconnected."
     else:
-        print("*Attempting connection to MongoDB")
         try:
             _client = MongoClient(serverSelectionTimeoutMS=mongo_timeout)  # localhost timeout
             _client.server_info()  # forces connection verification
-            print("*Connection Succeeded!")
             _connected = True
+            return "*MongoDB Connection Succeeded!"
         except (ConnectionFailure, KeyboardInterrupt) as e:
-            print("*MongoDB connection failed:", e)
+            return "*MongoDB Connection Failed:" + str(e)
         except Exception as e:
-            print("Error in mongo.py:", e)
+            return "Error in mongo.py:" + str(e)
 
 
 def get_db_names():

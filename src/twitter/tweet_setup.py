@@ -1,5 +1,5 @@
 try:
-    import mongo, datetime
+    import datetime
 except ImportError as e:
     print("Import Error in tweet_setup.py:", e)
     quit()
@@ -27,7 +27,6 @@ class Setup:  # settings and setup for tweet scraping
             self.result_type = 'popular'
         else:
             self.result_type = 'mixed'
-        print("Result type set to " + self.result_type + ".")
 
     @staticmethod
     def get_dt(): # Return date/time
@@ -118,11 +117,11 @@ class Setup:  # settings and setup for tweet scraping
                 continue
             self.users.append(tmp[i])
 
-    def init_db(self):
+    def init_db(self,client):
         # Set up DB, Collection, Text Index, Temp Status
         try:
             print("Initializing DB and Collection...")
-            db = mongo.get_client()[self.db_name]  # initialize db
+            db = client[self.db_name]  # initialize db
             self.tweet_coll = db[self.coll_name]  # initialize collection
             self.tweet_coll.create_index([('text', 'text')])
 

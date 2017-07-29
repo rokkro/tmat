@@ -1,5 +1,4 @@
 try:
-    import mongo
     from twitter.tweet_setup import Setup
     from twitter.streaming import stream
     from twitter.historic import scrape
@@ -28,20 +27,20 @@ class MenuTwitter(Menu):
                 "Collection Name = '" + self.setup.coll_name + "'",
                 "Languages = " + str(self.setup.lang).strip('[]'),
                 "Follow UID(s) = " + str_uid,
-                "MongoDB Connected = " + self.purple + str(mongo.is_connected())],
+                "MongoDB Connected = " + self.purple + str(self.is_connected())],
                 "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
-            if inpt == '' and mongo.is_connected() and (self.setup.term or self.setup.users):
+            if inpt == '' and self.is_connected() and (self.setup.term or self.setup.users):
                 self.divider()
                 print(self.purple, end='')
                 print("Waiting for new tweets...")
-                self.setup.init_db()
+                self.setup.init_db(self.get_client())
                 print(self.end, end='')
                 stream(self.setup)
                 print("\n", end='')
                 break
             elif inpt == '':
-                print(self.purple + "MongoDB must be connected and a search or UID must have been entered." + self.end)
+                self.notification_queue.append("MongoDB must be connected and a search or UID must have been entered.")
                 continue
             elif inpt == 'r':
                 return
@@ -54,9 +53,8 @@ class MenuTwitter(Menu):
                 5: self.sub_coll,
                 6: self.sub_lang,
                 7: self.sub_follow,
-                8: mongo.mongo_connection
+                8: self.mongo_connection
             }
-            self.divider()
             menu[inpt]()
 
     def menu_hist(self):
@@ -76,21 +74,20 @@ class MenuTwitter(Menu):
                                   "Collection Name = '" + self.setup.coll_name + "'",
                                   "Result Type = " + self.setup.result_type,
                                   "Date Range = " + str_date,
-                             "MongoDB Connected = " + self.purple + str(mongo.is_connected()) + self.end],
+                             "MongoDB Connected = " + self.purple + str(self.is_connected()) + self.end],
                             "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
-            if inpt == '' and mongo.is_connected() and self.setup.term and self.setup.lim:
+            if inpt == '' and self.is_connected() and self.setup.term and self.setup.lim:
                 self.divider()
                 print(self.purple, end='')
-                self.setup.init_db()
+                self.setup.init_db(self.get_client())
                 print("Retrieving tweets...")
                 print(self.end, end='')
                 scrape(self.setup)
                 print("\n", end='')
                 break
             elif inpt == '':
-                print(
-                    self.purple + "MongoDB must be connected, and both a search and limit must have been entered." + self.end)
+                self.notification_queue.append("MongoDB must be connected, and both a search and limit must have been entered.")
                 continue
 
             menu = {
@@ -99,11 +96,10 @@ class MenuTwitter(Menu):
                 3: self.sub_tmp,
                 4: self.sub_db,
                 5: self.sub_coll,
-                6: self.setup.set_result_type,
+                6: self.sub_result_type,
                 7: self.sub_date,
-                8: mongo.mongo_connection
+                8: self.mongo_connection
             }
-            self.divider()
             menu[inpt]()
 
     def sub_search(self):
@@ -113,15 +109,12 @@ class MenuTwitter(Menu):
         else:
             print("*Enter search term(s), use https://dev.twitter.com/rest/public/search for operators.")
         inpt = input( self.end +"*Leave blank to clear, [" + self.cyan + "r" + self.end + "] - return.\n>>>" + self.end).strip()
-        print(self.end, end='')
-        self.divider()
         if inpt == 'r':
-            print(self.purple + "Search unchanged." + self.end)
+            self.notification_queue.append("Search unchanged.")
             return
         self.setup.set_search(inpt)
-        print(self.end, end='')
-        print(self.purple + "Search set to " + (
-            str(self.setup.term).strip('[]') if self.setup.term else "None") + "." + self.end)
+        self.notification_queue.append("Search set to " + (
+            str(self.setup.term).strip('[]') if self.setup.term else "None") + ".")
 
     def sub_lim(self):
         # Sub menu for limit input.
@@ -130,28 +123,24 @@ class MenuTwitter(Menu):
         else:
             print("*Enter number of tweets to retrieve.",end='')
         inpt = self.get_menu('',None, "\n>>>")
-        self.divider()
         if inpt == 'r':
-            print(self.purple + "Limit unchanged." + self.end)
+            self.notification_queue.append("Limit unchanged.")
             return
         if inpt == '':
             self.setup.lim = None
         else:
             self.setup.lim = inpt
-        print(self.end, end='')
-        print(self.purple + "Limit set to " + str(self.setup.lim) + "." + self.end)
+        self.notification_queue.append("Limit set to " + str(self.setup.lim) + ".")
 
 
     def sub_tmp(self):
         # Switches Setup().temp flag for temporary status.
-        print(self.purple, end='')
         if not self.setup.temp:
-            print("Collection will be marked as Temporary.")
+            self.notification_queue.append("Collection will be marked as Temporary.")
             self.setup.temp = True
         else:
-            print("Collection will be marked as Permanent.")
+            self.notification_queue.append("Collection will be marked as Permanent.")
             self.setup.temp = False
-        print(self.end, end='')
 
 
     def sub_db(self):
@@ -162,15 +151,13 @@ class MenuTwitter(Menu):
             inpt = ''.join(e for e in inpt if e.isalnum())
             if inpt == '' or inpt == self.setup.db_name or inpt == 'admin' or inpt == 'local':
                 break
-            self.divider()
-            print(self.purple + "Database changed from '" + self.setup.db_name + "' to '" + inpt + "'.")
+            self.notification_queue.append("Database changed from '" + self.setup.db_name + "' to '" + inpt + "'.")
             self.setup.db_name = inpt
-            if mongo.is_connected():
-                if inpt in mongo.get_db_names():
-                    print("'" + inpt + "' already exists. New tweets will be added to existing.")
+            if self.is_connected():
+                if inpt in self.get_db_names():
+                    self.notification_queue.append("'" + inpt + "' already exists. New tweets will be added to existing.")
                 else:
-                    print("New database '" + inpt + "' will be created.")
-            print(self.end, end='')
+                    self.notification_queue.append("New database '" + inpt + "' will be created.")
             break
 
 
@@ -186,14 +173,12 @@ class MenuTwitter(Menu):
                 self.setup.coll_name = inpt.replace('[dt]', str(self.setup.get_dt())).strip()
             else:
                 self.setup.coll_name = inpt
-            self.divider()
-            print(self.purple + "Collection changed to '" + self.setup.coll_name + "'.")
-            if mongo.is_connected():
-                if self.setup.coll_name in mongo.get_collections(self.setup.db_name):
-                    print("'" + self.setup.coll_name + "' already exists. New tweets will be added to existing.")
+            self.notification_queue.append("Collection changed to '" + self.setup.coll_name + "'.")
+            if self.is_connected():
+                if self.setup.coll_name in self.get_collections(self.setup.db_name):
+                    self.notification_queue.append("'" + self.setup.coll_name + "' already exists. New tweets will be added to existing.")
                 else:
-                    print("New collection will be created.")
-            print(self.end, end='')
+                    self.notification_queue.append("New collection will be created.")
             break
 
 
@@ -207,15 +192,17 @@ class MenuTwitter(Menu):
                                   "https://dev.twitter.com/web/overview/languages\n>>>").replace(" ", '').split(',')
         if inpt == '':
             return
-        self.divider()
         tmp = []
         for i in inpt:
             if i in langs and i not in tmp:
                 tmp.append(i)
         if len(tmp) >= 1:
-            print(self.purple + "Accepted languages: " + str(tmp).strip("[]") + "." + self.end)
+            self.notification_queue.append("Accepted languages: " + str(tmp).strip("[]") + ".")
             self.setup.lang = tmp
 
+    def sub_result_type(self):
+        self.setup.set_result_type()
+        self.notification_queue.append("Result type set to " + self.setup.result_type + ".")
 
     def sub_follow(self):
         # Sub menu for inputting streaming follower setting.
@@ -224,11 +211,9 @@ class MenuTwitter(Menu):
                      "r" + self.end + "] - return/cancel.\n>>>" + self.end).strip()
         if inpt == 'r':
             return
-        self.divider()
         self.setup.set_follow(inpt)
-        print(self.end, end='')
-        print(self.purple + "Follow list changed to " + (
-            str(self.setup.users).strip('[]') if self.setup.users else "None") + "." + self.end)
+        self.notification_queue.append("Follow list changed to " + (
+            str(self.setup.users).strip('[]') if self.setup.users else "None") + ".")
 
     def sub_date(self):
         # Sub menu for setting 'before/after' date, see the README page for more information

@@ -1,6 +1,5 @@
 try:
     from menu import Menu
-    import mongo
 except ImportError as e:
     print("Import Error in menu_manage.py:",e)
 
@@ -38,10 +37,9 @@ class MenuManage(Menu):
                 continue
 
             try:
-                print(self.purple, end='')
                 menu[inpt]()
             except Exception as e:
-                print("Error in menu_manage.py:", e)
+                self.notification_queue.append("Error in menu_manage.py:" + str(e))
 
     def sub_list(self):
         # Print documents
@@ -50,7 +48,7 @@ class MenuManage(Menu):
             return
         cursor = inpt.find({})
         for doc in cursor:
-            print(doc)
+            self.notification_queue.append(str(doc))
         cursor.close()
 
     def sub_tmp(self):
@@ -73,16 +71,16 @@ class MenuManage(Menu):
             cursor.close()
 
         if not deletable: #if it's empty
-            print(self.purple + "No temporary collections in this db." + self.end)
+            self.notification_queue.append("No temporary collections in this db.")
             return
         inpt = input(self.purple+ "Are you sure you want to delete these collections and "
                                                  "all documents within? [y/n]" + self.end + "\n>>>" + self.end)
         if inpt == 'y':
             for i in deletable:
                 i.drop()
-            print(self.purple + "Temporary collections deleted." + self.end)
+                self.notification_queue.append("Temporary collections deleted.")
         else:
-            print(self.purple + "Deletion cancelled." + self.end)
+            self.notification_queue.append("Deletion cancelled.")
 
     def sub_del_coll(self):
         # Delete specified collection
@@ -91,49 +89,46 @@ class MenuManage(Menu):
             return
         inpt = input(self.purple +  "Are you sure you want to delete this collection and "
                                                  "all documents within? [y/n]" + self.end + "\n>>>" + self.end)
-        self.divider()
         if inpt == 'y':
             coll.drop()
-            print(self.purple + "Collection deleted." + self.end)
+            self.notification_queue.append("Collection deleted.")
         else:
-            print(self.purple + "Deletion canceled." + self.end)
+            self.notification_queue.append("Deletion canceled.")
 
     def sub_del_db(self):
         # Delete specified database
         try:
-            client = mongo.get_client()
+            client = self.get_client()
             coll, db = self.get_db_menu()
         except TypeError as e:
             return
 
         inpt = input(self.purple + "Are you sure you want to delete this database and "
                                    "collections and documents within? [y/n]" + self.end + "\n>>>" + self.end)
-        self.divider()
         if inpt == 'y':
             client.drop_database(db)
-            print(self.purple + "Database deleted." + self.end)
+            self.notification_queue.append("Database deleted.")
         else:
-            print(self.purple + "Deletion canceled." + self.end)
+            self.notification_queue.append("Deletion canceled.")
 
     def sub_mark(self):
         # Mark/unmark a collection as temporary
         coll = self.get_coll_menu()
         if coll is None:
             return
-        self.divider()
         c_true = coll.find({"t_temp": True})
         c_false = coll.find({"t_temp": False})
         if c_true.count() > 0:  # we will assume we want to flip any t_temp = trues
             coll.update_many({"t_temp": True}, {'$set': {"t_temp": False}})
-            print(self.purple + "Collection marked as permanent." + self.end)
+            self.notification_queue.append("Collection marked as permanent.")
         elif c_false.count() > 0:
             coll.update_many({"t_temp": False}, {'$set': {"t_temp": True}})
-            print(self.purple + "Collection marked as temporary." + self.end)
+            self.notification_queue.append("Collection marked as temporary.")
         else:
             coll.insert_one({  # This creates a coll even if no tweets found.
                 "t_temp": True
             })
-            print(self.purple + "Collection marked as temporary." + self.end)
+            self.notification_queue.append("Collection marked as temporary.")
         c_true.close()
         c_false.close()
 
@@ -142,24 +137,21 @@ class MenuManage(Menu):
         coll = self.get_coll_menu()
         if coll is None:
             return
-        self.divider()
         coll.update({},{"$unset":{"sentiment":1}},multi=True)
-        print(self.purple + "Sentiment values have been removed." + self.end)
+        self.notification_queue.append("Any sentiment values have been removed.")
 
     def sub_strip_read(self):
         # Remove reading values
         coll = self.get_coll_menu()
         if coll is None:
             return
-        self.divider()
         coll.update({},{"$unset":{"readability":1}},multi=True)
-        print(self.purple + "Readability values have been removed." + self.end)
+        self.notification_queue.append("Any readability values have been removed.")
 
     def sub_strip_facial(self):
         # Remove kairos values
         coll = self.get_coll_menu()
         if coll is None:
             return
-        self.divider()
         coll.update({},{"$unset":{"face":1}},multi=True)
-        print(self.purple + "Facial analysis values have been removed." + self.end)
+        self.notification_queue.append("Any facial analysis values have been removed.")

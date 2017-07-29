@@ -3,7 +3,7 @@
 try:
     import warnings
     warnings.filterwarnings("ignore")  # stop useless warning
-    import mongo, config
+    import config
     import nltk
     from nltk.sentiment.util import mark_negation, extract_unigram_feats
     from nltk.sentiment.vader import SentimentIntensityAnalyzer
@@ -58,9 +58,6 @@ def analyze(coll):
     """
     Run sentiment analysis on provided collection.
     """
-    if not mongo.is_connected():
-        print("MongoDB must be connected to perform sentiment analysis!")
-        return
     sentences = []
     try:
         sid = SentimentIntensityAnalyzer()
