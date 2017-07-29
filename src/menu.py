@@ -1,10 +1,10 @@
 try:
-    import mongo
+    from mongo import Mongo
 except ImportError as e:
     print("Import Error in menu.py:",e)
 
 
-class Menu:
+class Menu(Mongo):
     def __init__(self):
         self.notification_queue = []
         # Text colors
@@ -52,21 +52,21 @@ class Menu:
     
     def get_db_menu(self):
         # Create menu to list Databases
-        mongo.mongo_connection(True)
-        if not mongo.is_connected():
+        self.mongo_connection(True)
+        if not self.is_connected():
             self.notification_queue.append("You must be connected to MongoDB!")
             return
 
         self.notification_queue.append("Do not select 'admin' or 'local' databases.")
         db_list = []
-        for j, k in enumerate(mongo.get_db_names(), 1):  # start at 1
-            db_list.append( k + "' (" + str(len(mongo.get_collections(k))) + ")")  # print databases
+        for j, k in enumerate(self.get_db_names(), 1):  # start at 1
+            db_list.append( k + "' (" + str(len(self.get_collections(k))) + ")")  # print databases
         inpt = self.get_menu("DATABASES",db_list, "*Select a db to view collections or [r] - return.\n>>>")
         if inpt == 'r' or inpt == '':
             return
     
-        db = mongo.get_client()[mongo.get_db_names()[inpt - 1]]  # set up chosen db
-        coll = mongo.get_collections(mongo.get_db_names()[inpt - 1])  # collections list from that db
+        db = self.get_client()[self.get_db_names()[inpt - 1]]  # set up chosen db
+        coll = self.get_collections(self.get_db_names()[inpt - 1])  # collections list from that db
         return coll, db
     
     def get_coll_menu(self):
@@ -94,17 +94,7 @@ class Menu:
             return
         return db[coll[inpt - 1]]
 
-    def mongo_connection(self,connect_only=False):
-        self.notification_queue.append(mongo.mongo_connection(connect_only))
-
-    def is_connected(self):
-        return mongo.is_connected()
-
-    def get_client(self):
-        return mongo.get_client()
-
-    def get_collections(self,db_name):
-        return mongo.get_collections(db_name)
-
-    def get_db_names(self):
-        return mongo.get_db_names()
+    def mongo_connection(self, connect_only=False):
+        notify_string = super().mongo_connection(connect_only)
+        if notify_string is not None:
+            self.notification_queue.append(notify_string)
