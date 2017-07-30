@@ -95,6 +95,12 @@ class Menu(Mongo):
         return db[coll[inpt - 1]]
 
     def mongo_connection(self, connect_only=False):
-        notify_string = super().mongo_connection(connect_only)
-        if notify_string is not None:
-            self.notification_queue.append(notify_string)
+         if self.is_connected() and connect_only:
+           return
+         status = super().mongo_connection()
+         if status is True:  # Returning an error == True with 'if status:'
+            self.notification_queue.append("*MongoDB Connection Succeeded!")
+         elif not status:
+            self.notification_queue.append("*MongoDB Disconnected.")
+         else:
+            self.notification_queue.append("*MongoDB Connection Failed:" + str(status))

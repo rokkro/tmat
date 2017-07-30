@@ -8,27 +8,22 @@ except ImportError as e:
 
 class Mongo:
     _client = None  # Access to client
-    _connected = False  # Connection status
 
-    def mongo_connection(self,connect_only=False):
+    def mongo_connection(self):
         # Connects/disconnects from MongoDB service
-        if self.is_connected() and connect_only:
-            return
         if self.is_connected():
             Mongo._client.close()
             Mongo._client = None
-            Mongo._connected = False
-            return "*MongoDB Disconnected."
+            return False
         else:
             try:
                 Mongo._client = MongoClient(serverSelectionTimeoutMS=mongo_timeout)  # localhost timeout
-                Mongo._client.server_info()  # forces connection verification
-                Mongo._connected = True
-                return "*MongoDB Connection Succeeded!"
-            except (ConnectionFailure, KeyboardInterrupt) as e:
-                return "*MongoDB Connection Failed:" + str(e)
+                status = self.test_connection()
+                if status is True:
+                    return True
+                return status
             except Exception as e:
-                return "Error in mongo.py:" + str(e)
+                return e
 
     def get_db_names(self):
         # Returns List of DB names
@@ -44,6 +39,15 @@ class Mongo:
 
     def is_connected(self):
         # Returns True if connected to mongod
-        if Mongo._connected:
+        if self.test_connection() is True:
             return True
         return False
+
+    def test_connection(self):
+        try:
+            Mongo._client.server_info()
+            return True
+        except AttributeError as e:
+            return e
+        except ConnectionFailure as e:
+            return e
