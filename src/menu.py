@@ -5,25 +5,28 @@ except ImportError as e:
 
 
 class Menu(Mongo):
+    notification_queue = []
     def __init__(self):
-        self.notification_queue = []
+        self.horizontal_len = 40
         # Text colors
-        self.purple = "\033[1;94m"
-        self.cyan = '\033[36m'
-        self.end = '\033[1;0m'
+        self.colors = {
+            "purple":"\033[1;94m",
+            "cyan":'\033[36m',
+            "end":'\033[1;0m',
+        }
     
     def header(self,text): # ---header text---
-        print(self.end + self.cyan + ('-' * int((40 - len(text)) / 2)) + self.end +
-              text + self.end + self.cyan + ('-' * int((40 - len(text)) / 2)) + self.end)
+        print(self.colors['end'] + self.colors['cyan'] + ('-' * int((self.horizontal_len - len(text)) / 2)) + self.colors['end'] +
+              text + self.colors['end'] + self.colors['cyan'] + ('-' * int((self.horizontal_len - len(text)) / 2)) + self.colors['end'])
 
     def divider(self): # ----------
-        print(self.end + self.cyan + '-' * 40 + self.end)
+        print(self.colors['end'] + self.colors['cyan'] + '-' * self.horizontal_len + self.colors['end'])
 
     def notifications(self):
-        if self.notification_queue:
+        if Menu.notification_queue:
             self.divider()
-            print(self.purple +  "\n".join(self.notification_queue) + self.end)
-            self.notification_queue[:] = []
+            print(self.colors['purple'] +  "\n".join(Menu.notification_queue) + self.colors['end'])
+            Menu.notification_queue[:] = []
 
     def get_menu(self,head, menu, input_menu):
         # Numbered user input menu
@@ -32,11 +35,11 @@ class Menu(Mongo):
             if menu is not None:
                 self.header(head)
                 for num, entry in enumerate(menu): # Print entries
-                    print("[" + self.purple + str(num + 1) + self.end + "] - " + entry)
+                    print("[" + self.colors['purple'] + str(num + 1) + self.colors['end'] + "] - " + entry)
                 self.divider()
             #Stylize input menu
-            entry = input(self.end + input_menu.replace("[", self.end +
-                                "[" + self.purple).replace("]",self.end + "]" + self.end)).replace(" ", "")
+            entry = input(self.colors['end'] + input_menu.replace("[", self.colors['end'] +
+                                "[" + self.colors['purple']).replace("]",self.colors['end'] + "]" + self.colors['end'])).replace(" ", "")
             if entry == 'q': # input 'q' to quit
                 quit()
             elif entry == 'r' or entry == '': # Returns r or space for menus to handle it.
@@ -54,10 +57,10 @@ class Menu(Mongo):
         # Create menu to list Databases
         self.mongo_connection(True)
         if not self.is_connected():
-            self.notification_queue.append("You must be connected to MongoDB!")
+            Menu.notification_queue.append("You must be connected to MongoDB!")
             return
 
-        self.notification_queue.append("Do not select 'admin' or 'local' databases.")
+        Menu.notification_queue.append("Do not select 'admin' or 'local' databases.")
         db_list = []
         for j, k in enumerate(self.get_db_names(), 1):  # start at 1
             db_list.append( k + "' (" + str(len(self.get_collections(k))) + ")")  # print databases
@@ -99,8 +102,8 @@ class Menu(Mongo):
            return
          status = super().mongo_connection()
          if status is True:  # Returning an error == True with 'if status:'
-            self.notification_queue.append("*MongoDB Connection Succeeded!")
+            Menu.notification_queue.append("*MongoDB Connection Succeeded!")
          elif not status:
-            self.notification_queue.append("*MongoDB Disconnected.")
+            Menu.notification_queue.append("*MongoDB Disconnected.")
          else:
-            self.notification_queue.append("*MongoDB Connection Failed:" + str(status))
+            Menu.notification_queue.append("*MongoDB Connection Failed:" + str(status))

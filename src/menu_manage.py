@@ -39,7 +39,7 @@ class MenuManage(Menu):
             try:
                 menu[inpt]()
             except Exception as e:
-                self.notification_queue.append("Error in menu_manage.py:" + str(e))
+                Menu.notification_queue.append("Error in menu_manage.py:" + str(e))
 
     def sub_list(self):
         # Print documents
@@ -48,7 +48,7 @@ class MenuManage(Menu):
             return
         cursor = inpt.find({})
         for doc in cursor:
-            self.notification_queue.append(str(doc))
+            Menu.notification_queue.append(str(doc))
         cursor.close()
 
     def sub_tmp(self):
@@ -59,7 +59,7 @@ class MenuManage(Menu):
         except Exception:
             return
         self.divider()
-        print(self.purple + "The following collections will be DELETED:" + self.end)
+        print(self.colors['purple'] + "The following collections will be DELETED:" + self.colors['end'])
 
         for num, item in enumerate(coll, 1):  # loops through all collections
             doc_count = db[coll[num - 1]].find({}) # take the current collection, and find all the documents
@@ -71,29 +71,29 @@ class MenuManage(Menu):
             cursor.close()
 
         if not deletable: #if it's empty
-            self.notification_queue.append("No temporary collections in this db.")
+            Menu.notification_queue.append("No temporary collections in this db.")
             return
-        inpt = input(self.purple+ "Are you sure you want to delete these collections and "
-                                                 "all documents within? [y/n]" + self.end + "\n>>>" + self.end)
+        inpt = input(self.colors['purple']+ "Are you sure you want to delete these collections and "
+                                                 "all documents within? [y/n]" + self.colors['end'] + "\n>>>" + self.colors['end'])
         if inpt == 'y':
             for i in deletable:
                 i.drop()
-                self.notification_queue.append("Temporary collections deleted.")
+                Menu.notification_queue.append("Temporary collections deleted.")
         else:
-            self.notification_queue.append("Deletion cancelled.")
+            Menu.notification_queue.append("Deletion cancelled.")
 
     def sub_del_coll(self):
         # Delete specified collection
         coll = self.get_coll_menu()
         if coll is None:
             return
-        inpt = input(self.purple +  "Are you sure you want to delete this collection and "
-                                                 "all documents within? [y/n]" + self.end + "\n>>>" + self.end)
+        inpt = input(self.colors['purple'] +  "Are you sure you want to delete this collection and "
+                                                 "all documents within? [y/n]" + self.colors['end'] + "\n>>>" + self.colors['end'])
         if inpt == 'y':
             coll.drop()
-            self.notification_queue.append("Collection deleted.")
+            Menu.notification_queue.append("Collection deleted.")
         else:
-            self.notification_queue.append("Deletion canceled.")
+            Menu.notification_queue.append("Deletion canceled.")
 
     def sub_del_db(self):
         # Delete specified database
@@ -103,13 +103,13 @@ class MenuManage(Menu):
         except TypeError as e:
             return
 
-        inpt = input(self.purple + "Are you sure you want to delete this database and "
-                                   "collections and documents within? [y/n]" + self.end + "\n>>>" + self.end)
+        inpt = input(self.colors['purple'] + "Are you sure you want to delete this database and "
+                                   "collections and documents within? [y/n]" + self.colors['end'] + "\n>>>" + self.colors['end'])
         if inpt == 'y':
             client.drop_database(db)
-            self.notification_queue.append("Database deleted.")
+            Menu.notification_queue.append("Database deleted.")
         else:
-            self.notification_queue.append("Deletion canceled.")
+            Menu.notification_queue.append("Deletion canceled.")
 
     def sub_mark(self):
         # Mark/unmark a collection as temporary
@@ -120,15 +120,15 @@ class MenuManage(Menu):
         c_false = coll.find({"t_temp": False})
         if c_true.count() > 0:  # we will assume we want to flip any t_temp = trues
             coll.update_many({"t_temp": True}, {'$set': {"t_temp": False}})
-            self.notification_queue.append("Collection marked as permanent.")
+            Menu.notification_queue.append("Collection marked as permanent.")
         elif c_false.count() > 0:
             coll.update_many({"t_temp": False}, {'$set': {"t_temp": True}})
-            self.notification_queue.append("Collection marked as temporary.")
+            Menu.notification_queue.append("Collection marked as temporary.")
         else:
             coll.insert_one({  # This creates a coll even if no tweets found.
                 "t_temp": True
             })
-            self.notification_queue.append("Collection marked as temporary.")
+            Menu.notification_queue.append("Collection marked as temporary.")
         c_true.close()
         c_false.close()
 
@@ -138,7 +138,7 @@ class MenuManage(Menu):
         if coll is None:
             return
         coll.update({},{"$unset":{"sentiment":1}},multi=True)
-        self.notification_queue.append("Any sentiment values have been removed.")
+        Menu.notification_queue.append("Any sentiment values have been removed.")
 
     def sub_strip_read(self):
         # Remove reading values
@@ -146,7 +146,7 @@ class MenuManage(Menu):
         if coll is None:
             return
         coll.update({},{"$unset":{"readability":1}},multi=True)
-        self.notification_queue.append("Any readability values have been removed.")
+        Menu.notification_queue.append("Any readability values have been removed.")
 
     def sub_strip_facial(self):
         # Remove kairos values
@@ -154,4 +154,4 @@ class MenuManage(Menu):
         if coll is None:
             return
         coll.update({},{"$unset":{"face":1}},multi=True)
-        self.notification_queue.append("Any facial analysis values have been removed.")
+        Menu.notification_queue.append("Any facial analysis values have been removed.")

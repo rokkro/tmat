@@ -15,7 +15,7 @@ class MenuMain(Menu):
             1: menu_twitter.MenuTwitter(True).menu_stream,  # Pass if it's streaming or not
             2: menu_twitter.MenuTwitter(False).menu_hist,
             3: menu_analysis.MenuText().menu_analysis,
-            4: export.menu_export,
+            4: export.MenuExport().menu_export,
             5: menu_manage.MenuManage().menu_manage,
             6: self.mongo_connection
         }
@@ -27,7 +27,7 @@ class MenuMain(Menu):
                "Analyze Tweets.",
                "Export as CSV.",
                "Manage Collections.",
-               "MongoDB Connected = " + self.purple + str(self.is_connected()) + self.end],
+               "MongoDB Connected = " + self.colors['purple'] + str(self.is_connected()) + self.colors['end']],
                 "*Enter option number or [q] - quit.\n>>>")
             try:
                 menu[i]()

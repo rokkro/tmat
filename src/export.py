@@ -1,5 +1,6 @@
 try:
     from config import export_dir
+    from menu import Menu
     import os
     from csv import writer
 except ImportError as e:
@@ -144,49 +145,54 @@ def write_data(fpath, coll, mode):
 
             w.writerow(data)
             data[:] = []
-        print("Finished: " + os.path.abspath(fpath))
 
 
-def menu_export():
-    # Mini menu for collection and file name
-    try:
-        from menu import Menu
-    except ImportError as e:
-        print("Error in export.py:", e)
-        return
-    menu = Menu()
-    coll = menu.get_coll_menu()
-    if coll == None:
-        return
-    menu.divider()
-    fname = input("*Enter a filename. A .csv extension will be added.\n"
-                  "Leave blank to cancel.\n>>>" + menu.end).replace(" ", "")
-    if fname == '':
-        print(menu.purple + "Export Cancelled." + menu.end)
-        return
-    if ".csv" not in fname:
-        fname = fname + ".csv"
-    menu.divider()
-    try:
-        print(menu.purple, end='')
+class MenuExport(Menu):
+    # Menu for collection and file name
+    def __init__(self):
+        super().__init__()
+        self.fpath = ''
+        self.fname = ''
+        self.mode = 'w'
         if not os.path.exists(export_dir):
             os.makedirs(export_dir)
-        fpath = export_dir + fname
-        mode = 'w'
-        if os.path.exists(fpath):
-            inpt = input(menu.purple + "A file with the name '"+ fname + "' already exists!\n" + menu.end +
-                "Append to existing? [" + menu.cyan + "a" + menu.end + "] - append, [" + menu.cyan + "o" + menu.end +
-                         "] - overwrite, [" + menu.cyan + "r" + menu.end + "] - cancel.\n>>>").replace(" ","")
-            if inpt == 'a' or inpt == 'A':
-                mode = 'a'
-            elif inpt == 'o' or inpt == 'O':
-                mode = 'w'
-            else:
-                print(menu.purple + "Export cancelled." + menu.end)
-                return
-        write_data(fpath, coll,mode)
-        print(menu.end, end='')
-    except PermissionError:
-        print(menu.purple + "Permission Error: Check if the specified file is open in another program\nand if you have "
-                            "permission to create files here." + menu.end)
-        return
+
+    def menu_export(self):
+        coll = self.get_coll_menu()
+        if coll == None:
+            return
+        self.divider()
+        self.fname = input("*Enter a filename. A .csv extension will be added.\n"
+                      "Leave blank to cancel.\n>>>" + self.colors['end']).replace(" ", "")
+        if self.fname == '':
+            Menu.notification_queue.append(self.colors['purple'] + "Export Cancelled." + self.colors['end'])
+            return
+        if ".csv" not in self.fname:
+            self.fname = self.fname + ".csv"
+        self.divider()
+        try:
+            print(self.colors['purple'], end='')
+            self.fpath = export_dir + self.fname
+            if os.path.exists(self.fpath):
+                self.path_exists()
+            write_data(self.fpath, coll, self.mode)
+            Menu.notification_queue.append("Finished: " + os.path.abspath(self.fpath))
+        except PermissionError:
+            Menu.notification_queue.append(self.colors['purple'] + "Permission Error: Check if the specified file is open in another program\nand if you have "
+                                "permission to create files here." + self.colors['end'])
+            return
+
+    def path_exists(self):
+        inpt = input(
+            self.colors['purple'] + "A file with the name '" + self.fpath + "' already exists!\n" + self.colors['end'] +
+            "Append to existing? [" + self.colors['purple'] + "a" + self.colors['end'] + "] - append, [" +
+            self.colors['purple'] + "o" + self.colors['end'] +
+            "] - overwrite, [" + self.colors['purple'] + "r" + self.colors['end'] + "] - cancel.\n>>>").replace(" ","")
+
+        if inpt == 'a' or inpt == 'A':
+            self.mode = 'a'
+        elif inpt == 'o' or inpt == 'O':
+            self.mode = 'w'
+        else:
+            Menu.notification_queue.append(self.colors['purple'] + "Export Cancelled." + self.colors['end'])
+            return

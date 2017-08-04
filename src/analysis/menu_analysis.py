@@ -26,16 +26,16 @@ class MenuText(Menu):
                                  "*Enter an option number or [r] - return.\n>>>")
             if inpt == 'r':
                 return
-            print(self.purple, end='')
+            print(self.colors['purple'], end='')
             menu[inpt]()
 
     def sub_init(self):
         """
         Calls NLTK initialization/download function in sentiment.py
         """
-        print(self.purple, end='')
+        print(self.colors['purple'], end='')
         sentiment.initialize()
-        print(self.end, end='')
+        print(self.colors['end'], end='')
 
     def sub_sentiment(self):
         """
@@ -44,9 +44,9 @@ class MenuText(Menu):
         i = self.get_coll_menu()
         if i is None:
             return
-        print(self.purple, end='')
+        print(self.colors['purple'], end='')
         sentiment.analyze(i)
-        print(self.end, end='')
+        print(self.colors['end'], end='')
 
     def sub_readability(self):
         """
@@ -55,9 +55,9 @@ class MenuText(Menu):
         i = self.get_coll_menu()
         if i is None:
             return
-        print(self.purple, end='')
+        print(self.colors['purple'], end='')
         readability.analyze(i)
-        print(self.end, end='')
+        print(self.colors['end'], end='')
 
     def sub_image(self):
         """
@@ -72,9 +72,9 @@ class MenuText(Menu):
         if limit == 'r':
             return
         self.divider()
-        print(self.purple, end='')
+        print(self.colors['purple'], end='')
         image.analyze(coll, limit)
-        print(self.end, end='')
+        print(self.colors['end'], end='')
 
 
 if __name__ == '__main__':
