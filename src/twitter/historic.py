@@ -20,6 +20,7 @@ def scrape(Setup):
     searched_tweets = []
     last_id = -1
     successful = 0
+    error_msg = ''
     while successful < Setup.lim: # While haven't hit specified limit.
         count = Setup.lim - successful
         try:
@@ -39,10 +40,10 @@ def scrape(Setup):
 
             searched_tweets[:] = [] # Empty tweets for next batch.
             print("\rTweets:", successful, # Counter
-                  "[{0:50s}] {1:.1f}% ".format('#' * int((successful / int(Setup.lim)) * 50),
-                                               (successful / int(Setup.lim)) * 100), end='',flush=True)
+                  "[{0:50s}] {1:.1f}%".format('#' * int((successful / int(Setup.lim)) * 50),
+                                               (successful / int(Setup.lim)) * 100) + error_msg, end='',flush=True)
         except tweepy.TweepError as e:
-            print("Error:",e.args[0])
+            error_msg = " Error at approx. tweet " + str(successful) + ":" + str(e.args[0])
             continue
         except Exception as e:
             print("Error:",e)
