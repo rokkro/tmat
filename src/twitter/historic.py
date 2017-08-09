@@ -43,6 +43,6 @@ def scrape(Setup):
                                                (successful / int(Setup.lim)) * 100), end='',flush=True)
         except tweepy.TweepError as e:
             print("Error:",e.args[0])
-            return
+            continue
         except Exception as e:
             print("Error:",e)
