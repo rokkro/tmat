@@ -212,7 +212,7 @@ class MenuExport(Menu):
         self.fname = input("*Enter a filename. A .csv extension will be added.\n"
                       "Leave blank to cancel.\n>>>" + self.colors['end']).replace(" ", "")
         if self.fname == '':
-            Menu.notification_queue.append(self.colors['purple'] + "Export Cancelled." + self.colors['end'])
+            self.notify("Export Cancelled.")
             return
         if ".csv" not in self.fname:
             self.fname = self.fname + ".csv"
@@ -223,10 +223,10 @@ class MenuExport(Menu):
             if os.path.exists(self.fpath):
                 self.path_exists()
             write_data(self.fpath, coll, self.mode)
-            Menu.notification_queue.append("Finished: " + os.path.abspath(self.fpath))
+            self.notify("Finished: " + os.path.abspath(self.fpath))
         except PermissionError:
-            Menu.notification_queue.append(self.colors['purple'] + "Permission Error: Check if the specified file is open in another program\nand if you have "
-                                "permission to create files here." + self.colors['end'])
+            self.notify("Permission Error: Check if the specified file is open in another program\nand if you have "
+                                "permission to create files here.")
             return
 
     def path_exists(self):
@@ -241,5 +241,5 @@ class MenuExport(Menu):
         elif inpt == 'o' or inpt == 'O':
             self.mode = 'w'
         else:
-            Menu.notification_queue.append(self.colors['purple'] + "Export Cancelled." + self.colors['end'])
+            self.notify("Export Cancelled.")
             return

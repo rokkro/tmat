@@ -22,6 +22,9 @@ class Menu(Mongo):
     def divider(self): # ----------
         print(self.colors['end'] + self.colors['cyan'] + '-' * self.horizontal_len + self.colors['end'])
 
+    def notify(self,text):
+        Menu.notification_queue.append(self.colors['purple'] + text + self.colors['end'])
+
     def notifications(self):
         if Menu.notification_queue:
             self.divider()
@@ -57,10 +60,10 @@ class Menu(Mongo):
         # Create menu to list Databases
         self.mongo_connection(True)
         if not self.is_connected():
-            Menu.notification_queue.append("You must be connected to MongoDB!")
+            self.notify("You must be connected to MongoDB!")
             return
 
-        Menu.notification_queue.append("Do not select 'admin' or 'local' databases.")
+        self.notify("Do not select 'admin' or 'local' databases.")
         db_list = []
         for j, k in enumerate(self.get_db_names(), 1):  # start at 1
             db_list.append( k + "' (" + str(len(self.get_collections(k))) + ")")  # print databases
@@ -102,8 +105,8 @@ class Menu(Mongo):
            return
          status = super().mongo_connection()
          if status is True:  # Returning an error == True with 'if status:'
-            Menu.notification_queue.append("*MongoDB Connection Succeeded!")
+            self.notify("*MongoDB Connection Succeeded!")
          elif not status:
-            Menu.notification_queue.append("*MongoDB Disconnected.")
+             self.notify("*MongoDB Disconnected.")
          else:
-            Menu.notification_queue.append("*MongoDB Connection Failed:" + str(status))
+             self.notify("*MongoDB Connection Failed:" + str(status))
