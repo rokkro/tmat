@@ -42,7 +42,7 @@ def get_percent_quoted(text):
         return total
 
     total = quote_count(indexes)
-    return (total / len(text))
+    return (total / len(text)) * 100
 
 def write_data(fpath, coll, mode):
     headers = [  # Column headers, in order!
