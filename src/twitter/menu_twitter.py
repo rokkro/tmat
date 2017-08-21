@@ -148,7 +148,7 @@ class MenuTwitter(Menu):
         while True:
             inpt = input("Enter a new name for the database, currently '" + self.setup.db_name +
                          "'. Leave blank to cancel.\nSpaces and special characters will be removed.\n>>>" + self.colors['end'])
-            inpt = ''.join(e for e in inpt if e.isalnum())
+            inpt = ''.join(e for e in inpt if (e.isalnum() or e is "-"))
             if inpt == '' or inpt == self.setup.db_name or inpt == 'admin' or inpt == 'local':
                 break
             self.notify("Database changed from '" + self.setup.db_name + "' to '" + inpt + "'.")
