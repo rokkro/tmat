@@ -9,7 +9,7 @@ except ImportError as e:
 
 def get_percent_quoted(text):
     if '\"' not in text:
-        return ''
+        return 0
 
     def find_quotes(text):
         quote_indexes = []
@@ -44,6 +44,30 @@ def get_percent_quoted(text):
     total = quote_count(indexes)
     return (total / len(text)) * 100
 
+def get_biggest(values):  # find largest emotion/ethnicity value
+    biggest = 0
+    name = ""
+    for i in values:
+        try:
+            if float(values.get(i)) > biggest:
+                biggest = values.get(i)
+                name = i
+        except:
+            continue
+    return name, biggest
+
+
+def get_difference(values):  # subtract eye values
+    name, val = get_biggest(values)
+    for i in values:
+        try:
+            if float(values.get(i)) < val:
+                val -= values.get(i)
+        except:
+            continue
+    return val
+
+
 def write_data(fpath, coll, mode):
     headers = [  # Column headers, in order!
         'Username', 'User Age', 'Age Group', 'Glasses', 'User Gender', 'Lips', 'Glances', 'Dwell',
@@ -61,28 +85,6 @@ def write_data(fpath, coll, mode):
         w = writer(out_file, dialect='excel')
         if mode is not 'a':
             w.writerow(headers)  # Write headers
-
-        def get_biggest(values):  # find largest emotion/ethnicity value
-            biggest = 0
-            name = ""
-            for i in values:
-                try:
-                    if float(values.get(i)) > biggest:
-                        biggest = values.get(i)
-                        name = i
-                except:
-                    continue
-            return name, biggest
-
-        def get_difference(values):  # subtract eye values
-            name, val = get_biggest(values)
-            for i in values:
-                try:
-                    if float(values.get(i)) < val:
-                        val -= values.get(i)
-                except:
-                    continue
-            return val
 
         def set_value(doc, item, append=True):  # append to data/catch key errors
             try:
