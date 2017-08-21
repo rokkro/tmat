@@ -7,6 +7,43 @@ except ImportError as e:
     print("Import Error in export.py:", e)
 
 
+def get_percent_quoted(text):
+    if '\"' not in text:
+        return ''
+
+    def find_quotes(text):
+        quote_indexes = []
+        while True:
+            try:
+                index = text.find("\"", quote_indexes[len(quote_indexes) - 1] + 1)
+                if index < 0:
+                    raise IndexError
+                quote_indexes.append(index)
+            except IndexError:
+                index = text.find("\"")
+                if index in quote_indexes:
+                    break
+                if index >= 0:
+                    quote_indexes.append(index)
+        return quote_indexes
+
+    indexes = find_quotes(text)
+    if len(indexes) % 2 != 0:
+        del indexes[int(len(indexes) / 2)]
+
+    def quote_count(quote_indexes):
+        total = 0
+        counter = 0
+        for enum, index in enumerate(quote_indexes):
+            if enum % 2 != 0:
+                continue
+            next = quote_indexes[enum + 1]
+            total += (next - index) + 1  # Counting the second quotation mark too.
+        return total
+
+    total = quote_count(indexes)
+    return (total / len(text))
+
 def write_data(fpath, coll, mode):
     headers = [  # Column headers, in order!
         'Username', 'User Age', 'Age Group', 'Glasses', 'User Gender', 'Lips', 'Glances', 'Dwell',
@@ -15,7 +52,7 @@ def write_data(fpath, coll, mode):
         'Tweet Date', 'Tweet Content', 'Tweet Language', 'Tweet Favorites', 'Tweet Retweets',
         'Sentiment Pos', 'Sentiment Neu', 'Sentiment Neg', 'Sentiment Comp', 'Flesch Ease', 'Flesch Grade',
         'Readability Standard',
-        'User Emotion', 'User Ethnicity', 'Eye Gap',
+        'User Emotion', 'User Ethnicity', 'Eye Gap', 'Percent Quoted'
     ]
     data = []
 
@@ -63,6 +100,10 @@ def write_data(fpath, coll, mode):
 
         all = coll.find({})
         for doc in all:  # go through all docs
+
+            if 'text' not in doc:
+                continue
+
             set_value(doc, [['user'], ['screen_name']])  # @username
             set_value(doc,
                       [['face'], ['detection'], ['images'], [0], ['faces'], [0], ['attributes'], ['age']])  # kairos age
@@ -142,10 +183,14 @@ def write_data(fpath, coll, mode):
             diff = get_difference(eyegap)
             if diff != 0:
                 data.append(diff)
+            else:
+                data.append('')
+
+            quoted = get_percent_quoted(doc['text'])
+            data.append(quoted)
 
             w.writerow(data)
             data[:] = []
-
 
 class MenuExport(Menu):
     # Menu for collection and file name
