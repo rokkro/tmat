@@ -56,7 +56,7 @@ Note for Windows users: `python-levenshtein` may fail to install, so you'll need
  1. Filters out retweets, quoted retweets, replies, and incomplete tweets(does not contain "created_at" date in JSON data).
  2. MongoDB's cursor sorting feature is used with its "textscore" comparison values to sort the most likely duplicates first. This eliminates the need to search the entire unordered collection for a match. Instead, the max tweets searched is defined by the `tweet_duplicate_limit` in `config.py`. 
  3. Most of the time, the first tweet compared will be a duplicate.
- 4. Duplicates are found by removing punctuation and spaces from the new tweet and the current tweet to be tested. Using Python's `SequenceMatcher` and the `tweet_similarity_threshold` in `config.py`, the tweet's text is compared to all other tweets in the current collection. If a duplicate is found, the two tweets are compared. The tweet with the most favorites is kept. If they have the same number of favorites, such as when tweet streaming, the older tweet is kept. 
+ 4. Duplicates are found by removing punctuation and spaces from the new tweet and the current tweet to be tested. Using the `python-levenshtein` package, and the `tweet_similarity_threshold` in `config.py`, the tweet's text is compared to all other tweets in the current collection. If a duplicate is found, the two tweets are compared. The tweet with the most favorites is kept. If they have the same number of favorites, such as when tweet streaming, the older tweet is kept. 
  5. The more tweets collected, the longer duplicate checking takes. This is likely due to the slowly increasing time it takes for MongoDB to sort the tweets.
  
   #### Tweet Streaming:
