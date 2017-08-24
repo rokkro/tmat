@@ -30,7 +30,7 @@ class MenuTwitter(Menu):
                 "MongoDB Connected = " + self.colors['purple'] + str(self.is_connected())],
                 "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
-            if inpt == '' and self.is_connected() and (self.setup.term or self.setup.users):
+            if not inpt and self.is_connected() and (self.setup.term or self.setup.users):
                 self.divider()
                 print(self.colors['purple'], end='')
                 self.setup.init_db(self.get_client())
@@ -39,7 +39,7 @@ class MenuTwitter(Menu):
                 stream(self.setup)
                 print("\n", end='')
                 break
-            elif inpt == '':
+            elif not inpt:
                 self.notify("MongoDB must be connected and a search or UID must have been entered.")
                 continue
             elif inpt == 'r':
@@ -77,7 +77,7 @@ class MenuTwitter(Menu):
                              "MongoDB Connected = " + self.colors['purple'] + str(self.is_connected()) + self.colors['end']],
                             "*Enter option number or: [Enter] - start streaming, [r] - return.""\n>>>")
 
-            if inpt == '' and self.is_connected() and self.setup.term and self.setup.lim:
+            if not inpt and self.is_connected() and self.setup.term and self.setup.lim:
                 self.divider()
                 print(self.colors['purple'], end='')
                 self.setup.init_db(self.get_client())
@@ -86,7 +86,7 @@ class MenuTwitter(Menu):
                 scrape(self.setup)
                 print("\n", end='')
                 break
-            elif inpt == '':
+            elif not inpt:
                 self.notify("MongoDB must be connected, and both a search and limit must have been entered.")
                 continue
 
@@ -126,7 +126,7 @@ class MenuTwitter(Menu):
         if inpt == 'r':
             self.notify("Limit unchanged.")
             return
-        if inpt == '':
+        if not inpt:
             self.setup.lim = None
         else:
             self.setup.lim = inpt
@@ -149,7 +149,7 @@ class MenuTwitter(Menu):
             inpt = input("Enter a new name for the database, currently '" + self.setup.db_name +
                          "'. Leave blank to cancel.\nSpaces and special characters will be removed.\n>>>" + self.colors['end'])
             inpt = ''.join(e for e in inpt if (e.isalnum() or e is "-"))
-            if inpt == '' or inpt == self.setup.db_name or inpt == 'admin' or inpt == 'local':
+            if not inpt or inpt == self.setup.db_name or inpt == 'admin' or inpt == 'local':
                 break
             self.notify("Database changed from '" + self.setup.db_name + "' to '" + inpt + "'.")
             self.setup.db_name = inpt
@@ -167,7 +167,7 @@ class MenuTwitter(Menu):
             inpt = input(self.colors['end'] + "Enter a new name for this collection, currently '" + self.setup.coll_name +
                          "'. Leave blank to cancel.\nPut '[dt]' in name to insert date + time.\n>>>" +
                          self.colors['end']).strip().replace("$", "")
-            if inpt == '' or inpt == self.setup.coll_name:  # If blank or collection name is same
+            if not inpt or inpt == self.setup.coll_name:  # If blank or collection name is same
                 break
             if '[dt]' in inpt:  # inserting and replacing [dt] with date/time
                 self.setup.coll_name = inpt.replace('[dt]', str(self.setup.get_dt())).strip()
@@ -190,7 +190,7 @@ class MenuTwitter(Menu):
                  'zh-tw']
         inpt = input("Enter a comma separated list of language codes. "
                                   "https://dev.twitter.com/web/overview/languages\n>>>").replace(" ", '').split(',')
-        if inpt == '':
+        if not inpt:
             return
         tmp = []
         for i in inpt:
@@ -222,7 +222,7 @@ class MenuTwitter(Menu):
                          "*B=Before (<), A=After (>=). Use '||' to separate.\n*Ex: 'b-2017-5-22||a-2017-5-20'. "
                          "Leave blank to clear, [" + self.colors['cyan'] + "r" + self.colors['end'] + "] - cancel.\n>>>" + self.colors['end'])
         inpt = inpt.strip().replace(" ", "")
-        if inpt == "":
+        if not inpt:
             self.setup.until = None
             self.setup.after = None
             return

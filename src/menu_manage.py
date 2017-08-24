@@ -33,7 +33,7 @@ class MenuManage(Menu):
             if inpt == 'r':
                 return
 
-            if inpt == '':
+            if not inpt:
                 continue
 
             try:

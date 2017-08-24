@@ -123,6 +123,10 @@ class Setup:  # settings and setup for tweet scraping
             print("Initializing DB and Collection...")
             db = client[self.db_name]  # initialize db
             self.tweet_coll = db[self.coll_name]  # initialize collection
+            try:
+                client.admin.command('setParameter', textSearchEnabled=True)
+            except Exception as e:
+                print(e)
             self.tweet_coll.create_index([('text', 'text')])
 
             c_true = self.tweet_coll.find({"t_temp": True})
