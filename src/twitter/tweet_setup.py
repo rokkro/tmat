@@ -92,12 +92,12 @@ class Setup:  # settings and setup for tweet scraping
         # Format search input
         tmp = []  # stores user input to filter out invalid responses
         self.term[:] = []
-        if inpt == '':
+        if not inpt:
             return
         tmp = inpt.split('||')  # split into list by ||
         for i in range(len(tmp)):
             tmp[i] = tmp[i].strip()  # remove outside spacing from all entries
-            if tmp[i] == '':  # if blank after spaces removed, dont append to search term list
+            if not tmp[i]:  # if blank after spaces removed, dont append to search term list
                 continue
             self.term.append(tmp[i])
         if not self.term:  # if nothing appended to search term list, return.
@@ -108,12 +108,12 @@ class Setup:  # settings and setup for tweet scraping
         # Format follower input
         tmp = []
         self.users[:] = []  # clear list
-        if inpt == '':  # if blank, then clear list beforehand
+        if not inpt:  # if blank, then clear list beforehand
             return
         tmp = inpt.split('||')
         for i in range(len(tmp)):
             tmp[i] = tmp[i].replace(" ", "")
-            if tmp[i] == '' or not tmp[i].isdigit():  # if blank/not a num, dont append to search term list
+            if not tmp[i] or not tmp[i].isdigit():  # if blank/not a num, dont append to search term list
                 continue
             self.users.append(tmp[i])
 
