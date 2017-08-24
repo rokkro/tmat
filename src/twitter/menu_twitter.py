@@ -33,8 +33,8 @@ class MenuTwitter(Menu):
             if inpt == '' and self.is_connected() and (self.setup.term or self.setup.users):
                 self.divider()
                 print(self.colors['purple'], end='')
-                print("Waiting for new tweets...")
                 self.setup.init_db(self.get_client())
+                print("Waiting for new tweets...")
                 print(self.colors['end'], end='')
                 stream(self.setup)
                 print("\n", end='')
