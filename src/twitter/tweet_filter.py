@@ -1,6 +1,6 @@
 try:
     import config, datetime, string
-    from difflib import SequenceMatcher
+    from Levenshtein import ratio
 except ImportError as e:
     print("Import Error in tweet_filter.py:", e)
 
@@ -43,7 +43,7 @@ def duplicate_find(coll, json_tweet):
             continue
         coll_stripped = strip_all(coll_tweet['text'])
         json_stripped = strip_all(json_tweet['text'])
-        sim_ratio = SequenceMatcher(None, coll_stripped, json_stripped).ratio() # Compare tweet content
+        sim_ratio = ratio(coll_stripped, json_stripped) # Compare tweet content
         if sim_ratio > config.tweet_similarity_threshold: # If the text is similar
             #print("\n",iterator)
             if duplicate_tests(coll_tweet, json_tweet): # Compare them this way, True = delete coll tweet

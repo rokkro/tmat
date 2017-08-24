@@ -15,9 +15,9 @@ api = tweepy.API(auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
 
 class Listener(StreamListener):
     # Override Tweepy's Listener class, on_data and on_error
-    def __init__(self, lim, coll):
+    def __init__(self, lim, coll,count):
         super().__init__()
-        self.count = 0
+        self.count = count
         self.lim = lim
         self.coll = coll
 
@@ -53,9 +53,10 @@ class Listener(StreamListener):
 
 def stream(Setup):
     listener = None
+    count = 0
     while True:  # start streaming
         try:
-            listener = Listener(Setup.lim, Setup.tweet_coll)
+            listener = Listener(Setup.lim, Setup.tweet_coll, count)
             twitter_stream = Stream(auth, listener)
             twitter_stream.filter(track=Setup.term, languages=Setup.lang, follow=Setup.users)
         except KeyboardInterrupt:
@@ -64,4 +65,6 @@ def stream(Setup):
             print("Error: ",e,"\nAttempting to continue...\n")
             if Setup.lim is not None:
                 Setup.lim -= listener.count  # subtracts downloaded tweets from the limit for next round on error
+            else:
+                count = listener.count
             continue
