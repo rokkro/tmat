@@ -22,7 +22,9 @@
 
 ***To Install***: Install mongoDB and run with `mongod --dbpath=/path/to/db` (Find `mongod.exe` under `Program Files` on Windows). You can create an empty directory to serve as the `dbpath`. Clone this repo and extract the files. Make sure you've got Python 3.x (tested on 3.5/3.6) installed (and added to your PATH on Windows).
 
-***Modules Needed***: `tweepy` (tweet collection), `nltk` (text analysis), `requests` (image analysis), `pymongo` (mongoDB), `textstat` (readability analysis), and `python-levenshtein` (duplicate checking). Install these with: `pip install tweepy nltk requests pymongo textstat` or `pip3 install` (Linux + Mac OS). Use `pip install --user` on systems without admin privileges.
+***Modules Needed***: `tweepy` (tweet collection), `nltk` (text analysis), `requests` (image analysis), `pymongo` (mongoDB), `textstat` (readability analysis), and `python-levenshtein` (duplicate checking). Install these with: `pip install --upgrade tweepy nltk requests pymongo textstat` or `pip3 install` (Linux + Mac OS). Use `pip install --user` on systems without admin privileges.
+
+Note for Windows users: `python-levenshtein` may fail to install, so you'll need to download a .whl file <a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/#python-levenshtein">here</a>. Choose an an appropriate file to download, matching your Python version (ie: 'cp36' = python 3.6) and architecture (see `platform.architecture()` to check). Then do `pip install  C:\path\to\file.whl` to install.
 
 ***To use***: insert correct <a href="https://dev.twitter.com/">Twitter</a> (tweet retrieval) and/or <a href="http://kairos.com/">Kairos</a> (image analysis) API keys into the `config.py` file, then run `menu_main.py` for the menu interface. Run with `python C:\path\to\menu_main.py` or `python3 /path/to/menu_main.py` (Linux + Mac OS). Use something like RoboMongo if you want a good visual view of your databases.
 
@@ -54,7 +56,7 @@
  1. Filters out retweets, quoted retweets, replies, and incomplete tweets(does not contain "created_at" date in JSON data).
  2. MongoDB's cursor sorting feature is used with its "textscore" comparison values to sort the most likely duplicates first. This eliminates the need to search the entire unordered collection for a match. Instead, the max tweets searched is defined by the `tweet_duplicate_limit` in `config.py`. 
  3. Most of the time, the first tweet compared will be a duplicate.
- 4. Duplicates are found by removing punctuation and spaces from the new tweet and the current tweet to be tested. Using Python's `SequenceMatcher` and the `tweet_similarity_threshold` in `config.py`, the tweet's text is compared to all other tweets in the current collection. If a duplicate is found, the two tweets are compared. The tweet with the most favorites is kept. If they have the same number of favorites, such as when tweet streaming, the older tweet is kept. 
+ 4. Duplicates are found by removing punctuation and spaces from the new tweet and the current tweet to be tested. Using the `python-levenshtein` package, and the `tweet_similarity_threshold` in `config.py`, the tweet's text is compared to all other tweets in the current collection. If a duplicate is found, the two tweets are compared. The tweet with the most favorites is kept. If they have the same number of favorites, such as when tweet streaming, the older tweet is kept. 
  5. The more tweets collected, the longer duplicate checking takes. This is likely due to the slowly increasing time it takes for MongoDB to sort the tweets.
  
   #### Tweet Streaming:
