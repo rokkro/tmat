@@ -3,7 +3,7 @@
 try:
     import warnings
     warnings.filterwarnings("ignore")  # stop useless warning
-    import config
+    from config import conf
     import nltk
     from nltk.sentiment.util import mark_negation, extract_unigram_feats
     from nltk.sentiment.vader import SentimentIntensityAnalyzer
@@ -74,7 +74,7 @@ def analyze(coll):
         except LookupError as e:
             print("Error: Make sure you have run initial setup:", e)
 
-        if config.verbose:
+        if conf['verbose']:
             print("Document _id:", i.get('_id'))
             print(sentences[0])
             print(ss)

@@ -1,5 +1,5 @@
 try:
-    from config import export_dir
+    from config import conf
     from menu import Menu
     import os
     from csv import writer
@@ -201,8 +201,8 @@ class MenuExport(Menu):
         self.fpath = ''
         self.fname = ''
         self.mode = 'w'
-        if not os.path.exists(export_dir):
-            os.makedirs(export_dir)
+        if not os.path.exists(conf['export_dir']):
+            os.makedirs(conf['export_dir'])
 
     def menu_export(self):
         coll = self.get_coll_menu()
@@ -219,7 +219,7 @@ class MenuExport(Menu):
         self.divider()
         try:
             print(self.colors['purple'], end='')
-            self.fpath = export_dir + self.fname
+            self.fpath = conf['export_dir'] + self.fname
             if os.path.exists(self.fpath):
                 self.path_exists()
             write_data(self.fpath, coll, self.mode)

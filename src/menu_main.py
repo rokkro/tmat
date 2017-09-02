@@ -2,7 +2,8 @@ try:
     from menu import Menu
     from analysis import menu_analysis
     from twitter import menu_twitter
-    import menu_manage, export, config
+    import menu_manage, export
+    from config import conf
 except ImportError as e:
     print("Import Error in menu_main.py:",e)
 
@@ -19,7 +20,7 @@ class MenuMain(Menu):
             5: menu_manage.MenuManage().menu_manage,
             6: self.mongo_connection
         }
-        if config.startup_connect:
+        if conf['startup_connect']:
             self.mongo_connection()
         while True:
             i = self.get_menu("MAIN", ["Stream Tweets.",

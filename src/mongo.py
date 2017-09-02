@@ -1,5 +1,5 @@
 try:
-    from config import mongo_timeout
+    from config import conf
     from pymongo import MongoClient
     from pymongo.errors import ConnectionFailure
 except ImportError as e:
@@ -17,7 +17,7 @@ class Mongo:
             return False
         else:
             try:
-                Mongo._client = MongoClient(serverSelectionTimeoutMS=mongo_timeout)  # localhost timeout
+                Mongo._client = MongoClient(serverSelectionTimeoutMS=conf['mongo_timeout'])  # localhost timeout
                 status = self.test_connection()
                 if status is True:
                     return True

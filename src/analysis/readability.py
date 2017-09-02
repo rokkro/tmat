@@ -1,5 +1,5 @@
 try:
-    import config
+    from config import conf
     from textstat import textstat
     from nltk.tokenize import TweetTokenizer, sent_tokenize
     import re
@@ -54,7 +54,7 @@ def analyze(coll):
                 flesch_grade = t_stat.flesch_kincaid_grade(tokenized)
                 text_standard = t_stat.text_standard(tokenized)
 
-                if config.verbose:  # print result text if in verbose mode
+                if conf['verbose']:  # print result text if in verbose mode
                     print(doc['text'],"SUMMARIZED",text_standard)
                     print("FLESCH EASE",flesch_ease)
                     print("FLESCH GRADE",flesch_grade)

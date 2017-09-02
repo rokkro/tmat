@@ -1,14 +1,15 @@
 # For reference: # https://dev.twitter.com/basics/user-profile-images-and-banners
 
 try:
-    import config, requests, base64, os
+    from config import conf
+    import requests, base64, os
     from json import JSONDecodeError
 except ImportError as e:
     print("Import Error in image.py:", e)
 
 auth_headers = { # authentication keys for the Kairos API, stored in config.py.
-    'app_id': config.appid,
-    'app_key': config.appkey
+    'app_id': conf['appid'],
+    'app_key': conf['appkey']
 }
 image_file = "ta-image.jpg"
 
@@ -76,7 +77,7 @@ def analyze(coll, limit):
 
             emo = emotion_api(image_file)
 
-            if config.verbose: # Verbose mode output
+            if conf['verbose']: # Verbose mode output
                 print("Document _id:", item.get('_id'))
                 print(profile_pic + " " + item['user']['screen_name'])
                 print(det)

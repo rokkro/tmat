@@ -1,5 +1,6 @@
 try:
     from mongo import Mongo
+    from config import read_conf
 except ImportError as e:
     print("Import Error in menu.py:",e)
 
@@ -31,10 +32,17 @@ class Menu(Mongo):
             print(self.colors['purple'] +  "\n".join(Menu.notification_queue) + self.colors['end'])
             Menu.notification_queue[:] = []
 
+    def show_guide(self):
+        # Suuper basic right now. Just sends notifications.
+        self.notify("[r] - return to previous page")
+        self.notify("[q] - quit the program")
+        self.notify("[0] - reload settings file")
+        self.notify("[?] - print this page")
+
     def get_menu(self,head, menu, input_menu):
         # Numbered user input menu
-        self.notifications()
         while True:
+            self.notifications()
             if menu is not None:
                 self.header(head)
                 for num, entry in enumerate(menu): # Print entries
@@ -45,6 +53,11 @@ class Menu(Mongo):
                                 "[" + self.colors['purple']).replace("]",self.colors['end'] + "]" + self.colors['end'])).replace(" ", "")
             if entry == 'q': # input 'q' to quit
                 quit()
+            elif entry == '0':
+                read_conf()
+                self.notify("Reloaded config file.")
+            elif entry == '?':
+                self.show_guide()
             elif entry == 'r' or entry == '': # Returns r or space for menus to handle it.
                 return entry
             try: # Type cast num input to int

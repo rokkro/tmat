@@ -125,8 +125,9 @@ class Setup:  # settings and setup for tweet scraping
             self.tweet_coll = db[self.coll_name]  # initialize collection
             try:
                 client.admin.command('setParameter', textSearchEnabled=True)
+                print("Make sure you are running the mongod service as administrator through a normal shell (cmd, powershell on Windows) to avoid errors!")
             except Exception as e:
-                print(e)
+                pass
             self.tweet_coll.create_index([('text', 'text')])
 
             c_true = self.tweet_coll.find({"t_temp": True})

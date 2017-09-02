@@ -1,13 +1,14 @@
 try:
     from twitter import tweet_filter
-    import config, tweepy
+    from config import conf
+    import tweepy
     from tweepy import api
     from tweepy import OAuthHandler
 except ImportError as e:
     print("Import Error in historic.py:", e)
 
-auth = OAuthHandler(config.ckey, config.csecret)
-auth.set_access_token(config.atoken, config.asecret)
+auth = OAuthHandler(conf['ckey'], conf['csecret'])
+auth.set_access_token(conf['atoken'], conf['asecret'])
 api = tweepy.API(auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
 
 def scrape(Setup):
@@ -21,6 +22,7 @@ def scrape(Setup):
     last_id = -1
     successful = 0
     error_msg = ''
+
     while successful < Setup.lim: # While haven't hit specified limit.
         count = Setup.lim - successful
         try:
@@ -30,20 +32,19 @@ def scrape(Setup):
                 break
             searched_tweets.extend(new_tweets) # The 'new' tweets
             last_id = new_tweets[-1].id  # Used to track which tweets to get next.
-
             for iter, data in enumerate(searched_tweets):
                 if tweet_filter.social_filter(data._json): # Filter out replies, quotes, RT's
                     if tweet_filter.duplicate_find(Setup.tweet_coll, data._json):  # Filter out duplicates
                         if Setup.after is None or tweet_filter.date_filter(data._json,Setup.after): # Filter date
                             Setup.tweet_coll.insert_one(data._json) # Insert into DB
                             successful+=1
-
             searched_tweets[:] = [] # Empty tweets for next batch.
             print("\rTweets:", successful, # Counter
                   "[{0:50s}] {1:.1f}%".format('#' * int((successful / int(Setup.lim)) * 50),
                                                (successful / int(Setup.lim)) * 100) + error_msg, end='',flush=True)
         except tweepy.TweepError as e:
-            error_msg = " Error at approx. tweet " + str(successful) + ":" + str(e.args[0])
+            error_msg = " Error at approx. tweet " + str(successful) + ": " + str(e.args[0])
             continue
         except Exception as e:
-            print("Error:",e)
+            print("Error in historic.py:",e)
+

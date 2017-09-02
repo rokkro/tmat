@@ -1,5 +1,5 @@
 try:
-    import config
+    from config import conf
     from twitter import tweet_filter
     import tweepy, json
     from tweepy import Stream
@@ -9,8 +9,8 @@ except ImportError as e:
     print("Import Error in streaming.py:", e)
     quit()
 
-auth = OAuthHandler(config.ckey, config.csecret)
-auth.set_access_token(config.atoken, config.asecret)
+auth = OAuthHandler(conf['ckey'], conf['csecret'])
+auth.set_access_token(conf['atoken'], conf['asecret'])
 api = tweepy.API(auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
 
 class Listener(StreamListener):
