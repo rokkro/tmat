@@ -113,6 +113,35 @@ class Menu(Mongo):
             return
         return db[coll[inpt - 1]]
 
+    def get_doc_menu(self, required, entry_name_key):
+        # Create a menu for docs with 'transcript' and 'file_name' fields
+        doc_list = []
+        coll = self.get_coll_menu()
+        if not coll:
+            return None, None
+        cursor = coll.find({})
+        for doc in cursor:
+            if not required:
+                doc_list.append(doc)
+                continue
+            for enum, item in enumerate(required):
+                if item not in doc:
+                    break
+                elif enum == len(required) - 1:
+                    doc_list.append(doc)
+        cursor.close()
+        entries = []
+        for doc in doc_list:
+            try:
+                entries.append(doc[entry_name_key])
+            except KeyError:
+                entries.append("(Unnamed)")
+
+        inpt = self.get_menu("DOCS", entries, "*Select document to re-process text or [r] -return.\n>>>")
+        if inpt == 'r' or not inpt:
+            return None, None
+        return coll, doc_list[inpt - 1]
+
     def mongo_connection(self, connect_only=False):
          if self.is_connected() and connect_only:
            return

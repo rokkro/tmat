@@ -43,13 +43,11 @@ class MenuManage(Menu):
 
     def sub_list(self):
         # Print documents
-        inpt = self.get_coll_menu()
-        if inpt is None:
+        coll,doc = self.get_doc_menu(None,'id_str')
+        if coll is None:
             return
-        cursor = inpt.find({})
-        for doc in cursor:
-            self.notify(str(doc))
-        cursor.close()
+        for key in doc:
+            self.notify(str(key) + " : " + str(doc[key]))
 
     def sub_tmp(self):
         # Delete temp collection
