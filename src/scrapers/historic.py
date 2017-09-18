@@ -1,5 +1,5 @@
 try:
-    from twitter import tweet_filter
+    from . import tweet_filter
     from config import conf
     import tweepy
     from tweepy import api

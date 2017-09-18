@@ -1,7 +1,7 @@
 try:
     from menu import Menu
     from analysis import menu_analysis
-    from twitter import menu_twitter
+    from scrapers import menu_scrapers
     import menu_manage, export
     from config import conf
 except ImportError as e:
@@ -13,8 +13,8 @@ class MenuMain(Menu):
 
     def main(self):
         menu = {
-            1: menu_twitter.MenuTwitter(True).menu_stream,  # Pass if it's streaming or not
-            2: menu_twitter.MenuTwitter(False).menu_hist,
+            1: menu_scrapers.MenuScrapers(True).menu_stream,  # Pass if it's streaming or not
+            2: menu_scrapers.MenuScrapers(False).menu_hist,
             3: menu_analysis.MenuText().menu_analysis,
             4: export.MenuExport().menu_export,
             5: menu_manage.MenuManage().menu_manage,

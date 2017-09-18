@@ -1,14 +1,14 @@
 try:
-    from twitter.tweet_setup import Setup
-    from twitter.streaming import stream
-    from twitter.historic import scrape
+    from .tweet_setup import Setup
+    from .streaming import stream
+    from .historic import scrape
     from menu import Menu
 except ImportError as e:
     print("Import Error in menu_twitter.py:", e)
     quit()
 
 
-class MenuTwitter(Menu):
+class MenuScrapers(Menu):
     def __init__(self,streaming=False):
         # Initialize Setup with streaming flag
         super().__init__()
