@@ -37,7 +37,7 @@ class Listener(StreamListener):
                       "[{0:50s}] {1:.1f}% ".format('#' * int((self.count / int(self.lim)) * 50),
                                                    (self.count / int(self.lim)) * 100) + self.message, end='',flush=True)
             else:
-                print("\rTweets:", self.count + self.message, end='',flush=True)
+                print("\rTweets:", str(self.count) + self.message, end='',flush=True)
             return True
 
     def on_error(self, status):
