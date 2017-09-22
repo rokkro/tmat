@@ -67,7 +67,7 @@ def read_conf():
         for key in config[section]:
             if key in conf:
                 val = cast_type(key, config[section][key].strip())
-                if val is None:
+                if val is None or (type(val) is str and not len(val)):
                     print(key,"=",config[section][key], "in config is invalid!")
                     continue
                 conf[key] = val
