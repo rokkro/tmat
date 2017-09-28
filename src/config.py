@@ -75,7 +75,7 @@ def read_conf():
                 if  value == "DEFAULT":
                     continue
                 elif (val is None or (type(val) is str and not len(val))) and key not in empty:
-                    print(key,"=",config[section][key], "in config is invalid!")
+                    print(key,"=",config[section][key], "in config file is invalid!")
                     continue
                 conf[key] = val
 
