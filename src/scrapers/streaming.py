@@ -1,13 +1,12 @@
 try:
     from config import conf
-    from twitter import tweet_filter
+    from . import tweet_filter
     import tweepy, json
     from tweepy import Stream
     from tweepy.streaming import StreamListener
     from tweepy import OAuthHandler
 except ImportError as e:
     print("Import Error in streaming.py:", e)
-    quit()
 
 auth = OAuthHandler(conf['ckey'], conf['csecret'])
 auth.set_access_token(conf['atoken'], conf['asecret'])
@@ -38,7 +37,7 @@ class Listener(StreamListener):
                       "[{0:50s}] {1:.1f}% ".format('#' * int((self.count / int(self.lim)) * 50),
                                                    (self.count / int(self.lim)) * 100) + self.message, end='',flush=True)
             else:
-                print("\rTweets:", self.count + self.message, end='',flush=True)
+                print("\rTweets:", str(self.count) + self.message, end='',flush=True)
             return True
 
     def on_error(self, status):

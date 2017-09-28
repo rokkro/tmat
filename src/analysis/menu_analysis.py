@@ -1,6 +1,6 @@
 try:
     from menu import Menu
-    from analysis import sentiment, image, readability
+    from . import sentiment, image, readability
 except ImportError as e:
     print("Import Error in menu_analysis.py:",e)
     quit()
