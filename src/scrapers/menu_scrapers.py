@@ -4,7 +4,7 @@ try:
     from .historic import scrape
     from menu import Menu
 except ImportError as e:
-    print("Import Error in menu_twitter.py:", e)
+    print("Import Error in menu_scrapers.py:", e)
     quit()
 
 
