@@ -1,10 +1,11 @@
 try:
     from configparser import ConfigParser
+    from os.path import dirname, abspath
 except ImportError as e:
     print("Import Error in config.py:",e)
 
 # Location of config.ini
-config_location = "../config.ini"
+config_location = dirname(dirname(abspath(__file__))) + "/config.ini",
 
 # Normal settings should go in config.ini, but you can change the
 #   default settings below if you'd rather. Make sure the types in conf and conf_type match.
@@ -19,12 +20,15 @@ conf = {
     "appid" : '',
     "appkey" : '',
     "verbose" : False,
-    "export_dir" : '../output/',
+    "export_dir" : dirname(dirname(abspath(__file__))) + '/output/',
     "startup_connect" : True,
     "mongo_timeout" : 30,
     "tweet_similarity_threshold" : .6,
     "tweet_duplicate_limit" : 10,
 }
+
+empty = [] # Settings that can be empty
+
 conf_type = {
     "ckey" : str,
     "csecret" : str,
@@ -66,8 +70,11 @@ def read_conf():
     for section in config.sections():
         for key in config[section]:
             if key in conf:
-                val = cast_type(key, config[section][key].strip())
-                if val is None:
+                value = config[section][key].strip()
+                val = cast_type(key, value)
+                if  value == "DEFAULT":
+                    continue
+                elif (val is None or (type(val) is str and not len(val))) and key not in empty:
                     print(key,"=",config[section][key], "in config is invalid!")
                     continue
                 conf[key] = val
