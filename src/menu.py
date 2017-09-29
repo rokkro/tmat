@@ -7,6 +7,7 @@ except ImportError as e:
 
 class Menu(Mongo):
     notification_queue = []
+    key_queue = []
     def __init__(self):
         self.horizontal_len = 40
         # Text colors
@@ -49,8 +50,17 @@ class Menu(Mongo):
                     print("[" + self.colors['purple'] + str(num + 1) + self.colors['end'] + "] - " + entry)
                 self.divider()
             #Stylize input menu
-            entry = input(self.colors['end'] + input_menu.replace("[", self.colors['end'] +
-                                "[" + self.colors['purple']).replace("]",self.colors['end'] + "]" + self.colors['end'])).replace(" ", "")
+            if not self.key_queue:
+                # Stylize input menu
+                entry = input(self.colors['end'] + input_menu.replace("[", self.colors['end'] +"[" + self.colors['purple']).replace("]",self.colors['end'] + "]" +self.colors['end'])).replace(" ", "")
+                if len(entry) > 1:
+                    entries = list(entry)
+                    entry = entries[0]
+                    del entries[0]
+                    self.key_queue.extend(entries)
+            else:
+                entry = self.key_queue[0]
+                del self.key_queue[0]
             if entry == 'q': # input 'q' to quit
                 quit()
             elif entry == '0':
