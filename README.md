@@ -32,7 +32,7 @@ Note for Windows users: `python-levenshtein` may fail to install, so you'll need
   #### Menus:
 1.  Menus are basic textual interfaces designed to make it easy to use this program. They will, however, generate an unholy amount of console ouput from navigation.
 2.  Run `menu_main.py` for complete access to all the menus/functions.
-3.  Generally, you can use `r` to return to the previous menu, `q` to quit the program, `0` to reload the config file, and number keys to navigate.
+3.  Generally, you can use `r` to return to the previous menu, `q` to quit the program, `0` to reload the config file, and the number keys to navigate.
 4.  Entering multiple numbers at once, such as `121r` will navigate through the menus with the input given, in order.
 
   #### config.py and config.ini:
