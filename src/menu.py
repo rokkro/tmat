@@ -52,9 +52,11 @@ class Menu(Mongo):
             #Stylize input menu
             if not self.key_queue:
                 # Stylize input menu
-                entry = input(self.colors['end'] + input_menu.replace("[", self.colors['end'] +"[" + self.colors['purple']).replace("]",self.colors['end'] + "]" +self.colors['end'])).replace(" ", "")
-                if len(entry) > 1:
-                    entries = list(entry)
+                entry = input(self.colors['end'] + input_menu.replace("[", self.colors['end'] +
+                                                            "[" + self.colors['purple']).replace("]",
+                                                                                       self.colors['end'] + "]" + self.colors['end'])).strip()
+                if len(entry.split(" ")) > 1:
+                    entries = entry.split(" ")
                     entry = entries[0]
                     del entries[0]
                     self.key_queue.extend(entries)
