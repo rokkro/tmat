@@ -1,6 +1,7 @@
 try:
     from configparser import ConfigParser
-    from os.path import dirname, abspath
+    from os.path import dirname, abspath, exists
+    from os import makedirs
 except ImportError as e:
     print("Import Error in config.py:",e)
 
@@ -27,7 +28,8 @@ conf = {
     "tweet_duplicate_limit" : 10,
 }
 
-empty = [] # Settings that can be empty
+empty = ["ckey","csecret","atoken","asecret","appid","appkey"] # Settings that can be empty
+paths = ["export_dir"]
 
 conf_type = {
     "ckey" : str,
@@ -43,6 +45,18 @@ conf_type = {
     "tweet_similarity_threshold" : float,
     "tweet_duplicate_limit" : int,
 }
+
+def verify_path(path):
+    try:
+        path = abspath(path) + "/"
+        # print(path)
+        if not exists(path):
+            makedirs(path)
+        return path
+    except Exception as e:
+        print("Error in config.py:",e)
+        return None
+
 def cast_type(key, val):
     # Use the key to get the required type and its current type
     req_type = conf_type[key]
@@ -70,14 +84,25 @@ def read_conf():
     for section in config.sections():
         for key in config[section]:
             if key in conf:
-                value = config[section][key].strip()
-                val = cast_type(key, value)
-                if  value == "DEFAULT":
+                try:
+                    value = config[section][key].strip()
+                    val = cast_type(key, value)
+                    if  value == "DEFAULT":
+                        continue
+                    elif key in paths:
+                        val = verify_path(val)
+                    elif (val is None or (type(val) is str and not len(val))) and key not in empty:
+                        print(key,"=",config[section][key], "in config is invalid, using default value.")
+                        continue
+                    conf[key] = val
+                except Exception as e:
+                    print("Error in config.py:",e)
                     continue
-                elif (val is None or (type(val) is str and not len(val))) and key not in empty:
-                    print(key,"=",config[section][key], "in config file is invalid!")
-                    continue
-                conf[key] = val
 
 # Initial load
 read_conf()
+
+if not exists(*config_location):
+    print("config.ini not found! Using default values.")
+    for path in paths:
+        conf[path] = verify_path(conf[path])
