@@ -32,6 +32,8 @@ Note for Windows users: `python-levenshtein` may fail to install, so you'll need
   #### Menus:
 1.  Menus are basic textual interfaces designed to make it easy to use this program. They will, however, generate an unholy amount of console ouput from navigation.
 2.  Run `menu_main.py` for complete access to all the menus/functions.
+3.  Generally, you can use `r` to return to the previous menu, `q` to quit the program, `0` to reload the config file, and the number keys to navigate.
+4.  Entering multiple numbers at once, such as `1 2 1 r` will navigate through the menus with the input given, in order. A space must be between the values.
 
   #### config.py and config.ini:
 1.  Enter your Twitter API and Kairos API keys into `config.ini`, within the quotation marks.
