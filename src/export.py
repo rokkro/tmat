@@ -1,7 +1,7 @@
 try:
     from config import conf
     from menu import Menu
-    import os, string
+    import os,string
     from csv import writer
 except ImportError as e:
     print("Import Error in export.py:", e)
@@ -201,6 +201,7 @@ class MenuExport(Menu):
         self.fpath = ''
         self.fname = ''
         self.mode = 'w'
+        self.subdir = ''
 
     def single_export(self):
         coll = self.get_coll_menu()
@@ -208,7 +209,7 @@ class MenuExport(Menu):
             return
         self.divider()
         self.fname = input("*Enter a filename. A .csv extension will be added.\n"
-                           "Leave blank to cancel.\n>>>" + self.colors['end']).replace(" ", "")
+                           "*Leave blank to cancel.\n>>>" + self.colors['end']).replace(" ", "")
         if self.fname == '':
             self.notify("Export Cancelled.")
             return
@@ -219,11 +220,19 @@ class MenuExport(Menu):
 
     def strip_all(self,text):
         # Remove punctuation and spaces
-        return text.translate(text.maketrans('', '', string.punctuation)).replace(" ","-").replace("--", "-")
+        return text.translate(text.maketrans('', '', string.punctuation.replace("-",""))).replace(" ","-").replace("--", "-")
 
     def multi_export(self):
         # NOTE: CAPITALIZATION IS AFFECTED DIFFERENTLY ON WINDOWS VS LINUX
-        coll,db = self.get_db_menu()
+        try:
+            coll,db = self.get_db_menu()
+        except TypeError:
+            return
+        self.divider()
+        self.subdir = input("*Enter an export subdirectory to create/use, such as 'dog-tweets'.\n"
+                           "*Leave blank to place all in default export directory.\n>>>" + self.colors['end'])
+        if self.subdir:
+            self.subdir = self.strip_all(self.subdir) + "/"
         print("Exporting Data...")
         for iter, item in enumerate(coll, 1):
             current_coll = db[coll[iter - 1]]
@@ -236,7 +245,10 @@ class MenuExport(Menu):
     def create_sheet(self,coll):
         try:
             print(self.colors['purple'], end='')
-            self.fpath = conf['export_dir'] + self.fname
+            self.fpath = conf['export_dir'] + self.subdir
+            if not os.path.exists(self.fpath):
+                os.makedirs(self.fpath)
+            self.fpath += self.fname
             if os.path.exists(self.fpath):
                 self.path_exists()
             write_data(self.fpath, coll, self.mode)
