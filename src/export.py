@@ -254,6 +254,7 @@ class MenuExport(Menu):
             path = self.fpath
             while os.path.exists(path):
                 path = self.fpath.replace(".csv","") + "(" + str(fcounter) + ")" + ".csv"
+                fcounter+=1
             self.fpath = path
             self.create_sheet(current_coll)
 
