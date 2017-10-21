@@ -239,7 +239,7 @@ class MenuExport(Menu):
             return
         self.divider()
         self.subdir = input("*Enter an export subdirectory to create/use, such as 'dog-tweets'.\n"
-                           "*Leave blank to place all in default export directory.\n>>>" + self.colors['end'])
+                           "*Leave blank to place all in default export directory.\n>>>" + self.colors['end']).strip()
         if self.subdir:
             self.subdir = self.strip_all(self.subdir) + "/"
         print("Exporting Data...")
