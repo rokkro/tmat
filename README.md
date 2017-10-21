@@ -88,6 +88,7 @@ Note for Windows users: `python-levenshtein` may fail to install, so you'll need
 2.  Four values are found from analysis: the positivity, negativity, and neutrality of the tweet. 
       In addition, the compound value is calculated: see the Vader Sentiment link above for an explanation.
 3.  These values are inserted in each tweet document in the specified collection under `sentiment` : {`pos`, `neg`, `neu`, `compound`}.
+4.  You have the option to either process all collections in a database, or only a single collection.
 
   #### Facial Analysis with Kairos:
 1.  The Kairos facial detection and emotion/age/gender APIs are used.
@@ -108,7 +109,8 @@ Note for Windows users: `python-levenshtein` may fail to install, so you'll need
 4.  The `rightEyeCenterX` is subtracted from `leftEyeCenterX` (or is it the other way around?) for the `eyegap`, which is then inserted into `data`.
 5.  The "Percent Quoted" column is found from the number of characters within double quotation marks (including the quotation marks themselves), divided by the total number of characters in the string. For example, in the sentence: `"Hello there", and "Goodbye" my friend!`, the number of characters in `"Hello there"` is added to the number of characters in `"Goodbye"`. This summation is then divided by the total characters and multiplied by 100 for a percentage. Anything using single quotation marks is ignored, as there doesn't seem to be a good way to differentiate apostrophes vs quotes.
 6.  The `data` list is then written to the CSV file as a single row (the current document). This process is repeated for every document in the collection.
-7.  By default, .csv files are exported to the 'output' directory, created at the root of the project dir. A custom dir can be set in the config file. If you wish to create a .csv file that already exists, you will have the option to append or overwrite the existing file.
+7.  By default, .csv files are exported to the 'output' directory, created at the root of the project dir. A custom dir can be set in the config file. If you wish to create a single .csv file that already exists, you will have the option to append or overwrite the existing file.
+8.  You also have the option to export an entire database's collections at once. This will automatically create .csv files using the collections' names. New .csv files with the same name as an existing file will be given a name like 'dog(0).csv', 'dog(1).csv', and so on. You will also be asked to enter a subdirectory name to aid with organization. This subdirectory will be created (or used if it already exists) within your default export directory. 
 
   #### Readability:
  1. Uses the module <a href="https://github.com/shivam5992/textstat">textstat</a> to simplify finding the various readability values.
