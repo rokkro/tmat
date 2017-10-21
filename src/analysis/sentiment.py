@@ -53,10 +53,21 @@ def initialize():
         print('{0}: {1}'.format(key, value))
     print("Setup Finished!")
 
+def coll_set(coll,db):
+    '''
+    For differentiation between database analysis vs single collection
+    '''
+    print("Performing Analysis...")
+    if db:
+        for iter,item in enumerate(coll,1):
+            current_coll = db[coll[iter - 1]]
+            analyze(current_coll)
+    else:
+        analyze(coll)
 
 def analyze(coll):
     """
-    Run sentiment analysis on provided collection.
+    Run sentiment analysis on provided collection. Takes a mongoDB collection.
     """
     sentences = []
     try:
@@ -89,4 +100,3 @@ def analyze(coll):
         }})
         sentences[:] = []  # empty list
     cursor.close()
-    print("Sentiment values have been attached to each tweet document in the collection.")

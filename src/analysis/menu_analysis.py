@@ -41,12 +41,30 @@ class MenuText(Menu):
         """
         Gets selected collection, passes it to NLTK analysis function.
         """
-        i = self.get_coll_menu()
-        if i is None:
+
+        def sub_db():
+            # Get database/collection by spawning a db menu. Raises TypeError if user cancels menu.
+            try:
+                coll,db = self.get_db_menu()
+                return coll, db
+            except TypeError:
+                return None, None
+
+        def sub_coll():
+            # Handles returning second non-existant variable
+            coll = self.get_coll_menu()
+            return coll,None
+
+        menu = {
+            1: sub_db,
+            2: sub_coll,
+        }
+        inpt = self.get_menu("SENTIMENT",["Run SA on an Entire Database.", "Run SA on a Single Collection."], "*Enter an option number or [r] - return.\n>>>")
+        coll,db = menu[inpt]()
+        if coll is None:
             return
-        print(self.colors['purple'], end='')
-        sentiment.analyze(i)
-        print(self.colors['end'], end='')
+        sentiment.coll_set(coll,db)
+        self.notify("Sentiment values have been attached to each tweet document in the collection.")
 
     def sub_readability(self):
         """
