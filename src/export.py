@@ -1,7 +1,7 @@
 try:
     from config import conf
     from menu import Menu
-    import os
+    import os, string
     from csv import writer
 except ImportError as e:
     print("Import Error in export.py:", e)
@@ -201,22 +201,39 @@ class MenuExport(Menu):
         self.fpath = ''
         self.fname = ''
         self.mode = 'w'
-        if not os.path.exists(conf['export_dir']):
-            os.makedirs(conf['export_dir'])
 
-    def menu_export(self):
+    def single_export(self):
         coll = self.get_coll_menu()
         if coll == None:
             return
         self.divider()
         self.fname = input("*Enter a filename. A .csv extension will be added.\n"
-                      "Leave blank to cancel.\n>>>" + self.colors['end']).replace(" ", "")
+                           "Leave blank to cancel.\n>>>" + self.colors['end']).replace(" ", "")
         if self.fname == '':
             self.notify("Export Cancelled.")
             return
         if ".csv" not in self.fname:
             self.fname = self.fname + ".csv"
         self.divider()
+        self.create_sheet(coll)
+
+    def strip_all(self,text):
+        # Remove punctuation and spaces
+        return text.translate(text.maketrans('', '', string.punctuation)).replace(" ","-").replace("--", "-")
+
+    def multi_export(self):
+        # NOTE: CAPITALIZATION IS AFFECTED DIFFERENTLY ON WINDOWS VS LINUX
+        coll,db = self.get_db_menu()
+        print("Exporting Data...")
+        for iter, item in enumerate(coll, 1):
+            current_coll = db[coll[iter - 1]]
+            coll_name = current_coll.__dict__['_Collection__name']
+            coll_name = coll_name[:250].strip()
+            coll_name = self.strip_all(coll_name) + ".csv"
+            self.fname = coll_name
+            self.create_sheet(current_coll)
+
+    def create_sheet(self,coll):
         try:
             print(self.colors['purple'], end='')
             self.fpath = conf['export_dir'] + self.fname
@@ -228,6 +245,16 @@ class MenuExport(Menu):
             self.notify("Permission Error: Check if the specified file is open in another program\nand if you have "
                                 "permission to create files here.")
             return
+
+    def menu_export(self):
+        menu = {
+            1: self.single_export,
+            2: self.multi_export
+        }
+        inpt = self.get_menu("EXPORT",["Export a Single Collection's Data.","Auto Export All DB Collections."],"*Enter an option number or [r] - return.\n>>>")
+        if not inpt:
+            return
+        menu[inpt]()
 
     def path_exists(self):
         inpt = input(
