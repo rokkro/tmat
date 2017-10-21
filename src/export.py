@@ -267,6 +267,7 @@ class MenuExport(Menu):
         if not inpt:
             return
         menu[inpt]()
+        self.subdir = '' # Clear subdir name for multiple exports, preventing 'left overs'
 
     def path_exists(self):
         inpt = input(
