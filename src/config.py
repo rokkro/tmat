@@ -88,6 +88,8 @@ def read_conf():
                     value = config[section][key].strip()
                     val = cast_type(key, value)
                     if  value == "DEFAULT":
+                        if key in paths:
+                            verify_path(conf[key])
                         continue
                     elif key in paths:
                         val = verify_path(val)
