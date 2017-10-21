@@ -260,7 +260,6 @@ class MenuExport(Menu):
 
     def create_sheet(self,coll):
         try:
-            print(self.colors['purple'], end='')
             write_data(self.fpath, coll, self.mode)
             self.notify("Finished: " + os.path.abspath(self.fpath))
         except PermissionError:
