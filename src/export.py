@@ -203,6 +203,12 @@ class MenuExport(Menu):
         self.mode = 'w'
         self.subdir = ''
 
+    def set_path(self):
+        self.fpath = conf['export_dir'] + self.subdir
+        if not os.path.exists(self.fpath):
+            os.makedirs(self.fpath)
+        self.fpath += self.fname
+
     def single_export(self):
         coll = self.get_coll_menu()
         if coll == None:
@@ -216,6 +222,9 @@ class MenuExport(Menu):
         if ".csv" not in self.fname:
             self.fname = self.fname + ".csv"
         self.divider()
+        self.set_path()
+        if os.path.exists(self.fpath):
+            self.path_exists()
         self.create_sheet(coll)
 
     def strip_all(self,text):
@@ -240,17 +249,17 @@ class MenuExport(Menu):
             coll_name = coll_name[:250].strip()
             coll_name = self.strip_all(coll_name) + ".csv"
             self.fname = coll_name
+            self.set_path()
+            fcounter = 0
+            path = self.fpath
+            while os.path.exists(path):
+                path = self.fpath.replace(".csv","") + "(" + str(fcounter) + ")" + ".csv"
+            self.fpath = path
             self.create_sheet(current_coll)
 
     def create_sheet(self,coll):
         try:
             print(self.colors['purple'], end='')
-            self.fpath = conf['export_dir'] + self.subdir
-            if not os.path.exists(self.fpath):
-                os.makedirs(self.fpath)
-            self.fpath += self.fname
-            if os.path.exists(self.fpath):
-                self.path_exists()
             write_data(self.fpath, coll, self.mode)
             self.notify("Finished: " + os.path.abspath(self.fpath))
         except PermissionError:
