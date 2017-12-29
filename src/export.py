@@ -76,7 +76,7 @@ def write_data(fpath, coll, mode):
         'Tweet Date', 'Tweet Content', 'Tweet Language', 'Tweet Favorites', 'Tweet Retweets',
         'Sentiment Pos', 'Sentiment Neu', 'Sentiment Neg', 'Sentiment Comp', 'Flesch Ease', 'Flesch Grade',
         'Readability Standard',
-        'User Emotion', 'User Ethnicity', 'Eye Gap', 'Percent Quoted'
+        'User Emotion', 'User Ethnicity', 'Eye Gap', 'Percent Quoted', "Tweet Length"
     ]
     data = []
 
@@ -190,6 +190,7 @@ def write_data(fpath, coll, mode):
 
             quoted = get_percent_quoted(doc['text'])
             data.append(quoted)
+            data.append(len(doc['text']))
 
             w.writerow(data)
             data[:] = []
