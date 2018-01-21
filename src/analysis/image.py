@@ -53,6 +53,11 @@ def run(api_func):
     while True:
         try:
             result = api_func(IMAGE_FILE)
+            if 'Errors' in result:
+                error_code = result['Errors'][0]['ErrCode']
+                if error_code != 5002:
+                    print("Error:", error_code, "-", result['Errors'][0]['Message'] + ". Moving onto the next...")
+                raise TypeError
             return result
         except JSONDecodeError as e:
             if retry_count > RETRY_LIM:
@@ -87,11 +92,7 @@ def analyze(coll, limit):
 
             det = run(detect_api)
 
-            if 'Errors' in det:
-                error_code = det['Errors'][0]['ErrCode']
-                if error_code != 5002:
-                    print("Error:", error_code, "-", det['Errors'][0]['Message'] + ". Moving onto the next...")
-                continue
+
             emo = run(emotion_api)
 
             if conf['verbose']: # Verbose mode output
@@ -106,6 +107,9 @@ def analyze(coll, limit):
                     "detection": det
                 }}})
             success += 1  # successfully inserted
+        except TypeError:
+            remove_image()
+            continue
         except KeyboardInterrupt:
             remove_image()
             print("\n")
