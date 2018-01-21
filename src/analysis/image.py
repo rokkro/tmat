@@ -89,10 +89,7 @@ def analyze(coll, limit):
                 continue
 
             save_image(response)
-
             det = run(detect_api)
-
-
             emo = run(emotion_api)
 
             if conf['verbose']: # Verbose mode output
@@ -117,7 +114,7 @@ def analyze(coll, limit):
         except KeyError:
             continue
         except Exception as e:
-            print(type(e), "Error:", e)
+            print("Error:", e)
             remove_image()
             continue
 
