@@ -112,8 +112,8 @@ def analyze(coll, limit):
             return
         except KeyError:
             continue
-        except BaseException as e:
-            # print(type(e), "Error:", e)
+        except Exception as e:
+            print(type(e), "Error:", e)
             remove_image()
             continue
 
