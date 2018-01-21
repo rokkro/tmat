@@ -1,27 +1,29 @@
 # For reference: # https://dev.twitter.com/basics/user-profile-images-and-banners
 
 try:
+    import time
     from config import conf
     import requests, base64, os
     from json import JSONDecodeError
 except ImportError as e:
     print("Import Error in image.py:", e)
 
-auth_headers = { # authentication keys for the Kairos API, stored in config.py.
+AUTH_HEADERS = { # authentication keys for the Kairos API, stored in config.py.
     'app_id': conf['appid'],
     'app_key': conf['appkey']
 }
-image_file = "ta-image.jpg"
+IMAGE_FILE = "ta-image.jpg"
+RETRY_LIM = 5
 
 def remove_image():
     # Deletes downloaded profile pic, if it exists.
-    if os.path.exists(image_file):
-        os.remove(image_file)
+    if os.path.exists(IMAGE_FILE):
+        os.remove(IMAGE_FILE)
 
 
 def save_image(response):
     # Download the response as an image file.
-    with open(image_file, 'wb') as f:  # convert response into saved image
+    with open(IMAGE_FILE, 'wb') as f:  # convert response into saved image
         f.write(response.content)
 
 
@@ -35,15 +37,30 @@ def emotion_api(img):
     # Opens saved image, does a POST request to Kairos Emotion API, returns response.
     url = 'https://api.kairos.com/v2/media'
     with open(img, 'rb') as img:
-        response = requests.post(url, files={'source': img}, data={'timeout': 60}, headers=auth_headers)
+        response = requests.post(url, files={'source': img}, data={'timeout': 60}, headers=AUTH_HEADERS)
     return response.json()
 
 
 def detect_api(img):
     # Kairos 'detection' API, POST request with base64'd image.
     url = 'https://api.kairos.com/detect'
-    response = requests.post(url, json={'image': image_base64(img)}, headers=auth_headers)
+    response = requests.post(url, json={'image': image_base64(img)}, headers=AUTH_HEADERS)
     return response.json()
+
+def run(api_func):
+    retry_count = 0
+    sleep_time = 5
+    while True:
+        try:
+            result = api_func(IMAGE_FILE)
+            return result
+        except JSONDecodeError as e:
+            if retry_count > RETRY_LIM:
+                raise Exception("Possible Kairos Error, verify your keys are accurate:",e)
+            time.sleep(sleep_time)
+            sleep_time*=2
+            retry_count +=1
+            continue
 
 def analyze(coll, limit):
     success = 0
@@ -67,15 +84,15 @@ def analyze(coll, limit):
                 continue
 
             save_image(response)
-            det = detect_api(image_file)
+
+            det = run(detect_api)
 
             if 'Errors' in det:
                 error_code = det['Errors'][0]['ErrCode']
                 if error_code != 5002:
                     print("Error:", error_code, "-", det['Errors'][0]['Message'] + ". Moving onto the next...")
                 continue
-
-            emo = emotion_api(image_file)
+            emo = run(emotion_api)
 
             if conf['verbose']: # Verbose mode output
                 print("Document _id:", item.get('_id'))
@@ -89,10 +106,6 @@ def analyze(coll, limit):
                     "detection": det
                 }}})
             success += 1  # successfully inserted
-        except JSONDecodeError as e:
-            print("Possible Kairos Error, verify your keys are accurate:", e)
-            remove_image()
-            return
         except KeyboardInterrupt:
             remove_image()
             print("\n")
@@ -100,7 +113,7 @@ def analyze(coll, limit):
         except KeyError:
             continue
         except BaseException as e:
-            print(type(e), "Error:", e)
+            # print(type(e), "Error:", e)
             remove_image()
             continue
 
