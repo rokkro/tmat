@@ -91,7 +91,7 @@ Note for Windows users: `python-levenshtein` may fail to install, so you'll need
 4.  You have the option to either process all collections in a database, or only a single collection.
 
   #### Facial Analysis with Kairos:
-1.  The Kairos facial detection and emotion/age/gender APIs are used.
+1.  The Kairos facial detection and emotion/age/gender APIs are used. Due to new limitations on API calls for the free version of Kairos, the paid version may be necessary to gather much data within the 24 hour window.
 2.  The profile image URL is taken from the current document in the collection, and is tested if it exists.
 3.  The current doc is checked for `default_profile_image` being false, and if the URL does not contain a 'default' picture URL.
 4.  The current image is individually downloaded as `ta-image.jpg`, then is uploaded to the Kairos detect API.
