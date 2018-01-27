@@ -6,6 +6,18 @@ try:
 except ImportError as e:
     print("Import Error in readability.py:",e)
 
+def coll_set(coll,db):
+    '''
+    For differentiation between database analysis vs single collection
+    '''
+    print("Performing Analysis...")
+    if db:
+        for iter,item in enumerate(coll,1):
+            current_coll = db[coll[iter - 1]]
+            analyze(current_coll)
+    else:
+        analyze(coll)
+
 def tweet_tokenize(text):
     """
     Strip out Tweet URLs, handles, shorten elongated words.
