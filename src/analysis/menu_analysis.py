@@ -109,7 +109,7 @@ class MenuText(Menu):
             return
         self.divider()
         print(self.colors['purple'], end='')
-        image.analyze(coll, limit)
+        image.Image().analyze(coll, limit)
         print(self.colors['end'], end='')
 
 

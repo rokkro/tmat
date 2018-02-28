@@ -7,6 +7,8 @@ try:
     from tweepy import OAuthHandler
 except ImportError as e:
     print("Import Error in streaming.py:", e)
+    print("Note for tweepy install errors - you may need to 'pip3 install --upgrade setuptools'")
+    quit()
 
 auth = OAuthHandler(conf['ckey'], conf['csecret'])
 auth.set_access_token(conf['atoken'], conf['asecret'])
