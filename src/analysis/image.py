@@ -19,6 +19,8 @@ class Image():
     RETRY_LIM = 5
     MAX_LIM = 1500
     STOP_TIMER = 86460
+    # If true, then the timer stuff will work, false it wont
+    STOP_TIMER_TOGGLE = False
 
     def __init__(self):
         self.calls = 0
@@ -99,12 +101,12 @@ class Image():
                 if item['user']['default_profile_image'] or 'default_profile' in profile_pic:  # filter both default pics
                     continue
 
-                if self.calls < self.MAX_LIM:
+                if (self.calls < self.MAX_LIM) or not self.STOP_TIMER_TOGGLE:
                     self.save_image(response)
                     det = self.run(self.detect_api)
                     emo = self.run(self.emotion_api)
                 else:
-                    print("Sleeping for 86460 seconds...")
+                    print("Sleeping for " + str(self.STOP_TIMER) + " seconds...")
                     time.sleep(self.STOP_TIMER)
                     self.calls = 0
 
