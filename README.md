@@ -16,7 +16,7 @@
 * Use the <a href="http://kairos.com/">Kairos</a> APIs to detect emotion, age, gender, and other characteristics of profile pictures.
 * Export organized data to .csv spreadsheets.
 * Simple database, collection, and document management.
-* Be used with a simple textual interface.
+* Be used with a simple text-based interface.
 
 ## Setup:
 
