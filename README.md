@@ -22,18 +22,17 @@
 
 ***To Install***: Install mongoDB and run with `mongod --dbpath=/path/to/db` (Find `mongod.exe` under `Program Files` on Windows). You can create an empty directory to serve as the `dbpath`. Clone this repo and extract the files. Make sure you've got Python 3.x (tested on 3.5/3.6) installed (and added to your PATH on Windows). Do not run `mongod` on Windows through Ubuntu/SUSE/Fedora. It will not work properly! 
 
-***Modules Needed***: `tweepy` (tweet collection), `nltk` (text analysis), `requests` (image analysis), `pymongo` (mongoDB), `textstat` (readability analysis), and `python-levenshtein` (duplicate checking). Install these with: `pip install --upgrade tweepy nltk requests pymongo textstat` or `pip3 install` (Linux + Mac OS). Use `pip install --user` on systems without admin privileges.
+***Modules Needed***: `tweepy` (tweet collection), `nltk` (text analysis), `requests` (image analysis), `pymongo` (mongoDB), `textstat` (readability analysis), and `python-levenshtein` (duplicate checking).
 
 Note for Windows users: `python-levenshtein` may fail to install, so you'll need to download a .whl file <a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/#python-levenshtein">here</a>. Choose an an appropriate file to download, matching your Python version (ie: 'cp36' = python 3.6) and architecture (see `platform.architecture()` to check). Then do `pip install  C:\path\to\file.whl` to install.
 
-***To use***: insert correct <a href="https://dev.twitter.com/">Twitter</a> (tweet retrieval) and/or <a href="http://kairos.com/">Kairos</a> (image analysis) API keys into the `config.ini` file, then run `menu_main.py` for the menu interface. Run with `python C:\path\to\menu_main.py` or `python3 /path/to/menu_main.py` (Linux + Mac OS). Use something like RoboMongo if you want a good visual view of your databases.
+***To use***: insert correct <a href="https://dev.twitter.com/">Twitter</a> (tweet retrieval) and/or <a href="http://kairos.com/">Kairos</a> (image analysis) API keys into the `config.ini` file, then run `menu_main.py` for the menu interface. Use something like MongoDB Compass if you want a good visual view of your databases.
 
 ## Details:
   #### Menus:
-1.  Menus are basic textual interfaces designed to make it easy to use this program. They will, however, generate an unholy amount of console ouput from navigation.
-2.  Run `menu_main.py` for complete access to all the menus/functions.
-3.  Generally, you can use `r` to return to the previous menu, `q` to quit the program, `0` to reload the config file, and the number keys to navigate.
-4.  Entering multiple numbers at once, such as `1 2 1 r` will navigate through the menus with the input given, in order. A space must be between the values.
+1.  Menus are text-based interfaces designed to make it easy to use this program. They will, however, generate an unholy amount of console ouput from navigation.
+2.  Generally, you can use `r` to return to the previous menu, `q` to quit the program, `0` to reload the config file, and the number keys to navigate.
+3.  Entering multiple numbers at once, such as `1 2 1 r` will navigate through the menus with the input given, in order. A space must be between the values.
 
   #### config.py and config.ini:
 1.  Enter your Twitter API and Kairos API keys into `config.ini`, within the quotation marks.
@@ -52,7 +51,7 @@ Note for Windows users: `python-levenshtein` may fail to install, so you'll need
 3.  When a collection is marked as temporary, a single document is created with the value `"t_temp" : True`. 
       This makes it easier to delete a group of collections later using the "Manage Collections" menu later.
 4.  MongoDB must be running to use most of the functions of this program.
-5.  I don't reccomend you modify, delete, or insert into the `local` or `admin` collections unless you know what you're doing.
+5.  Avoid messing with the `local` or `admin` collections unless you know what you're doing.
 6.  New collections will have a `t_type` value in the same document as `t_temp`. This is set once upon collection creation to "tweet" (as opposed to "speech", or whatever my other programs use). It is used to show a visual indicator in the collection selection menus, to help identify the collection as one containing tweets.
 
   #### Tweet Duplicates and Filtering:
@@ -60,7 +59,7 @@ Note for Windows users: `python-levenshtein` may fail to install, so you'll need
  2. MongoDB's cursor sorting feature is used with its "textscore" comparison values to sort the most likely duplicates first. This eliminates the need to search the entire unordered collection for a match. Instead, the max tweets searched is defined by the `tweet_duplicate_limit` in `config.ini`. 
  3. Most of the time, the first tweet compared will be a duplicate.
  4. Duplicates are found by removing punctuation and spaces from the new tweet and the current tweet to be tested. Using the `python-levenshtein` package, and the `tweet_similarity_threshold` in `config.ini`, the tweet's text is compared to all other tweets in the current collection. If a duplicate is found, the two tweets are compared. The tweet with the most favorites is kept. If they have the same number of favorites, such as when tweet streaming, the older tweet is kept. 
- 5. The more tweets collected, the longer duplicate checking takes. This is likely due to the slowly increasing time it takes for MongoDB to sort the tweets.
+ 5. The more tweets collected, the longer duplicate checking takes. This is due to the gradual increase in time it takes for MongoDB to sort the tweets.
  
   #### Tweet Streaming:
  1.  Tweepy is used as the Python module to interface with the Twitter API.
@@ -103,12 +102,12 @@ Note for Windows users: `python-levenshtein` may fail to install, so you'll need
 10. The older the collection, the more dead profile pic links.
 
   #### CSV Export:
-1.  Column headings are manually defined within the `headers` list in `export.py`.
-2.  The values are serached for within the current document. If they exist, the values are directly inserted into the `data` list. If they do not exist, a blank is inserted.
-3.  Before being added to `data`, the emotion values are compared with one another for the highest value. Whatever the highest value refers to is inserted into the list. The same is done with the ethnicity values provided by the Kairos API. 
-4.  The `rightEyeCenterX` is subtracted from `leftEyeCenterX` (or is it the other way around?) for the `eyegap`, which is then inserted into `data`.
+1.  Column headings are defined within the `headers` list in `export.py`.
+2.  Set fields are searched for within the current document in the db. If the field is empty or does not exist, a blank is inserted into the resulting CSV.
+3.  Emotion values are compared with one another for the highest value. The highest value is used. The same is done with the ethnicity values provided by the Kairos API. 
+4.  The `rightEyeCenterX` is subtracted from `leftEyeCenterX` for the `eyegap`.
 5.  The "Percent Quoted" column is found from the number of characters within double quotation marks (including the quotation marks themselves), divided by the total number of characters in the string. For example, in the sentence: `"Hello there", and "Goodbye" my friend!`, the number of characters in `"Hello there"` is added to the number of characters in `"Goodbye"`. This summation is then divided by the total characters and multiplied by 100 for a percentage. Anything using single quotation marks is ignored, as there doesn't seem to be a good way to differentiate apostrophes vs quotes.
-6.  The `data` list is then written to the CSV file as a single row (the current document). This process is repeated for every document in the collection.
+6.  The data list is then written to the CSV file as a single row, which makes up the current document. This process is repeated for every document in the collection.
 7.  By default, .csv files are exported to the 'output' directory, created at the root of the project dir. A custom dir can be set in the config file. If you wish to create a single .csv file that already exists, you will have the option to append or overwrite the existing file.
 8.  You also have the option to export an entire database's collections at once. This will automatically create .csv files using the collections' names. New .csv files with the same name as an existing file will be given a name like 'dog(0).csv', 'dog(1).csv', and so on. You will also be asked to enter a subdirectory name to aid with organization. This subdirectory will be created (or used if it already exists) within your default export directory. 
 
